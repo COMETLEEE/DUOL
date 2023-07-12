@@ -18,7 +18,6 @@ namespace DUOLGameEngine
 		, _nowChildCutCount(0)
 		, _cutImageName("cut")
 		, _skipImageTime(0.f)
-		, _skipImage(nullptr)
 		, _skilFadeMode(FadeInOutMode::DONE)
 	{
 	}
@@ -82,6 +81,10 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::LoadScene()
 	{
+		_skipFade->StartBlinkIn(1, [this]()
+			{
+				_skilFadeMode = FadeInOutMode::FADE_OUT;
+			});
 		_fadeInOut->StartFadeOut(2, [this]()
 			{
 				_isStart = false;
@@ -90,6 +93,7 @@ namespace DUOLGameEngine
 				ButtonEventManager::GetInstance()->LoadScene(tPath);
 
 			});
+	
 	}
 
 	void CutSceneManager::LoadUnityScene()
@@ -103,6 +107,20 @@ namespace DUOLGameEngine
 	{
 
 		Initialize();
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetName() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+			}
+			if (gameObject->GetName() == TEXT("Skip"))
+			{
+				_skipFade = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+			}
+		}
 
 		if (_fadeInOut)
 			_fadeInOut->StartFadeIn(2, nullptr);
@@ -132,20 +150,7 @@ namespace DUOLGameEngine
 		if (!_nowChildCutScene.empty())
 			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(true);
 
-		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
-
-		for (auto gameObject : gameObjects)
-		{
-			if (gameObject->GetName() == TEXT("Fade"))
-			{
-				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
-			}
-			if (gameObject->GetName() == TEXT("Skip"))
-			{
-				_skipImage = gameObject->GetComponent<DUOLGameEngine::Image>();
-				_skipFade = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
-			}
-		}
+	
 
 	}
 
@@ -161,6 +166,8 @@ namespace DUOLGameEngine
 
 			if (_nowChildCutScene[_nowChildCutCount]->GetComponent<Image>() == nullptr)
 				return;
+
+			//if(<=_nowCutCount )
 
 			// pre active is false
 			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(false);
@@ -183,8 +190,8 @@ namespace DUOLGameEngine
 	bool CutSceneManager::ChangeCutImage()
 	{
 		_nowCutCount++;
+		int preChildCount = _nowChildCutCount;
 		_nowChildCutCount = 0;
-		_nowChildCutScene.clear();
 
 		_nowCutObject->SetIsActiveSelf(false);
 
@@ -194,9 +201,14 @@ namespace DUOLGameEngine
 
 		if (firstImage == nullptr)
 		{
+			_nowCutObject->SetIsActiveSelf(true);
+
+			_nowChildCutScene[preChildCount - 1]->SetIsActiveSelf(true);
 			_isEnd = true;
 			return false;
 		}
+
+		_nowChildCutScene.clear();
 
 		auto parentObject = firstImage->GetGameObject();
 
@@ -224,21 +236,21 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::SkipImage()
 	{
-		if (_skipImage == nullptr)
+		if (_skipFade == nullptr)
 			return;
 
 		if (_skipFade->GetFadeMode() == FadeInOutMode::DONE || _skipFade->GetFadeMode() == FadeInOutMode::NOT)
 		{
 			if (_skilFadeMode == FadeInOutMode::DONE || _skilFadeMode == FadeInOutMode::FADE_IN)
 			{
-				_skipFade->StartBlinkIn(2, [this]()
+				_skipFade->StartBlinkIn(1, [this]()
 					{
 						_skilFadeMode = FadeInOutMode::FADE_OUT;
 					});
 			}
-			else if(_skilFadeMode ==FadeInOutMode::FADE_OUT)
+			else if (_skilFadeMode == FadeInOutMode::FADE_OUT)
 			{
-				_skipFade->StartBlinkOut(2, [this]()
+				_skipFade->StartBlinkOut(1, [this]()
 					{
 						_skilFadeMode = FadeInOutMode::FADE_IN;
 					});

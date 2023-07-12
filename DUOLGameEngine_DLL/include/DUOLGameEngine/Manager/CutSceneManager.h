@@ -65,8 +65,6 @@ namespace DUOLGameEngine
 
 		GameObject* _nowCutObject;
 
-		Image* _skipImage;
-
 		FadeInOutMode _skilFadeMode;
 
 		DUOLGameEngine::FadeInOut* _skipFade;

@@ -120,6 +120,10 @@ namespace  DUOLClient
 			{
 				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
+			if ((gameObject->GetName() == TEXT("Combo")) || (gameObject->GetName() == TEXT("ComboNum")))
+			{
+				gameObject->SetIsActiveSelf(false);
+			}
 		}
 
 		_scriptList.emplace_back(std::make_pair(L"DialogueText_04.png", 8.f));
@@ -324,13 +328,13 @@ namespace  DUOLClient
 			_scriptTime = _scriptList[_scriptIndex].second;
 			_player->PlayScriptSoundClip(_middleSceneClips[_scriptIndex], false);
 
-			if (_scriptIndex == 1 || _scriptIndex == 2)
+			if (_scriptIndex == 1)
 			{
 				_isShowInfo = true;
 			}
 		}
 
-		if (_isShowInfo)
+		if (_isShowInfo && _isNextInfo)
 		{
 			if (_infoList.size() <= _infoIndex)
 			{
