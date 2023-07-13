@@ -88,6 +88,8 @@ namespace  DUOLGameEngine
 		else
 			DUOLGameEngine::CutSceneManager::GetInstance()->SetStart(false);
 
+		DUOLGameEngine::GraphicsManager::GetInstance()->SetScreenRatio();
+
 	}
 
 	// 재귀를 돌면서 자식객체까지 모두 찾아준다. 

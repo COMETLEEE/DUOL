@@ -643,6 +643,13 @@ namespace DUOLGameEngine
 		DUOLGameEngine::UIManager::GetInstance()->OnResize(_screenSize.x, _screenSize.y);
 	}
 
+	void GraphicsManager::SetScreenRatio()
+	{
+		_screenRatio.x = _screenSize.x / 1600;
+		_screenRatio.y = _screenSize.y / 1080;
+	}
+
+
 	void GraphicsManager::PreExecute(const DUOLCommon::tstring& setupName)
 	{
 		// 해당 파이프라인 셋업에서 사용하는 모든 렌더 타겟들을 클리어합니다.

@@ -60,6 +60,8 @@ namespace DUOLGameEngine
 
 		const DUOLMath::Vector2& GetScreenRatio() const { return _screenRatio; }
 
+		void SetScreenRatio();
+
 		void SetScreenSize(const DUOLMath::Vector2& screenSize) { _screenSize = screenSize; }
 
 	private:

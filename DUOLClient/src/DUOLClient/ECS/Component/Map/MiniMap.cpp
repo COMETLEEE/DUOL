@@ -2,8 +2,12 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
+#include "DUOLClient/Player/Player.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include <rttr/registration>
+
+#include "DUOLClient/Manager/GameManager.h"
 
 using namespace rttr;
 
@@ -44,7 +48,11 @@ namespace DUOLClient
 			}
 			if (gameObject->GetName() == TEXT("PlayerMinimap"))
 			{
-				_playerPosImage = gameObject->GetComponent<DUOLGameEngine::Image>();
+				_playerPosRect = gameObject->GetComponent<DUOLGameEngine::RectTransform>();
+			}
+			if (gameObject->GetTag() == TEXT("Player"))
+			{
+				_player = gameObject->GetComponent<Player>();
 			}
 		}
 
@@ -59,6 +67,88 @@ namespace DUOLClient
 
 		_miniMapImage->LoadTexture(DUOLCommon::StringHelper::ToTString(minimap));
 
+		SetPlayerPos();
+
+		if (currentSceneName == TEXT("Middle"))
+			_currentGameScene = GameScene::Middle;
+		else if (currentSceneName == TEXT("StageA"))
+			_currentGameScene = GameScene::StageA;
+		else if (currentSceneName == TEXT("StageB"))
+			_currentGameScene = GameScene::StageB;
+		else if (currentSceneName == TEXT("StageC"))
+			_currentGameScene = GameScene::StageC;
 	}
+
+	void MiniMap::SetPlayerPos()
+	{
+		if (_playerPosRect == nullptr)
+			return;
+
+		auto parent = _miniMapImage->GetImageRectTransform();
+
+		float width = parent->GetWidth();
+		float height = parent->GetHeight();
+
+		// {0,0}
+		float playerPosX = parent->GetPosX() - ((width / 2) * parent->GetScale().x);
+		float playerPosY = parent->GetPosY() - ((height / 2) * parent->GetScale().y);
+
+		_playerPosInMiniMap = DUOLMath::Vector2{ playerPosX ,playerPosY };
+	}
+
+	void MiniMap::OnUpdate(float deltaTime)
+	{
+		switch (_currentGameScene)
+		{
+		case GameScene::Middle:
+		{
+			MiddleUpdate();
+			break;
+		}
+		case GameScene::StageA:
+		{
+			break;
+		}
+		case GameScene::StageB:
+		{
+			break;
+		}
+		case GameScene::StageC:
+		{
+			break;
+		}
+		}
+
+	}
+
+	void MiniMap::MiddleUpdate()
+	{
+		auto parent = _miniMapImage->GetImageRectTransform();
+
+		float width = parent->GetWidth();
+		float height = parent->GetHeight();
+
+		// now Player Pos
+		auto nowPlayerPos = _player->GetTransform()->GetLocalPosition();
+
+		float fianlX = ((width * parent->GetScale().x) / MIDDLESCENEX) * (nowPlayerPos.x - MIDDLEXGAP);
+		float fianlY = ((height * parent->GetScale().y) / MIDDLESCENEY) * (nowPlayerPos.z - MIDDLEYGAP);
+
+		_playerPosRect->SetRectX(_playerPosInMiniMap.x + fianlX + (_playerPosRect->GetWidth() / 2));
+		_playerPosRect->SetRectY(_playerPosInMiniMap.y + fianlY + (_playerPosRect->GetHeight() / 2));
+	}
+
+	void MiniMap::SceneAUpdate()
+	{
+	}
+
+	void MiniMap::SceneBUpdate()
+	{
+	}
+
+	void MiniMap::SceneCUpdate()
+	{
+	}
+
 
 }
