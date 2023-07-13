@@ -1026,6 +1026,8 @@ namespace DUOLGameEngine
 		if ((_scene == nullptr))
 			return;
 
+		_isActive = value;
+
 		// 실제로 Register 에서 끝나는 것이 아니라 다음 프레임에 Active List로 들어오면 Active한다.
 		value ? _scene->RegisterActiveGameObject(this) : _scene->RegisterInActiveGameObject(this);
 	}

@@ -31,12 +31,10 @@ namespace DUOLGameEngine
 		, _fadeEvent(nullptr)
 		, _isBlinkImage(false)
 	{
-
 	}
 
 	FadeInOut::~FadeInOut()
 	{
-
 	}
 
 	void FadeInOut::StartFadeIn(float duration, std::function<void()> fadeEvent)

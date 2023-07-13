@@ -9,6 +9,7 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
@@ -284,6 +285,27 @@ namespace DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("MainCamera"))
 				_realCameraTransform = gameObject->GetTransform();
+
+			if(_realCameraTransform == nullptr)
+			{
+				auto childs = GetTransform()->GetChildren();
+
+				for(auto& child : childs)
+				{
+					if(child->GetTag() == TEXT("MainCamera"))
+					{
+						_realCameraTransform = child->GetTransform();
+					}
+				}
+			}
+
+			auto cam = _realCameraTransform->GetGameObject()->GetComponent<DUOLGameEngine::Camera>();
+
+			//Camera Settings
+			cam->SetFar(400);
+			cam->SetFOV(65.f);
+
+			_maxDistance = 6.f;
 		}
 
 		_cameraTransform = GetTransform();

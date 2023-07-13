@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\MaterialOptionChanger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Map\MiniMap.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_AreaWave.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\OpenDoor.cpp" />
@@ -278,6 +279,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemyRandomPattern.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Contents\DominationArea.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Map\MiniMap.h" />
     <ClInclude Include="include\DUOLClient\Manager\EnemyAudioManager.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsTargetDie.h" />
@@ -358,7 +360,6 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\InGameUI.h" />
     <ClInclude Include="include\DUOLClient\Manager\SystemManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\OpenDoor.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\Map\MiniMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

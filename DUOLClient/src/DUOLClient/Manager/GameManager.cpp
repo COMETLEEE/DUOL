@@ -84,11 +84,10 @@ namespace DUOLClient
 			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [this, sceneName = message._parameter]()
 				{
 					if (_currentGameMode == DUOLClient::GameMode::UI_MODE)
-						_isOutInGameUIMode = true;
+					_isOutInGameUIMode = true;
 
-					DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
-
-					DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(sceneName);
+			DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(sceneName);
 				});
 		}
 		else
@@ -100,10 +99,10 @@ namespace DUOLClient
 
 	void GameManager::MouseLock()
 	{
-		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
-		DUOLGameEngine::InputManager::GetInstance()->ShowCursorI(false);
+		//DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+		//DUOLGameEngine::InputManager::GetInstance()->ShowCursorI(false);
 
-		_isCursorShowing = false;
+		//_isCursorShowing = false;
 	}
 
 	void GameManager::MouseUnLock()
@@ -224,14 +223,16 @@ namespace DUOLClient
 
 	void GameManager::FadeOut()
 	{
+
 		if (_fadeInOut != nullptr)
 		{
 			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [this]()
 				{
 					if (_currentGameMode == DUOLClient::GameMode::UI_MODE)
-						_isOutInGameUIMode = true;
+					_isOutInGameUIMode = true;
 
 					DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+					MouseUnLock();
 				});
 		}
 	}
@@ -242,7 +243,10 @@ namespace DUOLClient
 
 		if (_fadeInOut != nullptr)
 		{
-			_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
+			_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, [this]()
+				{
+					MouseLock();
+				});
 		}
 	}
 
@@ -392,6 +396,7 @@ namespace DUOLClient
 		{
 			// 유일성 보장
 			Destroy(GetGameObject());
+			GetGameObject()->SetIsActiveSelf(false);
 
 			return;
 		}
@@ -400,6 +405,7 @@ namespace DUOLClient
 		DontDestroyOnLoad(static_cast<DUOLGameEngine::GameObject*>(GetGameObject()));
 
 		_instance = this;
+
 	}
 
 	void GameManager::OnStart()
@@ -408,7 +414,7 @@ namespace DUOLClient
 
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "GameManager 'OnStart' function called.")
 
-			_fadeInOut = nullptr;
+		_fadeInOut = nullptr;
 
 		//if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("Main") || DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("CutScene"))
 		//{
@@ -452,30 +458,30 @@ namespace DUOLClient
 		_bgmAudioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
 
 		SetBGM(_audioClipName);
+
 	}
 
 	void GameManager::OnUpdate(float deltaTime)
 	{
-		// LoadScene (개발자용)
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F5))
-		{
+		//// LoadScene (개발자용)
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F5))
+		//{
+		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Middle.dscene"));
+		//}
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F6))
+		//{
+		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageA.dscene"));
+		//}
 
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Middle.dscene"));
-		}
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F6))
-		{
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageA.dscene"));
-		}
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F7))
+		//{
+		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageB.dscene"));
+		//}
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F7))
-		{
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageB.dscene"));
-		}
-
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F8))
-		{
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageC.dscene"));
-		}
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F8))
+		//{
+		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageC.dscene"));
+		//}
 
 		// UI_MODE
 		if (_currentGameMode != GameMode::UI_MODE && _canPausable && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape)

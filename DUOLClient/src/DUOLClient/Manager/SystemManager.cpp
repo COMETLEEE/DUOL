@@ -144,12 +144,6 @@ namespace  DUOLClient
 		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_07")));
 		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_08")));
 
-		// UI
-		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("ButtonClickSound")));
-		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("NoClickButtonSound")));
-		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("Window_Active")));
-		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("Window_Inactive")));
-
 
 		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 		object->GetTransform()->SetParent(this->GetTransform());
@@ -258,6 +252,10 @@ namespace  DUOLClient
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 
 			}
+			if (gameObject->GetName() == TEXT("Player"))
+			{
+				_player = gameObject->GetComponent<DUOLClient::Player>();
+			}
 		}
 
 
@@ -273,6 +271,29 @@ namespace  DUOLClient
 	{
 		_currentGameScene = GameScene::StageC;
 
+		_scriptList.clear();
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
+			}
+			if (gameObject->GetTag() == TEXT("Camera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
+			}
+			if (gameObject->GetName() == TEXT("Player"))
+			{
+				_player = gameObject->GetComponent<DUOLClient::Player>();
+			}
+		}
 
 		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 		object->GetTransform()->SetParent(this->GetTransform());
@@ -455,6 +476,12 @@ namespace  DUOLClient
 		_cameraManager = DUOLGameEngine::CameraEventManager::GetInstance();
 
 		_soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		// UI
+		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("ButtonClickSound")));
+		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("NoClickButtonSound")));
+		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("Window_Active")));
+		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("Window_Inactive")));
 
 		if (currentSceneName == TEXT("Middle"))
 			InitializeMiddle();

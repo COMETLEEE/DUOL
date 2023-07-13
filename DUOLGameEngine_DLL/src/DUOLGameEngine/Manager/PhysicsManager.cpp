@@ -50,7 +50,6 @@ namespace DUOLGameEngine
 		_physicsSystem->AddLayer(TEXT("TransparentFX"));
 		_physicsSystem->AddLayer(TEXT("Ignore Raycast"));
 		_physicsSystem->AddLayer(TEXT("Player"));							// 2
-		_physicsSystem->AddLayer(TEXT("PlayerDash"));							// 2
 		_physicsSystem->AddLayer(TEXT("Water"));							// 2
 		_physicsSystem->AddLayer(TEXT("UI"));								// 2
 
@@ -68,10 +67,12 @@ namespace DUOLGameEngine
 		_physicsSystem->AddLayer(TEXT("Slope"));
 
 		_physicsSystem->AddLayer(TEXT("DominationZone"));
+		_physicsSystem->AddLayer(TEXT("PlayerDash"));							// 2
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("EnemyRigidbody"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("PlayerDash"), false);
 
 		//_physicsSystem->SetCollisionLayerState(TEXT("Enemy"), TEXT("EnemyRigidbody"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyRigidbody"), TEXT("EnemyRigidbody"), false);
@@ -99,6 +100,7 @@ namespace DUOLGameEngine
 		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("EnemyRigidbody"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("EnemyBottomCheck"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("EnemyProjectile"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("Weapon"), false);
 
 #pragma endregion
 

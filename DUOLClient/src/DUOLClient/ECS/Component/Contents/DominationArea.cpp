@@ -50,9 +50,8 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	);
-
-
 }
+
 namespace DUOLClient
 {
 
