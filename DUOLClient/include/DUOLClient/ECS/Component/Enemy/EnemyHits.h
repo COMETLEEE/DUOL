@@ -69,8 +69,50 @@ namespace DUOLClient
 		}
 		break;
 		default:
-			thisEnemy->SetPosition(parentTr->GetWorldPosition() + other->GetTransform()->GetLook());
-			break;
+		{
+			auto worldPos = parentTr->GetWorldPosition();
+			auto dir = other->GetTransform()->GetLook();
+			auto physManager = DUOLGameEngine::PhysicsManager::GetInstance();
+
+			//navMesh때문에 물리로는 절때 안된다는걸 깨달아버렸다.....
+			//DUOLPhysics::RaycastHit rayInfo;
+			//DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(worldPos, dir, 1.f, rayInfo);
+
+			//if (rayInfo._isBlocking == false)
+			//{
+			//3에는 mass가 들어가야하긴하는데... 흠 매번가져올까?
+			//dir.y = 0.f;
+			//dir.Normalize();
+			//auto mass = thisEnemy->GetRigidbody()->GetMass();
+			//thisEnemy->GetRigidbody()->AddImpulse(dir * mass);
+			//}
+			//else
+			//{
+			//	auto hitPower = dir * rayInfo._hitDistance;
+			//	//3에는 mass가 들어가야하긴하는데... 흠 매번가져올까?
+			//	hitPower.y = 0.f;
+			//	auto mass = thisEnemy->GetRigidbody()->GetMass();
+			//	thisEnemy->GetRigidbody()->AddImpulse(hitPower * mass);
+			//}
+
+			DUOLPhysics::RaycastHit rayInfo;
+			static int layerObstacle = physManager->GetLayerNumber(TEXT("Obstacle"));
+			//현재포지션의 약간의 높이를 주자
+			constexpr DUOLMath::Vector3 heightOffset = { 0.f, 0.7f, 0.f };
+			//
+			constexpr float extendCollider = 0.4f;
+			DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(worldPos + heightOffset, dir, 2.f, layerObstacle, rayInfo);
+
+			if (rayInfo._isBlocking)
+			{
+				thisEnemy->SetPosition(worldPos + dir * std::min<float>(rayInfo._hitDistance - extendCollider, 1.f));
+			}
+			else
+			{
+				thisEnemy->SetPosition(worldPos + dir);
+			}
+		}
+		break;
 		}
 		return true;
 	}

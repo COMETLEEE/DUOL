@@ -188,6 +188,7 @@ namespace DUOLClient
 
 		// 외부에서 코루틴을 접근할 수 있도록 만든 함수.
 		void StartCoroutine_Manual(std::function<DUOLGameEngine::CoroutineHandler()> func);
+
 	public:
 		virtual void OnEnable() override;
 
