@@ -57,6 +57,9 @@ namespace DUOLClient
 	{
 		auto portal = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Portal);
 
+		if (portal == nullptr)
+			return;
+
 		portal->GetTransform()->SetPosition(GetTransform()->GetWorldPosition(), DUOLGameEngine::Space::World);
 	}
 

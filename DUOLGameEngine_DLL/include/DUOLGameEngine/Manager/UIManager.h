@@ -140,6 +140,8 @@ namespace DUOLGameEngine
 		void LoadResolution();
 
 	private:
+		bool _isCutScene;
+
 		bool _isCanvas;
 
 		std::vector<GameObject*> _canvasList;

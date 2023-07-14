@@ -220,6 +220,34 @@ namespace  DUOLClient
 	{
 		_currentGameScene = GameScene::StageA;
 
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
+			}
+			if (gameObject->GetTag() == TEXT("Camera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
+			}
+			if (gameObject->GetName() == TEXT("Player"))
+			{
+				_player = gameObject->GetComponent<DUOLClient::Player>();
+			}
+		}
+
+		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		object->GetTransform()->SetParent(this->GetTransform());
+		object->SetName(TEXT("UIAudioSource"));
+		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+		_uiAudioSource = comp;
 	}
 
 	void SystemManager::InitializeStageB()
@@ -321,6 +349,10 @@ namespace  DUOLClient
 			{
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 
+			}
+			if (gameObject->GetName() == TEXT("Player"))
+			{
+				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
 		}
 

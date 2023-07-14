@@ -30,6 +30,7 @@ namespace  DUOLGameEngine
 		, _scrollGauge(-1)
 		, _nowResolution(1600, 1080)
 		, _resolutions()
+		, _isCutScene(false)
 	{
 	}
 
@@ -84,7 +85,10 @@ namespace  DUOLGameEngine
 		LoadResolution();
 
 		if (DUOLGameEngine::SceneManager::GetInstance()->GetSceneName() == L"CutScene")
+		{
 			StartCutScene();
+			_isCutScene = true;
+		}
 		else
 			DUOLGameEngine::CutSceneManager::GetInstance()->SetStart(false);
 
@@ -145,8 +149,8 @@ namespace  DUOLGameEngine
 
 	void DUOLGameEngine::UIManager::Update(float deltaTime)
 	{
-
-		CutSceneManager::GetInstance()->Update(deltaTime);
+		if (_isCutScene)
+			CutSceneManager::GetInstance()->Update(deltaTime);
 	}
 
 	void UIManager::StartCutScene()

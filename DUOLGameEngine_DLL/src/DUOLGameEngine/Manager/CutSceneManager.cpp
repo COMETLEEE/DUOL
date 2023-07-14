@@ -7,6 +7,9 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
+#include "DUOLGameEngine/ECS/Component/AudioListener.h"
 
 namespace DUOLGameEngine
 {
@@ -19,6 +22,7 @@ namespace DUOLGameEngine
 		, _cutImageName("cut")
 		, _skipImageTime(0.f)
 		, _skilFadeMode(FadeInOutMode::DONE)
+		, _soundIndex(0)
 	{
 	}
 
@@ -42,6 +46,20 @@ namespace DUOLGameEngine
 
 		_nowChildCutScene.clear();
 
+		_soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene1")));
+		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene2")));
+		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene3")));
+		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene4")));
+
+		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		object->SetName(TEXT("UIAudioSource"));
+		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+		auto listener = object->AddComponent<DUOLGameEngine::AudioListener>();
+		_audioSource = comp;
+		_audioListener = listener;
+		
 	}
 
 	void CutSceneManager::UnInitialize()
@@ -52,7 +70,6 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::Update(float deltaTime)
 	{
-
 		if (_isStart)
 		{
 			SkipImage();
@@ -81,7 +98,7 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::LoadScene()
 	{
-		_skipFade->StartBlinkIn(1, [this]()
+		_skipFade->StartFadeOut(1, [this]()
 			{
 				_skilFadeMode = FadeInOutMode::FADE_OUT;
 			});
@@ -150,8 +167,8 @@ namespace DUOLGameEngine
 		if (!_nowChildCutScene.empty())
 			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(true);
 
-	
-
+		PlayCutSound();
+		_soundIndex++;
 	}
 
 	void CutSceneManager::PlayCutScene(float deltaTime)
@@ -161,7 +178,7 @@ namespace DUOLGameEngine
 
 		_currentTime += deltaTime;
 
-		if (5.0f <= _currentTime)
+		if (27.0f <= _currentTime)
 		{
 
 			if (_nowChildCutScene[_nowChildCutCount]->GetComponent<Image>() == nullptr)
@@ -182,6 +199,9 @@ namespace DUOLGameEngine
 
 			// next active is true
 			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(true);
+
+			PlayCutSound();
+			_soundIndex++;
 
 			_currentTime = 0.f;
 		}
@@ -256,5 +276,12 @@ namespace DUOLGameEngine
 					});
 			}
 		}
+	}
+
+	void CutSceneManager::PlayCutSound()
+	{
+		_audioSource->SetAudioClip(_totalSceneClips[_soundIndex]);
+		_audioSource->SetIsLoop(false);
+		_audioSource->Play();
 	}
 }

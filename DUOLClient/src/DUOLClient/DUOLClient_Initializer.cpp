@@ -68,6 +68,8 @@ namespace DUOLClient
 
 		Load_UI_Sound();
 
+		Load_CutScene_Sound();
+
 		LoadSound();
 	}
 
@@ -6140,6 +6142,24 @@ namespace DUOLClient
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/UI/Window_Inactive.wav"), TEXT("Window_Inactive"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+	}
+
+	void DUOLClient_Initializer::Load_CutScene_Sound()
+	{
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Intro_CutScene/Intro_CutScene1.wav"), TEXT("Intro_CutScene1"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Intro_CutScene/Intro_CutScene2.wav"), TEXT("Intro_CutScene2"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Intro_CutScene/Intro_CutScene3.wav"), TEXT("Intro_CutScene3"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Intro_CutScene/Intro_CutScene4.wav"), TEXT("Intro_CutScene4"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 	}

@@ -6,6 +6,10 @@
 
 namespace DUOLGameEngine
 {
+	class AudioSource;
+	class AudioListener;
+	class SoundManager;
+	class AudioClip;
 	class FadeInOut;
 	class Camera;
 	class Image;
@@ -20,7 +24,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(CutSceneManager)
 
-			DELETE_COPY_MOVE(CutSceneManager)
+		DELETE_COPY_MOVE(CutSceneManager)
 
 
 	private:
@@ -48,6 +52,7 @@ namespace DUOLGameEngine
 
 		void SkipImage();
 
+		void PlayCutSound();
 	private:
 		float _skipImageTime;
 
@@ -65,6 +70,7 @@ namespace DUOLGameEngine
 
 		GameObject* _nowCutObject;
 
+
 		FadeInOutMode _skilFadeMode;
 
 		DUOLGameEngine::FadeInOut* _skipFade;
@@ -73,6 +79,18 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::FadeInOut* _fadeInOut;
 
+		/**
+		* \brief »ç¿îµå ÄÄÆ÷³ÍÆ® µè´Â
+		*/
+		std::shared_ptr<DUOLGameEngine::SoundManager> _soundManager;
+
+		DUOLGameEngine::AudioListener* _audioListener;
+
+		DUOLGameEngine::AudioSource* _audioSource;
+
+		std::vector<DUOLGameEngine::AudioClip*> _totalSceneClips;
+
+		int _soundIndex;
 	};
 
 }
