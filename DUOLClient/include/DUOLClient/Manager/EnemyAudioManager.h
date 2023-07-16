@@ -77,6 +77,28 @@ namespace DUOLClient
 		Normal_Last_Punch,
 		Fist_Two,
 
+		Voice_Boss_OverdriveSword,
+		Voice_Boss_FlySlash_A,
+		Voice_Boss_FlySlash_B,
+		Voice_Boss_Dash_A,
+		Voice_Boss_Dash_B,
+		Voice_Boss_Pyeongta_A,
+		Voice_Boss_Pyeongta_B,
+		Voice_Boss_Combo_A,
+		Voice_Boss_Combo_B,
+		Voice_Boss_UltimateSword_A,
+		Voice_Boss_UltimateSword_B,
+		Voice_Boss_UltimateSword_C,
+		Voice_Boss_OverdriveFist,
+		Voice_Boss_Jump,
+		Voice_Boss_MagnumPunch,
+		Voice_Boss_UltimateFist_A,
+		Voice_Boss_UltimateFist_B,
+		Voice_Boss_Hit_A,
+		Voice_Boss_Hit_B,
+		Voice_Boss_Die_A,
+		Voice_Boss_Die_B,
+
 		Count
 	};
 

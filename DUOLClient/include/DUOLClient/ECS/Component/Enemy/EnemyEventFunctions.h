@@ -229,16 +229,19 @@ namespace DUOLClient
 			enemy->StartCoroutine_Manual(std::bind(funcDestroy, gameObject1, startSize, endSize, deleteSpeed));
 		};
 
+
+
 		enemy->StartCoroutine_Manual(std::bind(
-			disablingBoundingSphere,
+			CreateBoundingBox_Sphere,
 			enemy,
-			TEXT("sphere"),	// Todo: 무력화 패턴 메쉬 설정해야함.
+			TEXT("boss_jangpan"),
+			TEXT("boss_jangpan1"),
 			enemy->GetTarget()->GetTransform()->GetWorldPosition(),
 			DUOLMath::Vector3(0, 0, 0),
-			DUOLMath::Vector3(400.0f, 10.0f, 400.0f),
-			0.5f,
+			DUOLMath::Vector3(80.0f, 80.0f, 10.0f),
+			2.0f,
 			3.0f,
-			0.5f,
+			2.0f,
 			enemy->GetTransform()
 		));
 

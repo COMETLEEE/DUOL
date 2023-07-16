@@ -2399,7 +2399,7 @@ namespace DUOLGameEngine
 			GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("Boss_BossAttackSting");
-			animEvent._targetFrame = 30.0f;
+			animEvent._targetFrame = 25.0f;
 			GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("Boss_OverdriveSwordTrailParticle_Sword");
@@ -2871,6 +2871,10 @@ namespace DUOLGameEngine
 			animEvent._eventName = TEXT("PlaySound_avoidSound_True_0");
 			animEvent._targetFrame = 3.0f;
 			GetAnimationClip(dash_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_Dash_A_Voice_Boss_Dash_B_True_0");
+			animEvent._targetFrame = 3.0f;
+			GetAnimationClip(dash_str)->AddEvent(animEvent);
 		}
 
 		{
@@ -2987,6 +2991,86 @@ namespace DUOLGameEngine
 			animEvent._targetFrame = 61.0f;
 			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
 		}
+
+		{
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_Hit_A_Voice_Boss_Hit_B_True_0");
+			animEvent._targetFrame = 3.0f;
+			GetAnimationClip(hit1_str)->AddEvent(animEvent);
+			GetAnimationClip(hit2_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_Die_A_Voice_Boss_Die_B_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(die_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Voice_Boss_OverdriveSword_True_0");
+			animEvent._targetFrame = 50.0f;
+			GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Voice_Boss_OverdriveFist_True_0");
+			animEvent._targetFrame = 40.0f;
+			GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_Pyeongta_A_Voice_Boss_Pyeongta_B_True_0");
+			animEvent._targetFrame = 11.0f;
+			GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
+
+			animEvent._targetFrame = 56.0f;
+			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
+
+			animEvent._targetFrame = 20.0f;
+			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+
+			animEvent._targetFrame = 25.0f;
+			GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
+
+			animEvent._targetFrame = 24.0f;
+			GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
+
+			animEvent._targetFrame = 21.0f;
+			GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_Combo_A_Voice_Boss_Combo_B_True_0");
+			animEvent._targetFrame = 106.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_Combo_A_Voice_Boss_Combo_B_True_0");
+			animEvent._targetFrame = 90.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_UltimateSword_A_Voice_Boss_UltimateSword_B_True_0");
+			animEvent._targetFrame = 143.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_UltimateSword_C_Voice_Boss_UltimateSword_C_True_0");
+			animEvent._targetFrame = 143.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Voice_Boss_Hit_B_True_0");
+			animEvent._targetFrame = 6.0f;
+			GetAnimationClip(groggyStart_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Voice_Boss_UltimateFist_B_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Voice_Boss_UltimateFist_A_True_0");
+			animEvent._targetFrame = 173.0f;
+			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Voice_Boss_Jump_True_0");
+			animEvent._targetFrame = 10.0f;
+			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Voice_Boss_MagnumPunch_True_0");
+			animEvent._targetFrame = 58.0f;
+			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Voice_Boss_FlySlash_A_Voice_Boss_FlySlash_B_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(formChangeAttack_Sword_str)->AddEvent(animEvent);
+		}
+
+
 		// ---------------------------------- Sound Registe ------------------------------------
 
 		_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });

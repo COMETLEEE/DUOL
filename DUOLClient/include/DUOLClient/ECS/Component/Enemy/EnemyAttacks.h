@@ -14,6 +14,8 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 namespace DUOLClient
@@ -21,7 +23,8 @@ namespace DUOLClient
 
 	DUOLGameEngine::CoroutineHandler CreateBoundingBox_Sphere(
 		Enemy* enemy,
-		DUOLCommon::tstring fbxModelName,
+		DUOLCommon::tstring fbxModelNameInline,
+		DUOLCommon::tstring fbxModelNameOutline,
 		DUOLMath::Vector3 createPos,
 		DUOLMath::Vector3 startSize,
 		DUOLMath::Vector3 endSize,
@@ -31,6 +34,8 @@ namespace DUOLClient
 		DUOLGameEngine::Transform* parentTransform
 	)
 	{
+		createPos += DUOLMath::Vector3(0.0f, 0.1f, 0.0f);
+
 		auto funcDestroy = [](DUOLGameEngine::GameObject* gameObject, DUOLMath::Vector3 startSize, DUOLMath::Vector3 endSize, float deleteSpeed)->DUOLGameEngine::CoroutineHandler
 		{
 			float t = 1.0f;
@@ -51,19 +56,40 @@ namespace DUOLClient
 		};
 
 		auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
-		auto gameObject = currentScene->CreateFromFBXModel(fbxModelName);
+		auto gameObject = currentScene->CreateFromFBXModel(fbxModelNameOutline);
 
 		float t = 0;
 
 		gameObject->GetTransform()->SetParent(parentTransform);
 
-		gameObject->GetTransform()->SetPosition(createPos);
-
 		auto look = enemy->GetTransform()->GetLook();
 		look.y = 0;
 		look.Normalize();
 
-		gameObject->GetTransform()->LookAt(createPos + look);
+		auto tm = DUOLMath::Matrix::CreateFromLookRightUp(
+			DUOLMath::Vector3(0.0f, 1.0f, 0.0f),
+			look,
+			look.Cross(DUOLMath::Vector3(0.0f, 1.0f, 0.0f))
+
+		);
+
+		gameObject->GetTransform()->SetWorldTM(tm);
+
+		gameObject->GetTransform()->SetPosition(createPos);
+
+		gameObject->GetTransform()->GetChildGameObjects()[0]->GetComponent<DUOLGameEngine::MeshRenderer>()->SetSurfaceType(DUOLGameEngine::SurfaceType::Transparency);
+
+		auto gameObject2 = currentScene->CreateFromFBXModel(fbxModelNameInline);
+
+		gameObject2->GetTransform()->SetParent(parentTransform);
+
+		gameObject2->GetTransform()->SetWorldTM(tm);
+
+		gameObject2->GetTransform()->SetPosition(createPos);
+
+		gameObject2->GetTransform()->GetChildGameObjects()[0]->GetComponent<DUOLGameEngine::MeshRenderer>()->SetSurfaceType(DUOLGameEngine::SurfaceType::Transparency);
+
+		gameObject2->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
 		while (t <= 1.0f)
 		{
@@ -75,7 +101,19 @@ namespace DUOLClient
 			co_yield nullptr;
 		}
 
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(waitTime);
+		t = 0;
+
+		while (t <= waitTime)
+		{
+			t += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+			float clampT = std::min(t / waitTime, 1.0f);
+
+			gameObject2->GetTransform()->SetLocalScale(DUOLMath::Vector3::Lerp(startSize, endSize, clampT));
+			co_yield nullptr;
+		}
+
+		gameObject2->Destroy(gameObject2);
 
 		enemy->StartCoroutine_Manual(std::bind(funcDestroy, gameObject, startSize, endSize, deleteSpeed));
 	};
@@ -175,13 +213,14 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(
 			CreateBoundingBox_Sphere,
 			enemy,
-			TEXT("cube"),
+			TEXT("SqureJangPan1"),
+			TEXT("SqureJangPan2"),
 			tr->GetWorldPosition() + tr->GetLook() * enemy->GetParameter<float>(TEXT("ChargeAttackRange")),
 			DUOLMath::Vector3(0, 0, 0),
-			DUOLMath::Vector3(200.0f, 10.0f, 100.0f * enemy->GetParameter<float>(TEXT("ChargeAttackRange"))),
+			DUOLMath::Vector3(6.666666f * enemy->GetParameter<float>(TEXT("ChargeAttackRange")), 40.0f, 10.0f),
 			3.0f,
 			2.0f,
-			1.1f,
+			1.3f,
 			tr
 		));
 	}
@@ -207,13 +246,14 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(
 			CreateBoundingBox_Sphere,
 			enemy,
-			TEXT("sphere"),
+			TEXT("boss_jangpan"),
+			TEXT("boss_jangpan1"),
 			enemy->GetTarget()->GetTransform()->GetWorldPosition(),
 			DUOLMath::Vector3(0, 0, 0),
-			DUOLMath::Vector3(300.0f, 10.0f, 300.0f),
-			1.0f,
+			DUOLMath::Vector3(60.0f, 60.0f, 10.0f),
+			3.0f,
 			2.0f,
-			0.5f,
+			1.3f,
 			nullptr
 		));
 	}
@@ -454,16 +494,31 @@ namespace DUOLClient
 
 		projectile->FireProjectile(tr->GetParent()->GetLook(), 10, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 1.0f, true);
 
-		auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::SwordUltimate, 5.f);
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-		auto particleTr = particleRenderer->GetTransform();
+		auto slashMesh = scene->CreateFromFBXModel(TEXT("SlashyRed"));
+
+		slashMesh->GetTransform()->GetChildGameObjects()[0]->GetComponent<DUOLGameEngine::MeshRenderer>()->SetSurfaceType(DUOLGameEngine::SurfaceType::Transparency);
+
+		auto particleTr = slashMesh->GetTransform();
+
+		slashMesh->Destroy(slashMesh, 2.0f);
+
+		auto look = projectile->GetTransform()->GetLook();
+		look.y = 0;
+		look.Normalize();
+
+		auto tm = DUOLMath::Matrix::CreateFromLookRightUp(
+			DUOLMath::Vector3(0.0f, 1.0f, 0.0f),
+			look,
+			look.Cross(DUOLMath::Vector3(0.0f, 1.0f, 0.0f))
+
+		);
+
+		particleTr->SetWorldTM(tm);
 
 		particleTr->SetParent(projectile->GetTransform());
 
 		particleTr->SetLocalPosition(DUOLMath::Vector3(0, 0, 0));
-
-		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(tr->GetUp(), DUOLMath::MathHelper::DegreeToRadian(90.0f));
-
-		particleTr->SetRotation(rot);
 	}
 }

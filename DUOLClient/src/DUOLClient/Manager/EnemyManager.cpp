@@ -273,7 +273,7 @@ namespace DUOLClient
 
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-		auto sword = scene->CreateFromFBXModel(TEXT("player_sword"));
+		auto sword = scene->CreateFromFBXModel(TEXT("player_sword_overdrive"));
 		auto areaWave = scene->CreateEmpty();
 
 		areaWave->SetName(TEXT("Boss_AreaWave"));
@@ -422,6 +422,24 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("PlaySound_FlyingSlash_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::FlyingSlash, true, 0));
 		InsertEventFunc(TEXT("PlaySound_Normal_Last_Punch_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Normal_Last_Punch, true, 0));
 		InsertEventFunc(TEXT("PlaySound_Fist_Two_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Fist_Two, true, 0));
+
+		// --------------------------------- Boss Voice Sound ---------------------------------------------
+
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Voice_Boss_Dash_A_Voice_Boss_Dash_B_True_0"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_Dash_A, EnemyAudioEnum::Voice_Boss_Dash_B, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Voice_Boss_Hit_A_Voice_Boss_Hit_B_True_0"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_Hit_A, EnemyAudioEnum::Voice_Boss_Hit_B, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Voice_Boss_Die_A_Voice_Boss_Die_B_True_0"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_Die_A, EnemyAudioEnum::Voice_Boss_Die_B, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_Voice_Boss_OverdriveSword_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_OverdriveSword, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_Voice_Boss_OverdriveFist_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_OverdriveFist, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Voice_Boss_Pyeongta_A_Voice_Boss_Pyeongta_B_True_0"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_Pyeongta_A, EnemyAudioEnum::Voice_Boss_Pyeongta_B, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Voice_Boss_Combo_A_Voice_Boss_Combo_B_True_0"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_Combo_A, EnemyAudioEnum::Voice_Boss_Combo_B, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Voice_Boss_UltimateSword_A_Voice_Boss_UltimateSword_B_True_0"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_UltimateSword_A, EnemyAudioEnum::Voice_Boss_UltimateSword_B, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Voice_Boss_UltimateSword_C_Voice_Boss_UltimateSword_C_True_0"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_UltimateSword_C, EnemyAudioEnum::Voice_Boss_UltimateSword_C, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_Voice_Boss_Hit_B_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_Hit_B, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_Voice_Boss_UltimateFist_B_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_UltimateFist_B, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_Voice_Boss_UltimateFist_A_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_UltimateFist_A, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_Voice_Boss_Jump_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_Jump, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_Voice_Boss_MagnumPunch_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_MagnumPunch, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Voice_Boss_FlySlash_A_Voice_Boss_FlySlash_B_True_0"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Voice_Boss_FlySlash_A, EnemyAudioEnum::Voice_Boss_FlySlash_B, true, 0));
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()
