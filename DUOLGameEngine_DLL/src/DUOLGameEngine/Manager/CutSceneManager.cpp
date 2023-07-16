@@ -52,7 +52,7 @@ namespace DUOLGameEngine
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene2")));
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene3")));
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene4")));
-
+		
 		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 		object->SetName(TEXT("UIAudioSource"));
 		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
@@ -76,7 +76,7 @@ namespace DUOLGameEngine
 
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Space))
 			{
-				_currentTime += 10.f;
+				_currentTime += 30.f;
 			}
 
 			PlayCutScene(deltaTime);

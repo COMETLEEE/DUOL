@@ -182,8 +182,10 @@ namespace DUOLGameEngine
 				if (i == cameraevent->_frameInfo.size() - 1 && frameinfo->_frame < currentFrame)
 				{
 					if (!_isSequenceMode)
+					{
 						_playMode = false;
-
+						_sequenceIndex = 0;
+					}
 					_isNextSequence = true;
 
 					_currentTime = 0.f;
@@ -259,7 +261,10 @@ namespace DUOLGameEngine
 				if (i == cameraevent->_frameInfo.size() - 1 && frameinfo->_frame < currentFrame)
 				{
 					if (!_isSequenceMode)
+					{
 						_playMode = false;
+						_sequenceIndex = 0;
+					}
 
 					_isNextSequence = true;
 

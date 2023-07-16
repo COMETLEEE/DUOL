@@ -28,12 +28,16 @@ namespace DUOLClient
 	private:
 		MainCameraState _mainCameraState;
 
+		MainCameraState _preMainCameraState;
+
 		int _obstacleLayer;
 
 		/**
 		 * \brief Third person camera movement target.
 		 */
 		DUOLGameEngine::Transform* _followTransform;
+
+		DUOLGameEngine::Transform* _playerTransform;
 
 		/**
 		 * \brief Third person camera view target.

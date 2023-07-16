@@ -123,8 +123,19 @@ namespace DUOLGameEngine
 	void InputManager::UpdateMousePosition()
 	{
 		if (_isCameraMode)
-			return;
+		{
+			static POINT cursorPos;
 
+			static RECT consolePos;
+			// 현재 마우스 위치를 업데이트합니다.
+			GetCursorPos(&cursorPos);
+
+			memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+
+			memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+
+			return;
+		}
 		
 		static POINT cursorPos;
 

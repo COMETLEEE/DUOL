@@ -118,30 +118,48 @@ namespace DUOLClient
 
 	void MainCameraController::UpdateRotationValue(float deltaTime)
 	{
-		if (_isLockRotationByMouse)
+		if (_isLockRotationByMouse || _mainCameraState == MainCameraState::CAMERA_SEQUENCE)
 			return;
 
-		const DUOLMath::Quaternion& prevCameraRotation = _cameraTransform->GetWorldRotation();
+		if (_preMainCameraState == MainCameraState::CAMERA_SEQUENCE && _mainCameraState == MainCameraState::FOLLOW_PLAYER)
+		{
+			const DUOLMath::Quaternion& prevCameraRotation = _playerTransform->GetLocalRotation();
 
-		const DUOLMath::Vector2& prevMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetPrevMousePosition();
 
-		const DUOLMath::Vector2& currMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
+			//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
+			_cameraTransform->SetRotation(prevCameraRotation, DUOLGameEngine::Space::World);
 
-		const DUOLMath::Vector2 deltaMouseMove = 0.15f * (prevMousePosition - currMousePosition);
+			_rotY = _cameraTransform->GetTransform()->GetLocalEulerAngle().y;
 
-		_rotX += -deltaMouseMove.y * _sensitivity * deltaTime;
+			_preMainCameraState = _mainCameraState;
 
-		_rotY += -deltaMouseMove.x * _sensitivity * deltaTime;
+		}
+		else
+		{
+			const DUOLMath::Quaternion& prevCameraRotation = _cameraTransform->GetWorldRotation();
 
-		// Y 방향의 회전은 최소, 최대 제한을 둡니다.
-		_rotX = std::clamp(_rotX, -_clampAngle, _clampAngle);
+			const DUOLMath::Vector2& prevMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetPrevMousePosition();
 
-		// todo : x 축을 돌리는게 맞는 것 같은데 어째서 z 축을 돌릴 때 정상적으로 작동하는가...! 
-		//DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(0, DUOLMath::MathHelper::DegreeToRadian(_rotY), -DUOLMath::MathHelper::DegreeToRadian(_rotX));
-		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::MathHelper::DegreeToRadian(_rotX), DUOLMath::MathHelper::DegreeToRadian(_rotY), 0);
+			const DUOLMath::Vector2& currMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
 
-		//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
-		_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(prevCameraRotation, rot, deltaTime * _smoothness), DUOLGameEngine::Space::World);
+			const DUOLMath::Vector2 deltaMouseMove = 0.15f * (prevMousePosition - currMousePosition);
+
+			_rotX += -deltaMouseMove.y * _sensitivity * deltaTime;
+
+			_rotY += -deltaMouseMove.x * _sensitivity * deltaTime;
+
+			// Y 방향의 회전은 최소, 최대 제한을 둡니다.
+			_rotX = std::clamp(_rotX, -_clampAngle, _clampAngle);
+
+			// todo : x 축을 돌리는게 맞는 것 같은데 어째서 z 축을 돌릴 때 정상적으로 작동하는가...! 
+			//DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(0, DUOLMath::MathHelper::DegreeToRadian(_rotY), -DUOLMath::MathHelper::DegreeToRadian(_rotX));
+			DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::MathHelper::DegreeToRadian(_rotX), DUOLMath::MathHelper::DegreeToRadian(_rotY), 0);
+
+			//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
+			_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(prevCameraRotation, rot, deltaTime * _smoothness), DUOLGameEngine::Space::World);
+		}
+
+
 	}
 
 	void MainCameraController::OnFollowPlayerState(float deltaTime)
@@ -234,6 +252,7 @@ namespace DUOLClient
 
 	void MainCameraController::SetCameraState(MainCameraState state)
 	{
+		_preMainCameraState = _mainCameraState;
 		_mainCameraState = state;
 	}
 
@@ -274,6 +293,10 @@ namespace DUOLClient
 			{
 				_followTransform = gameObject->GetTransform();
 			}
+			if (gameObject->GetTag() == TEXT("Player"))
+			{
+				_playerTransform = gameObject->GetTransform();
+			}
 		}
 
 		// Third Person
@@ -286,13 +309,13 @@ namespace DUOLClient
 			if (gameObject->GetTag() == TEXT("MainCamera"))
 				_realCameraTransform = gameObject->GetTransform();
 
-			if(_realCameraTransform == nullptr)
+			if (_realCameraTransform == nullptr)
 			{
 				auto childs = GetTransform()->GetChildren();
 
-				for(auto& child : childs)
+				for (auto& child : childs)
 				{
-					if(child->GetTag() == TEXT("MainCamera"))
+					if (child->GetTag() == TEXT("MainCamera"))
 					{
 						_realCameraTransform = child->GetTransform();
 					}
@@ -323,7 +346,6 @@ namespace DUOLClient
 		case MainCameraState::FOLLOW_PLAYER:
 		{
 			OnFollowPlayerState(deltaTime);
-
 			break;
 		}
 

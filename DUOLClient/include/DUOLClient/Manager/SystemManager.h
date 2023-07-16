@@ -49,7 +49,9 @@ namespace DUOLClient
 		virtual ~SystemManager() override;
 
 	private:
-		static DUOLClient::SystemManager* _instance;
+		static DUOLClient::SystemManager* _systemInstance;
+
+		std::shared_ptr<DUOLGameEngine::CameraEventManager> _cameraInstance;
 
 		DUOLClient::MainCameraController* _mainCameraController;
 

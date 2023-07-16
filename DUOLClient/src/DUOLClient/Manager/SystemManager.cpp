@@ -24,7 +24,7 @@
 namespace  DUOLClient
 {
 
-	DUOLClient::SystemManager* DUOLClient::SystemManager::_instance = nullptr;
+	DUOLClient::SystemManager* DUOLClient::SystemManager::_systemInstance = nullptr;
 
 	using namespace rttr;
 
@@ -64,12 +64,13 @@ namespace  DUOLClient
 		, _isNextInfo(false)
 		, _isShowScript(false)
 		, _isShowInfo(false)
+		, _cameraInstance(nullptr)
 	{
 	}
 
 	SystemManager* DUOLClient::SystemManager::GetInstance()
 	{
-		if (_instance == nullptr)
+		if (_systemInstance == nullptr)
 		{
 			auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -77,18 +78,21 @@ namespace  DUOLClient
 			{
 				if (gameObject->GetName() == TEXT("SystemManager"))
 				{
-					_instance = gameObject->GetComponent<SystemManager>();
-					return _instance;
+					_systemInstance = gameObject->GetComponent<SystemManager>();
+					return _systemInstance;
 				}
 			}
 
-			if (!_instance)
+			if (!_systemInstance)
 			{
-				_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<SystemManager>();
+				_systemInstance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<SystemManager>();
 			}
 
+
+
 		}
-		return _instance;
+
+		return _systemInstance;
 	}
 
 	void SystemManager::InitializeMiddle()
@@ -125,6 +129,7 @@ namespace  DUOLClient
 				gameObject->SetIsActiveSelf(false);
 			}
 		}
+		
 
 		_scriptList.emplace_back(std::make_pair(L"DialogueText_04.png", 8.f));
 		_scriptList.emplace_back(std::make_pair(L"DialogueText_05.png", 7.f));
@@ -335,6 +340,8 @@ namespace  DUOLClient
 	{
 		_scriptList.clear();
 
+		_currentGameScene = GameScene::ETC;
+
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		for (auto gameObject : gameObjects)
@@ -354,6 +361,11 @@ namespace  DUOLClient
 			{
 				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
+		}
+
+		if(_cameraInstance==nullptr)
+		{
+			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
 		}
 
 		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
@@ -482,17 +494,17 @@ namespace  DUOLClient
 
 	DUOLClient::SystemManager::~SystemManager()
 	{
-		_instance = nullptr;
+		_systemInstance = nullptr;
 	}
 
 	void DUOLClient::SystemManager::OnAwake()
 	{
-		if (!_instance)
+		if (!_systemInstance)
 		{
-			_instance = this;
+			_systemInstance = this;
 
 		}
-		else if (_instance == this)
+		else if (_systemInstance == this)
 			return;
 		else
 			Destroy(this);
@@ -567,6 +579,15 @@ namespace  DUOLClient
 		{
 			break;
 		}
+		case GameScene::ETC:
+		{
+			if (_isCameraSequenceMode&& !_cameraInstance->IsPlayMode())
+			{
+				_isCameraSequenceMode = false;
+				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+
+			}
+		}
 		}
 
 	}
@@ -576,7 +597,7 @@ namespace  DUOLClient
 		// Camera Mode Change
 		_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
 
-		DUOLGameEngine::CameraEventManager::GetInstance()->PlayerAction(name, playertransform);
+		_cameraInstance->PlayerAction(name, playertransform);
 
 		_isCameraSequenceMode = true;
 

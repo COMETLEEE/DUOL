@@ -61,6 +61,8 @@ namespace DUOLClient
 		, StageA
 		, StageB
 		, StageC
+
+		, ETC
 	};
 
 
