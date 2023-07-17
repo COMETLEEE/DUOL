@@ -35,7 +35,7 @@ RTTR_REGISTRATION
 	(
 	metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Enumeration)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
 	.property("_enemyCreateType", &DUOLClient::EnemySpawnTrigger::_enemyCreateType)
 	(
@@ -250,6 +250,7 @@ namespace DUOLClient
 			first._createPos = _createPos;
 			first._enemyCreateType = _enemyCreateType;
 			first._waveCount = _firstWaveCount;
+			first._rotateDegree = _rotateDegree;
 
 			EnemyCreateInfo second;
 			second._closeEnemyCount = _secondCloseEnemyCount;
@@ -261,6 +262,7 @@ namespace DUOLClient
 			second._createPos = _createPos;
 			second._enemyCreateType = _enemyCreateType;
 			second._waveCount = _secondWaveCount;
+			second._rotateDegree = _rotateDegree;
 
 			_enemyGroupController->SetCreateInfo(first, second);
 			_enemyGroupController->CreateEnemy();

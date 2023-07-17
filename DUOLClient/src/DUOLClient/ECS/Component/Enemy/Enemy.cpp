@@ -652,7 +652,7 @@ namespace DUOLClient
 
 			const float maxHeight = GetTransform()->GetWorldPosition().y + _skinnedMeshRenderer->GetSkinnedMesh()->GetHeight();
 
-			const float speed = 0.2f * (maxHeight - startHeight);
+			const float speed = 0.4f * (maxHeight - startHeight);
 
 			float offset = GetParameter<float>(TEXT("PaperBurnOffset"));
 

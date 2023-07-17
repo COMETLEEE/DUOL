@@ -2761,6 +2761,10 @@ namespace DUOLGameEngine
 			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
 			animEvent._targetFrame = 194.0f;
 			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Boss_OverdriveUltimateFist");
+			animEvent._targetFrame = 194.0f;
+			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
 		}
 
 		{

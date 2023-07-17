@@ -167,11 +167,14 @@ namespace DUOLClient
 				_houseWeapon->SetParent(gameObject->GetTransform(), false);
 			}
 			// TODO : °ËÀ» Áã´Â °÷
-			else if (gameObject->GetName() == TEXT("c_thumb1.r"))
+			else if (gameObject->GetName() == TEXT("hand.r"))
 			{
 				_holdWeapon = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->GetTransform();
 				_holdWeapon->SetName(TEXT("HoldWeapon"));
-				_holdWeapon->SetLocalPosition(DUOLMath::Vector3(-3.63, 4.64, 9.37));
+				_holdWeapon->SetLocalPosition(DUOLMath::Vector3(-5.00f, -3.00, 12.00));
+
+				_holdWeapon->SetLocalEulerAngle(DUOLMath::Vector3(84.0f, 6.0f, -120.0f));
+
 				_holdWeapon->SetParent(gameObject->GetTransform(), false);
 
 				_rightHand = gameObject->GetTransform();

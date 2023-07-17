@@ -213,13 +213,13 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(
 			CreateBoundingBox_Sphere,
 			enemy,
-			TEXT("SqureJangPan1"),
 			TEXT("SqureJangPan2"),
+			TEXT("SqureJangPan1"),
 			tr->GetWorldPosition() + tr->GetLook() * enemy->GetParameter<float>(TEXT("ChargeAttackRange")),
 			DUOLMath::Vector3(0, 0, 0),
 			DUOLMath::Vector3(6.666666f * enemy->GetParameter<float>(TEXT("ChargeAttackRange")), 40.0f, 10.0f),
-			3.0f,
-			2.0f,
+			4.0f,
+			1.5f,
 			1.3f,
 			tr
 		));
@@ -246,14 +246,14 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(
 			CreateBoundingBox_Sphere,
 			enemy,
-			TEXT("boss_jangpan"),
 			TEXT("boss_jangpan1"),
+			TEXT("boss_jangpan"),
 			enemy->GetTarget()->GetTransform()->GetWorldPosition(),
 			DUOLMath::Vector3(0, 0, 0),
 			DUOLMath::Vector3(60.0f, 60.0f, 10.0f),
 			3.0f,
 			2.0f,
-			1.3f,
+			1.0f,
 			nullptr
 		));
 	}

@@ -113,8 +113,7 @@ namespace DUOLClient
 
 		bool _isWaveCodition;
 	private:
-		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos, float radius);
-
+		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos, float radius, float rotateDegree);
 		DUOLGameEngine::CoroutineHandler CreateEnemyCoroutine(); // 몬스터 생성.
 
 	public:

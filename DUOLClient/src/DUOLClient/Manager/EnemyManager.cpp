@@ -372,6 +372,7 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("Boss_OverdriveLastPunch"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::OverdriveLastPunch, DUOLMath::Vector3(0.0f, 0.1f, 0.0f), 5.0f, 0.0f));
 		InsertEventFunc(TEXT("Boss_OverdriveLastSword"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::OverdriveLastSword, DUOLMath::Vector3(0.0f, 0.1f, 0.0f), 5.0f, 0.0f));
 
+		InsertEventFunc(TEXT("Boss_OverdriveUltimateFist"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::OverdriveUltimateFist, DUOLMath::Vector3(0.0f, 0.1f, 0.0f), 5.0f, 0.0f));
 		InsertEventFunc(TEXT("Boss_BossUltimateFistFin"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::BossUltimateFistFin, DUOLMath::Vector3(0.0f, 0.1f, 0.0f), 5.0f, 0.0f));
 		InsertEventFunc(TEXT("Boss_ChargingFistRed_RightHand"), std::bind(Enemy_PlayParticle_RightHand, std::placeholders::_1, ParticleEnum::OverdriveChargingFist_Red, DUOLMath::Vector3(), std::numeric_limits<float>::max()));
 		InsertEventFunc(TEXT("Boss_LeftHandParticle_Off"), std::bind(Enemy_OffParticle, std::placeholders::_1, TEXT("LeftHandParticle")));

@@ -1,0 +1,50 @@
+솔루션 설명
+	DUOL.sln 
+		전체 프로젝트가 포함된 솔루션입니다.	
+		
+	하위 프로젝트
+		Engine 폴더
+			DUOLEditor
+				에디터 exe, IMGUI로 만들어진 에디터를 실행시킵니다.
+			DUOLGameEngine_DLL
+				게임엔진의 코어 시스템과 기본적인 컴포넌트를 가지고 있습니다.
+				Entity-Component System, 코루틴 등.
+				그래픽스와 물리 등 여러 라이브러리를 모두 로드하여
+				사용하고 있습니다. 
+			DUOLGraphicsLibrary
+				그래픽스에 사용할 인터페이스를 가지고 있는 라이브러리
+			DUOLGraphicsLibrary_DirectD3D11
+				DUOLGraphicsLibrary를 상속하여 Direct 11 API를 적용시킨 라이브러리
+			DUOLGraphicsEngine				
+				DUOLGraphicsLibrary를 가져와 게임엔진에서 사용할 수 있도록 하고,
+				그림자와 라이트, 컬링 등의 연산을 수행하는 라이브러리
+			DUOLSound
+				fmod wrapper library
+
+		Game 폴더
+			DUOLClient 
+				직접적으로 게임에 필요한 컴포넌트들을 포함하고있는 라이브러리
+				ex) 플레이어, 적군 등
+			DUOLGame 
+				게임을 실행시키는 메인 EXE
+
+		Utility
+			DUOLBehaviorTree_DLL
+				BehaviorTree 
+			DUOLCommon
+				자주 사용하는 함수들을 모아서 갖고 있는 공용 라이브러리
+				ex) tstring log... 등
+			DUOLFBXBinaryExporter
+				구버전 FBX 바이너리 익스포터
+			DUOLJson
+				rapidJson wrapper library
+			DUOLPhysics	
+				PhysX wrapper library
+			DUOLReflectionJson
+				RTTR을 사용한 씬 로드를 담당함.
+			DUOLShader 
+				게임에서 사용되는 hlsl 셰이더 코드
+			
+	
+	FBXLoader.sln 
+		MFC를 사용한 FBX Binary Exporter.

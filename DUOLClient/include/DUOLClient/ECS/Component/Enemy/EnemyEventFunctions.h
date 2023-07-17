@@ -234,8 +234,8 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(
 			CreateBoundingBox_Sphere,
 			enemy,
-			TEXT("boss_jangpan"),
 			TEXT("boss_jangpan1"),
+			TEXT("boss_jangpan"),
 			enemy->GetTarget()->GetTransform()->GetWorldPosition(),
 			DUOLMath::Vector3(0, 0, 0),
 			DUOLMath::Vector3(80.0f, 80.0f, 10.0f),
