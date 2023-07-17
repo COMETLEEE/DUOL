@@ -111,6 +111,7 @@ namespace DUOLClient
 		}
 		case GameScene::StageB:
 		{
+			SceneBUpdate();
 			break;
 		}
 		case GameScene::StageC:
@@ -144,6 +145,19 @@ namespace DUOLClient
 
 	void MiniMap::SceneBUpdate()
 	{
+		auto parent = _miniMapImage->GetImageRectTransform();
+
+		float width = parent->GetWidth();
+		float height = parent->GetHeight();
+
+		// now Player Pos
+		auto nowPlayerPos = _player->GetTransform()->GetLocalPosition();
+
+		float fianlX = ((width * parent->GetScale().x) / StageBSCENEX) * (nowPlayerPos.x - StageBXGAP);
+		float fianlY = ((height * parent->GetScale().y) / StageBSCENEY) * (nowPlayerPos.z - StageBYGAP);
+
+		_playerPosRect->SetRectX(_playerPosInMiniMap.x + fianlX + (_playerPosRect->GetWidth() / 2));
+		_playerPosRect->SetRectY(_playerPosInMiniMap.y + fianlY + (_playerPosRect->GetHeight() / 2));
 	}
 
 	void MiniMap::SceneCUpdate()

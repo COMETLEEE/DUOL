@@ -1,11 +1,26 @@
 #pragma once
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
+#pragma region Middle
 #define MIDDLESCENEX 29.5
 #define MIDDLESCENEY 33
 
 #define MIDDLEXGAP 0.5
 #define MIDDLEYGAP 7
+#pragma endregion
+
+#pragma region StageA
+
+#pragma endregion
+
+#pragma region StageB
+#define StageBSCENEX 118.5
+#define StageBSCENEY 120
+
+#define StageBXGAP 2.7
+#define StageBYGAP 57
+#pragma endregion
+
 
 namespace DUOLGameEngine
 {

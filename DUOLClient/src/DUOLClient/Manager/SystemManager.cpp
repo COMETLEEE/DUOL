@@ -881,6 +881,7 @@ namespace  DUOLClient
 
 		_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
 		_isCameraSequenceMode = true;
+		int index=0;
 
 		_scriptObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(std::get<0>(_scriptList[_scriptIndex]));
 		_scriptObject->SetIsActiveSelf(true);
@@ -888,7 +889,9 @@ namespace  DUOLClient
 		_isShowScript = true;
 		_currentScriptTime = 0.f;
 		_scriptTime = std::get<1>(_scriptList[_scriptIndex]);
-		_player->PlayScriptSoundClip(_bSceneClips[_scriptIndex- _firstMonsterScriptCount], false);
+		if (_firstMonsterScriptCount <= _scriptIndex)
+			index = _scriptIndex - _firstMonsterScriptCount;
+		_player->PlayScriptSoundClip(_bSceneClips[index], false);
 
 		_isBStageDoorAction = true;
 	}
