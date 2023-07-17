@@ -28,7 +28,7 @@ namespace DUOLClient
 		else if (EnterOverdriveSwordCheck())
 		{
 			// TODO : Overdrive Start
-			//DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_TestOverDrive_Sword", _player->GetTransform());
+			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_TestOverDrive_Sword", _player->GetTransform());
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
 
@@ -39,7 +39,7 @@ namespace DUOLClient
 		else if (EnterOverdriveFistCheck())
 		{
 			// TODO : Overdrive Start
-			//DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_TestOverDrive_Fist", _player->GetTransform());
+			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_TestOverDrive_Fist", _player->GetTransform());
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
 

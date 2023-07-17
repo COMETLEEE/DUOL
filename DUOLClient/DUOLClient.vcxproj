@@ -179,6 +179,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\BStageFactoryTrigger.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\BStageCameraColiision.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\FirstMonsterTrigger.cpp" />
     <ClCompile Include="include\DUOLClient\ECS\BossZoneTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CautionBorder.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\MaterialOptionChanger.cpp" />
@@ -272,6 +276,10 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\TrainAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageFactoryTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageCameraColiision.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\FirstMonsterTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\BossZoneTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CautionBorder.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_AreaWave.h" />

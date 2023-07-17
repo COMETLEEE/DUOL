@@ -39,12 +39,11 @@ namespace DUOLClient
 			_enemyCreateType(EnemyCreateType::Normal),
 			_waveCount(0),
 			_rotateDegree(0)
-
 		{}
 
 		DEFINE_DEFAULT_COPY_MOVE(EnemyCreateInfo)
 
-			int _closeEnemyCount;
+		int _closeEnemyCount;
 
 		int _farEnemyCount;
 

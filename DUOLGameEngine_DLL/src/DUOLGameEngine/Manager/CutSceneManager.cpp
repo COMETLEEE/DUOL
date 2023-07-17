@@ -52,14 +52,7 @@ namespace DUOLGameEngine
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene2")));
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene3")));
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene4")));
-		
-		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
-		object->SetName(TEXT("UIAudioSource"));
-		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
-		auto listener = object->AddComponent<DUOLGameEngine::AudioListener>();
-		_audioSource = comp;
-		_audioListener = listener;
-		
+
 	}
 
 	void CutSceneManager::UnInitialize()
@@ -76,7 +69,7 @@ namespace DUOLGameEngine
 
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Space))
 			{
-				_currentTime += 30.f;
+				_currentTime += 27.f;
 			}
 
 			PlayCutScene(deltaTime);
@@ -110,7 +103,7 @@ namespace DUOLGameEngine
 				ButtonEventManager::GetInstance()->LoadScene(tPath);
 
 			});
-	
+
 	}
 
 	void CutSceneManager::LoadUnityScene()
@@ -122,8 +115,9 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::StartCutScene()
 	{
-
 		Initialize();
+
+		GameObject* canvas = nullptr;
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -137,12 +131,37 @@ namespace DUOLGameEngine
 			{
 				_skipFade = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 			}
+			if (gameObject->GetName() == TEXT("Canvas"))
+			{
+				canvas = gameObject;
+			}
+			if (gameObject->GetName() == TEXT("UIAudioSource"))
+			{
+				_audioSource = gameObject->GetComponent<DUOLGameEngine::AudioSource>();
+				_audioListener = gameObject->GetComponent<DUOLGameEngine::AudioListener>();
+			}
+		}
+
+		if(_audioSource==nullptr && _audioListener ==nullptr)
+		{
+			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+			object->SetName(TEXT("UIAudioSource"));
+			auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+			auto listener = object->AddComponent<DUOLGameEngine::AudioListener>();
 		}
 
 		if (_fadeInOut)
 			_fadeInOut->StartFadeIn(2, nullptr);
 
 		_isStart = true;
+
+		if (canvas != nullptr)
+		{
+			for(auto child : canvas->GetTransform()->GetChildGameObjects())
+			{
+				child->SetIsActiveSelf(false);
+			}
+		}
 
 		std::string path = _cutImageName + std::to_string(_nowCutCount) + std::to_string(_nowChildCutCount);
 

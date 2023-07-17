@@ -5,6 +5,11 @@
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/CameraEventInfo.h"
 
+namespace DUOLClient
+{
+	class MainCameraController;
+}
+
 namespace DUOLGameEngine
 {
 	class FadeInOut;
@@ -63,10 +68,6 @@ namespace DUOLGameEngine
 
 		void LoadAudioClip();
 
-		void FinishTotalScene();
-
-		void SetIsTotalScene() { _isTotalScene=true; }
-
 		int GetSequenceIndex() { return _sequenceIndex; }
 	private:
 
@@ -99,8 +100,6 @@ namespace DUOLGameEngine
 
 		// Player action mode
 		bool _isPlayerAction;
-
-		bool _isTotalScene;
 
 		DUOLMath::Matrix _playerMat;
 

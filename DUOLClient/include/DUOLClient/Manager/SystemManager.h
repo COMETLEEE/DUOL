@@ -55,51 +55,16 @@ namespace DUOLClient
 
 		DUOLClient::MainCameraController* _mainCameraController;
 
-	private:
-		float _currentTime;
-
-		float _currentScriptTime;
-
-		float _currentInfoTime;
-		/**
-		* \brief Stage A
-		 */
-
-
-		 /**
-		 * \brief Stage B
-		 */
-		DUOLGameEngine::GameObject* _rimLightObject;
-
-		DUOLGameEngine::GameObject* _doorObject;
-
-		bool _isBStageAllMonsterKill;
-
-		bool _isDoorMonsterKill;
-
-		bool _isOpenDoor;
-
-		float _moveDoor;
-
-		float _rimPower;
-
-
-		/**
-		* \brief Stage C
-		*/
-
-
-		bool _isCameraSequenceMode;
-
-		GameScene _currentGameScene;
-
-
 	public:
 		virtual void OnAwake() override;
 
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		void FinishTotalScene();
+
+		void FirstMonsterActionSet() { _isFirstMonsterAction = true; }
 
 		void PlayerCameraAction(std::string name, DUOLGameEngine::Transform* playertransform);
 
@@ -124,6 +89,14 @@ namespace DUOLClient
 
 		void DoorCollisionStay();
 
+		void CloseDoorUI();
+
+		void BStageCameraFirstAction();
+
+		void BStageCameraFactoryAction();
+
+		void BStageCameraMonsterWaveAction();
+
 		/**
 		 * \brief Stage C
 		 */
@@ -134,7 +107,7 @@ namespace DUOLClient
 
 		bool GetIsEnemyAiPlay() { return _isEnemyAIPlay; }
 
-		void PlayUISound(UISound uiindex,bool istrue);
+		void PlayUISound(UISound uiindex, bool istrue);
 
 	private:
 		void InitializeMiddle();
@@ -151,6 +124,8 @@ namespace DUOLClient
 
 		void MiddleUpdate(float deltaTime);
 
+		void StageBUpdate(float deltaTime);
+
 		void ChangeScript(int index);
 
 		void ShowScript();
@@ -159,16 +134,68 @@ namespace DUOLClient
 
 		void BossUI();
 
-		void ScriptCheck(float deltaTime);
+		void ScriptCheck(float deltaTime, bool check = false);
 
-		void Infocheck(float deltaTime);
+		void Infocheck(float deltaTime,bool check=false);
 
 		void PlaySound(DUOLGameEngine::AudioClip* soundClip);
 
+	private:
+		float _currentTime;
 
-		std::vector<std::pair<DUOLCommon::tstring, float>> _scriptList;
+		float _currentScriptTime;
 
-		std::vector<std::pair<DUOLCommon::tstring, float>> _infoList;
+		float _currentInfoTime;
+
+		// each stage first monster meet
+		bool _isFirstMonsterAction;
+
+		int _firstMonsterScriptCount;
+
+		int _firstMonsterInfoCount;
+
+		/**
+		* \brief Stage A
+		 */
+
+
+		 /**
+		 * \brief Stage B
+		 */
+		DUOLGameEngine::GameObject* _rimLightObject;
+
+		DUOLGameEngine::GameObject* _doorObject;
+
+		bool _isBStageAllMonsterKill;
+
+		bool _isDoorMonsterKill;
+
+		bool _isOpenDoor;
+
+		float _moveDoor;
+
+		float _rimPower;
+
+		bool _isBStageDoorAction;
+
+		bool _isBStageFactoryAction;
+
+		bool _isBStageMonsterWaveAction;
+
+		/**
+		* \brief Stage C
+		*/
+
+
+		bool _isCameraSequenceMode;
+
+		GameScene _currentGameScene;
+
+		std::vector<std::tuple<DUOLCommon::tstring, float,bool>> _scriptList;
+
+		std::vector<std::tuple<DUOLCommon::tstring, float, bool>> _infoList;
+
+		std::vector<bool> _infoCheckList;
 
 		DUOLClient::Player* _player;
 
@@ -185,6 +212,8 @@ namespace DUOLClient
 		std::shared_ptr<DUOLGameEngine::CameraEventManager> _cameraManager;
 
 		std::shared_ptr<DUOLGameEngine::SoundManager> _soundManager;
+
+		std::vector<DUOLGameEngine::AudioClip*> _firstMonsterClips;
 
 		std::vector<DUOLGameEngine::AudioClip*> _totalSceneClips;
 
@@ -211,6 +240,16 @@ namespace DUOLClient
 		DUOLGameEngine::AudioListener* _audioListener;
 
 		DUOLGameEngine::AudioSource* _auraSource;
+
+		static bool _isMiddleEvent;
+
+		static bool _isFirstMonster;
+
+		static bool _isAStageClear;
+
+		static bool _isBStageClear;
+
+		static bool _isCStageClear;
 
 		int _scriptIndex;
 

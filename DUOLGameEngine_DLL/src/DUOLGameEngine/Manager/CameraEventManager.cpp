@@ -29,7 +29,6 @@ namespace DUOLGameEngine
 		, _mainCameraTransform(nullptr)
 		, _realCameraTransform(nullptr)
 		, _fadeInOut(nullptr)
-		, _isTotalScene(false)
 	{
 	}
 
@@ -71,11 +70,9 @@ namespace DUOLGameEngine
 		}
 
 		// Use TotalScene
-		if (_playMode == false && _isTotalScene && _isSequenceSuccess)
+		if (_playMode == false && _isSequenceSuccess)
 		{
-			FinishTotalScene();
 			_isSequenceSuccess = false;
-			_isTotalScene = false;
 		}
 	}
 
@@ -411,10 +408,13 @@ namespace DUOLGameEngine
 	{
 		_isPlayerAction = false;
 
+		_isNextSequence = false;
+
 		_isSequenceMode = value;
 
 		if (!_cameraSequenceList.empty())
 		{
+			_currentTime = 0.f;
 			SetPlayKey(_cameraSequenceList[_sequenceIndex]);
 			_sequenceIndex++;
 		}
@@ -436,6 +436,7 @@ namespace DUOLGameEngine
 				_playMode = false;
 				_isSequenceMode = false;
 				_isSequenceSuccess = true;
+				_sequenceIndex = 0;
 			}
 		}
 	}
@@ -477,28 +478,5 @@ namespace DUOLGameEngine
 		return key;
 	}
 
-	void CameraEventManager::FinishTotalScene()
-	{
-		if (_fadeInOut == nullptr)
-		{
-			auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-			for (auto gameObject : gameObjects)
-			{
-				if (gameObject->GetTag() == TEXT("Fade"))
-				{
-					_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
-				}
-			}
-		}
-
-		_fadeInOut->StartFadeOut(2, [this]()
-			{
-				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
-
-				DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Middle.dscene"));
-
-			});
-
-	}
 }

@@ -6084,6 +6084,9 @@ namespace DUOLClient
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_12.wav"), TEXT("NPC_12"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_12.wav"), TEXT("NPC_12A"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_13.wav"), TEXT("NPC_13"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();

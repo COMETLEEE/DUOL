@@ -44,4 +44,13 @@ namespace DUOLClient
 		}
 	}
 
+	void OpenDoor::OnCollisionExit(const std::shared_ptr<DUOLPhysics::Collision>& collision)
+	{
+		DUOLGameEngine::GameObject* otherGameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(collision->_other);
+
+		if (otherGameObject->GetTag() == TEXT("Player") && SystemManager::GetInstance()->GetIsDoor())
+		{
+			DUOLClient::SystemManager::GetInstance()->DoorCollisionStay();
+		}
+	}
 }

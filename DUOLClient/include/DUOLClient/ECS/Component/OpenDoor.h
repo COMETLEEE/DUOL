@@ -14,7 +14,7 @@ namespace DUOLClient
 
 	public:
 		void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
-
+		void OnCollisionExit(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 

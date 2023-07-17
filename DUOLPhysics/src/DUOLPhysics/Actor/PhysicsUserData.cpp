@@ -19,7 +19,7 @@ namespace DUOLPhysics
 		if (_onTriggerEnter != nullptr)
 			_onTriggerEnter(data);
 	}
-
+	
 	void PhysicsUserData::OnTriggerStay(const std::shared_ptr<Trigger>& data)
 	{
 		if (_onTriggerStay != nullptr)
