@@ -907,7 +907,6 @@ namespace DUOLClient
 	void PlayerState_Attack::OnStateStay(float deltaTime)
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
-
 		LookDirectionUpdate();
 
 		if (LockOnCheck())
@@ -930,6 +929,15 @@ namespace DUOLClient
 			if (_isInCancle && _nextComboTreeNode == nullptr)
 				_nextComboTreeNode = _currentComboTreeNode->GetRightNode();
 		}
+		//else if(UltimateCheck())
+		//{
+		//	if (_isInCancle)
+		//	{
+		//		_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
+
+		//		DUOL_TRACE(DUOL_CONSOLE, "Attack | UltStart ()");
+		//	}
+		//}
 	}
 
 	void PlayerState_Attack::OnStateExit(float deltaTime)

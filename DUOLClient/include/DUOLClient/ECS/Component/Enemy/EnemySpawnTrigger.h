@@ -61,6 +61,7 @@ namespace DUOLClient
 		EnemyCreateType _enemyCreateType;
 	public:
 		virtual void OnStart() override;
+		virtual void OnAwake() override;
 
 		virtual void OnUpdate(float deltaTime) override;
 

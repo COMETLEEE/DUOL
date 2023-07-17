@@ -5,6 +5,7 @@
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 namespace DUOLClient
 {
@@ -129,6 +130,12 @@ namespace DUOLClient
 		else if (RunCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Run"), fixedTimeStep);
+		}
+		else if (UltimateCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), fixedTimeStep);
+
+			DUOL_TRACE(DUOL_CONSOLE, "Move | UltStart ()");
 		}
 		else if (MoveCheck())
 		{

@@ -133,6 +133,12 @@ namespace DUOLClient
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), fixedTimeStep);
 		}
+		else if (UltimateCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), fixedTimeStep);
+
+			DUOL_TRACE(DUOL_CONSOLE, "Run | UltStart ()");
+		}
 		else if (MoveCheck())
 		{
 			// Lock on state 움직임 통제

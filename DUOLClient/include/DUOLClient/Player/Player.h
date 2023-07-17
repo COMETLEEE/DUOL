@@ -47,9 +47,9 @@ namespace DUOLClient
 	constexpr int MAX_SOUND_PLAYER = 5;
 
 #pragma region 플레이어 밸런스
-	constexpr float OVERDRIVE_POINT_PER_SWORD = 0.5f;
+	constexpr float OVERDRIVE_POINT_PER_SWORD = 2.0f;
 
-	constexpr float OVERDRIVE_POINT_PER_FIST = 1.f;
+	constexpr float OVERDRIVE_POINT_PER_FIST = 4.f;
 
 	// 초월 게이지 PER ATTACK
 

@@ -161,7 +161,7 @@ void DUOLClient::PlayerState_Ultimate::EndSwordTrail()
 	}
 }
 
-void DUOLClient::PlayerState_Ultimate:: ChargingFist()
+void DUOLClient::PlayerState_Ultimate::ChargingFist()
 {
 	if (_rightFistFormAura == nullptr)
 	{
@@ -371,4 +371,6 @@ void DUOLClient::PlayerState_Ultimate::OnStateStay(float deltaTime)
 void DUOLClient::PlayerState_Ultimate::OnStateExit(float deltaTime)
 {
 	PlayerStateBase::OnStateExit(deltaTime);
+
+	_animator->SetBool(TEXT("IsUltimate"), false);
 }
