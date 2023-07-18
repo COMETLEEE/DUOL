@@ -100,7 +100,7 @@ namespace DUOLClient
 
 	enum class PlayerVoiceSoundTable
 	{
-		Voice_Dash = 0, 
+		Voice_Dash = 0,
 		Voice_Hit01,
 		Voice_Hit02,
 		Voice_Knock01,
@@ -152,11 +152,11 @@ namespace DUOLClient
 		NormalSword_SwordCombo_1_2,   //5 8
 		NormalSword_SwordCombo_1_3,
 		NormalSword_SwordCombo_2_3,
-		NormalSword_SwordCombo_23_4Jump, 
+		NormalSword_SwordCombo_23_4Jump,
 		NormalSword_SwordCombo_23_4,
-		NormalFist_01, 
-		NormalFist_02, 
-		NormalFist_03, 
+		NormalFist_01,
+		NormalFist_02,
+		NormalFist_03,
 		NormalFist_FistCombo_1_2,
 		NormalFist_FistCombo_1_3,
 		NormalFist_FistCombo_2_3,
@@ -309,7 +309,7 @@ namespace DUOLClient
 		 * \brief 사운드 컴포넌트. 타격음(최대 6개까지)
 		 */
 		std::vector<DUOLGameEngine::AudioSource*> _attackSoundModules;
-		
+
 		std::vector<DUOLGameEngine::AudioSource*> _soundModules;
 
 		/**
@@ -336,12 +336,14 @@ namespace DUOLClient
 #pragma endregion
 
 	private:
-		virtual bool Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */, AttackType attackType) override;
+		virtual bool Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */, AttackType attackType, float downPoint = DOWN_POINT_PER_ATTACK) override;
 
 		virtual bool OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */, AttackType attackType, float downPoint = DOWN_POINT_PER_ATTACK) override;
 
+	public:
 		virtual void SetDashUsable(bool dash);
 
+	private:
 		virtual bool GetIsInvincible() override;
 
 		void InitializeStateMachine();

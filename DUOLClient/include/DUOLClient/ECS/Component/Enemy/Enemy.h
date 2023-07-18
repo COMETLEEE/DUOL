@@ -107,6 +107,8 @@ namespace DUOLClient
 		std::unordered_map<DUOLCommon::tstring, void*> _voidParmeter;
 
 		int _superArmorStack;
+
+		bool _dashUsable;
 	public:
 		template<class T>
 		void AddParameter(DUOLCommon::tstring key, T value);
@@ -192,7 +194,7 @@ namespace DUOLClient
 	public:
 		virtual void OnEnable() override;
 
-		virtual bool Attack(CharacterBase* target, float damage, AttackType attackType) override;
+		virtual bool Attack(CharacterBase* target, float damage, AttackType attackType, float downPoint = DOWN_POINT_PER_ATTACK) override;
 
 		virtual bool OnHit(CharacterBase* other, float damage, AttackType attackType, float downPoint = DOWN_POINT_PER_ATTACK) override;
 
@@ -201,6 +203,10 @@ namespace DUOLClient
 		virtual void OnAwake() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		bool GetDashUsable() { return _dashUsable; }
+
+		void SetDashUsable(bool dash);
 
 		friend class AI_EnemyBasic;
 

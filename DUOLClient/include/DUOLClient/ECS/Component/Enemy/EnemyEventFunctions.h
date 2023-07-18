@@ -146,89 +146,9 @@ namespace DUOLClient
 			}
 		};
 
+		enemy->GetTarget()->GetComponent<Player>()->SetDashUsable(true);
+
 		enemy->StartCoroutine_Manual(std::bind(funcFogOn, enemy));
-
-		auto disablingBoundingSphere = [](Enemy* enemy,
-			DUOLCommon::tstring fbxModelName,
-			DUOLMath::Vector3 createPos,
-			DUOLMath::Vector3 startSize,
-			DUOLMath::Vector3 endSize,
-			float createSpeed,
-			float deleteSpeed,
-			float waitTime,
-			DUOLGameEngine::Transform* parentTransform)->DUOLGameEngine::CoroutineHandler
-		{
-			auto currentState = enemy->GetAnimator()->GetCurrentStateName();
-
-			auto funcDestroy = [](DUOLGameEngine::GameObject* gameObject,
-				DUOLMath::Vector3 startSize,
-				DUOLMath::Vector3 endSize,
-				float deleteSpeed)->DUOLGameEngine::CoroutineHandler
-			{
-				float t = 1.0f;
-
-				gameObject->GetTransform()->SetParent(nullptr);
-
-				while (t >= 0.0f)
-				{
-					t -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime() * deleteSpeed;
-
-					float clampT = std::max(t, 0.0f);
-
-					gameObject->GetTransform()->SetLocalScale(DUOLMath::Vector3::Lerp(startSize, endSize, clampT));
-					co_yield nullptr;
-				}
-
-				DUOLGameEngine::ObjectBase::Destroy(gameObject);
-			};
-
-			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
-			auto gameObject1 = currentScene->CreateFromFBXModel(fbxModelName); // 차 오르는 오브젝트
-
-			auto gameObject2 = currentScene->CreateFromFBXModel(fbxModelName); // 외곽선 오브젝트
-
-			float t = 0;
-
-			createPos = enemy->GetTransform()->GetWorldPosition();
-
-			gameObject1->GetTransform()->SetParent(parentTransform);
-
-			gameObject1->GetTransform()->SetPosition(createPos);
-
-			gameObject2->GetTransform()->SetParent(parentTransform);
-
-			gameObject2->GetTransform()->SetPosition(createPos);
-
-			auto look = enemy->GetTransform()->GetLook();
-			look.y = 0;
-			look.Normalize();
-
-			gameObject1->GetTransform()->LookAt(createPos + look);
-
-			gameObject2->GetTransform()->LookAt(createPos + look);
-
-			gameObject2->GetTransform()->SetLocalScale(endSize);
-
-			while (t <= 1.0f)
-			{
-				t += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime() * createSpeed;
-
-				float clampT = std::min(t, 1.0f);
-
-				gameObject1->GetTransform()->SetLocalScale(DUOLMath::Vector3::Lerp(startSize, endSize, clampT));
-
-				if (currentState != enemy->GetAnimator()->GetCurrentStateName()) break;
-
-				co_yield nullptr;
-			}
-
-			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(waitTime);
-
-			DUOLGameEngine::ObjectBase::Destroy(gameObject2);
-
-			enemy->StartCoroutine_Manual(std::bind(funcDestroy, gameObject1, startSize, endSize, deleteSpeed));
-		};
-
 
 
 		enemy->StartCoroutine_Manual(std::bind(
@@ -284,12 +204,14 @@ namespace DUOLClient
 				co_yield nullptr;
 			}
 		};
-
+		enemy->GetTarget()->GetComponent<Player>()->SetDashUsable(false);
 		enemy->StartCoroutine_Manual(std::bind(funcFogOff, enemy));
 	}
 
 	void BossEnemy_GroggyStart(DUOLClient::Enemy* enemy)
 	{
+		enemy->GetTarget()->GetComponent<Player>()->SetDashUsable(false);
+
 		DUOLGameEngine::ParticleRenderer* particle = static_cast<DUOLGameEngine::ParticleRenderer*>(enemy->GetParameter<void*>(TEXT("LeftHandParticle")));
 
 		if (particle)

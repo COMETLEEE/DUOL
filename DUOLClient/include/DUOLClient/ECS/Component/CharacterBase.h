@@ -40,7 +40,8 @@ namespace DUOLClient
 
 	public:
 		// 내가 공격 하는 함수.
-		virtual bool Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */, DUOLClient::AttackType attackType /* 공격의 타입 */) abstract;
+		virtual bool Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */, DUOLClient::AttackType attackType /* 공격의 타입 */
+			, float downPoint = DOWN_POINT_PER_ATTACK) abstract;
 
 		// 내가 공격 당하는 함수.
 		virtual bool OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */, DUOLClient::AttackType attackType /* 공격의 타입 */

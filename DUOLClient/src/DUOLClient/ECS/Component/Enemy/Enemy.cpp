@@ -59,7 +59,8 @@ namespace DUOLClient
 		_parentCapsuleCollider(nullptr),
 		_parentObserver(nullptr),
 		_skinnedMeshRenderer(nullptr),
-		_superArmorStack(0)
+		_superArmorStack(0),
+		_dashUsable(false)
 	{
 		_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 	}
@@ -591,9 +592,9 @@ namespace DUOLClient
 	{
 	}
 
-	bool Enemy::Attack(CharacterBase* target, float damage, AttackType attackType)
+	bool Enemy::Attack(CharacterBase* target, float damage, AttackType attackType, float downPoint)
 	{
-		return target->OnHit(this, damage, attackType);
+		return target->OnHit(this, damage, attackType, downPoint);
 	}
 
 	bool Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType, float downPoint)
@@ -670,5 +671,11 @@ namespace DUOLClient
 		default:
 			break;
 		}
+	}
+
+
+	void Enemy::SetDashUsable(bool dash)
+	{
+		_dashUsable = dash;
 	}
 }

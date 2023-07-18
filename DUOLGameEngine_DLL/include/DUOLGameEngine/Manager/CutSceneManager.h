@@ -69,8 +69,7 @@ namespace DUOLGameEngine
 		int _nowChildCutCount;
 
 		GameObject* _nowCutObject;
-
-
+		
 		FadeInOutMode _skilFadeMode;
 
 		DUOLGameEngine::FadeInOut* _skipFade;

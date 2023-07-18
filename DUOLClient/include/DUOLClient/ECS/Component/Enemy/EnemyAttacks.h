@@ -182,6 +182,13 @@ namespace DUOLClient
 
 		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
 
+		auto fistParticle = ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 0.7f);
+
+		fistParticle->GetTransform()->SetPosition(pos + enemy->GetTransform()->GetLook() * 3.0f + enemy->GetTransform()->GetUp() * 2.0f);
+
+		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(enemy->GetTransform()->GetRight(), DUOLMath::MathHelper::DegreeToRadian(-90.0f));
+
+		fistParticle->GetTransform()->SetRotation(rot);
 
 		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(pos + look, DUOLMath::Vector3(2.0f, 2.0f, enemy->GetParameter<float>(TEXT("ChargeAttackRange"))), boxRotation, boxcastHits))
 		{

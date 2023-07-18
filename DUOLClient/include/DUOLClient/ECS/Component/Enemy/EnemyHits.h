@@ -220,6 +220,8 @@ namespace DUOLClient
 
 	bool BossRandomDash(DUOLClient::Enemy* thisEnemy, DUOLGameEngine::Animator* animator)
 	{
+		if (thisEnemy->GetDashUsable()) return true;
+
 		if (animator->GetBool(TEXT("IsUltimate")) || animator->GetBool(TEXT("IsGroggy"))) return true;
 
 		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))

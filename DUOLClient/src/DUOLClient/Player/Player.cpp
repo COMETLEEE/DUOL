@@ -107,10 +107,10 @@ namespace DUOLClient
 	{
 	}
 
-	bool Player::Attack(CharacterBase* other, float damage, AttackType attackType)
+	bool Player::Attack(CharacterBase* other, float damage, AttackType attackType, float downPoint)
 	{
 		// OnHit È£Ãâ
-		return other->OnHit(this, damage, attackType);
+		return other->OnHit(this, damage, attackType, downPoint);
 	}
 
 	bool Player::OnHit(CharacterBase* other, float damage, AttackType attackType, float downPoint)
