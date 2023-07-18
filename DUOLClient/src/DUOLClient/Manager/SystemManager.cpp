@@ -146,6 +146,10 @@ namespace  DUOLClient
 			}
 		}
 
+		if (_cameraInstance == nullptr)
+		{
+			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
+		}
 
 		_scriptList.emplace_back(std::make_tuple(L"DialogueText_04.png", 8.f, false));
 		_scriptList.emplace_back(std::make_tuple(L"DialogueText_05.png", 7.f, false));
@@ -208,6 +212,11 @@ namespace  DUOLClient
 			}
 		}
 
+		if (_cameraInstance == nullptr)
+		{
+			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
+		}
+
 		std::vector<UINT64> _sequenceCamera;
 		UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_A");
 		_sequenceCamera.emplace_back(key);
@@ -260,6 +269,12 @@ namespace  DUOLClient
 			{
 				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
+		}
+
+
+		if (_cameraInstance == nullptr)
+		{
+			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
 		}
 
 		_aSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_10")));
@@ -387,6 +402,12 @@ namespace  DUOLClient
 				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
 		}
+
+		if (_cameraInstance == nullptr)
+		{
+			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
+		}
+
 
 		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_14")));
 		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_15")));

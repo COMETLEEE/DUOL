@@ -929,15 +929,12 @@ namespace DUOLClient
 			if (_isInCancle && _nextComboTreeNode == nullptr)
 				_nextComboTreeNode = _currentComboTreeNode->GetRightNode();
 		}
-		//else if(UltimateCheck())
-		//{
-		//	if (_isInCancle)
-		//	{
-		//		_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
+		else if (UltimateCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
 
-		//		DUOL_TRACE(DUOL_CONSOLE, "Attack | UltStart ()");
-		//	}
-		//}
+			DUOL_TRACE(DUOL_CONSOLE, "Attack | UltStart ()");
+		}
 	}
 
 	void PlayerState_Attack::OnStateExit(float deltaTime)
@@ -960,9 +957,10 @@ namespace DUOLClient
 			_player->StartCoroutine(routine, _player->_inAttackPostDelay);
 		}
 
+		EndSwordTrailFrame();
+
 		_isInCancle = false;
 		_isRotateNow = false;
-
 		_currentComboTreeNode = nullptr;
 
 		_nextComboTreeNode = nullptr;

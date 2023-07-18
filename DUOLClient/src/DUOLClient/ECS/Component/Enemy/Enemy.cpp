@@ -596,7 +596,7 @@ namespace DUOLClient
 		return target->OnHit(this, damage, attackType);
 	}
 
-	bool Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
+	bool Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType, float downPoint)
 	{
 		bool isSuperArmor = GetParameter<bool>(TEXT("IsSuperArmor"));
 

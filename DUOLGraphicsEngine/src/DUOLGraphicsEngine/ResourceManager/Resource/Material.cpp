@@ -57,12 +57,14 @@ void DUOLGraphicsEngine::Material::SetAlbedo(DUOLMath::Vector4 albedo)
 
 void DUOLGraphicsEngine::Material::SetEmissive(DUOLMath::Vector3 emissive)
 {
-	_materialData._emissive = emissive;
+	emissive.Clamp({ 0, 0, 0 }, { 255.f, 255.f, 255.f });
+	
+	_materialData._emissive = emissive / 255.f;
 }
 
 void DUOLGraphicsEngine::Material::SetEmissivePower(float emissviePower)
 {
-	_materialData._emissivePower = std::clamp(emissviePower, 0.f, 255.f) / 255;
+	_materialData._emissivePower = emissviePower / 255.f;
 }
 
 
@@ -117,14 +119,14 @@ const DUOLMath::Vector2& DUOLGraphicsEngine::Material::GetOffset()
 	return _materialData._offset;
 }
 
-const DUOLMath::Vector3& DUOLGraphicsEngine::Material::GetEmissive()
+const DUOLMath::Vector3 DUOLGraphicsEngine::Material::GetEmissive()
 {
-	return _materialData._emissive;
+	return _materialData._emissive * 255.f;
 }
 
 float DUOLGraphicsEngine::Material::GetEmissivePower()
 {
-	return _materialData._emissivePower * 255;
+	return _materialData._emissivePower * 255.f;
 }
 
 void DUOLGraphicsEngine::Material::SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned slot)

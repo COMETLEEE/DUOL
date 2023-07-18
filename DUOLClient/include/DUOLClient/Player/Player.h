@@ -53,8 +53,6 @@ namespace DUOLClient
 
 	// 초월 게이지 PER ATTACK
 
-	constexpr float DOWN_POINT_PER_ATTACK = 3.f;
-
 	constexpr float MAX_DOWN_POINT = 12.f;
 
 	constexpr float RESET_DOWN_POINT = 3.f;
@@ -252,6 +250,10 @@ namespace DUOLClient
 		 */
 		bool _canStartDash;
 
+		//외부요인에 의한 dash lock기능
+		bool _isDashCrowdControl;
+
+
 #pragma region 기본 참조 컴포넌트
 		DUOLGameEngine::Transform* _playerTransform;
 
@@ -336,7 +338,9 @@ namespace DUOLClient
 	private:
 		virtual bool Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */, AttackType attackType) override;
 
-		virtual bool OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */, AttackType attackType) override;
+		virtual bool OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */, AttackType attackType, float downPoint = DOWN_POINT_PER_ATTACK) override;
+
+		virtual void SetDashUsable(bool dash);
 
 		virtual bool GetIsInvincible() override;
 

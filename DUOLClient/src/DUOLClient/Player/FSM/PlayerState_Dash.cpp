@@ -33,6 +33,9 @@ namespace DUOLClient
 
 	void PlayerState_Dash::EndDash()
 	{
+
+		DUOL_TRACE(DUOL_CONSOLE, "Dash | EndDash");
+
 		// 대쉬 끝. 다른 스테이트로 전환됩니다.
 		if (MoveCheck() && RunCheck())
 			_stateMachine->TransitionTo(TEXT("PlayerState_Run"), 0.f);
@@ -57,7 +60,9 @@ namespace DUOLClient
 	void PlayerState_Dash::DashSoundEffect()
 	{
 		_player->PlaySoundClip(PlayerSoundTable::avoidSound, false);
-		_player->PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Dash, false);
+		int voiceFactor = rand() % 10;
+		if(voiceFactor > 6)
+			_player->PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Dash, false);
 	}
 
 	void PlayerState_Dash::OnStateEnter(float deltaTime)
@@ -67,6 +72,8 @@ namespace DUOLClient
 		
 		_animator->SetBool(TEXT("IsDash"), true);
 
+		DUOL_TRACE(DUOL_CONSOLE, "Dash | StateEnter");
+		_animator->SetCurrentLoopCount(0);
 		//// Idle
 		//if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Idle"))
 		//{
@@ -118,6 +125,8 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
 
+
+		DUOL_TRACE(DUOL_CONSOLE, "Dash | StateExit");
 		// 대쉬 상태 끝 !
 		_player->_isDash = false;
 		_rigidbody->SetLinearVelocity(DUOLMath::Vector3::Zero);

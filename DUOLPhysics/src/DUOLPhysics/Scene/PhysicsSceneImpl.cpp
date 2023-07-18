@@ -88,7 +88,7 @@ namespace DUOLPhysics
 		pxsceneDesc.simulationEventCallback = _eventDispatcher.get();
 
 		// pxsceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
-		pxsceneDesc.flags |= PxSceneFlag::eENABLE_CCD;
+		//pxsceneDesc.flags |= PxSceneFlag::eENABLE_CCD;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_STABILIZATION;
 		pxsceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;

@@ -208,7 +208,7 @@ namespace DUOLGraphicsEngine
 
 		const DUOLMath::Vector2& GetOffset();
 
-		const DUOLMath::Vector3& GetEmissive();
+		const DUOLMath::Vector3 GetEmissive();
 
 		float GetEmissivePower();
 

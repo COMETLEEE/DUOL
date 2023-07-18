@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include "PlayerStateBase.h"
 
 #include "DUOLClient/Util/BinaryTree.h"
@@ -126,7 +127,7 @@ namespace DUOLClient
 		 */
 		float _rotateSlerpValue;
 
-		float _rotationSpeedSmoothness = 9.f;
+		float _rotationSpeedSmoothness = 13.5f;
 
 
 		/**

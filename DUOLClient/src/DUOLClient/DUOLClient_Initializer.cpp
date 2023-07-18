@@ -184,6 +184,8 @@ namespace DUOLClient
 		auto playerDash = playerNormalStateMachine->AddState(TEXT("Player_Dash"));
 		auto playerDashClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dash"));
 		//playerDashClip->SetIsRootMotion(true);
+		//playerDashClip->SetIsLoop(false);
+		playerDashClip->SetIsUseEventInTransition(false);
 		playerDash->SetAnimationClip(playerDashClip);
 
 		// Lock-On Move and Run
@@ -4317,7 +4319,6 @@ namespace DUOLClient
 		// Dash
 		auto playerDash = playerOverdriveFistStateMachine->AddState(TEXT("Player_Dash"));
 		auto playerDashClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dash"));
-		//playerDashClip->SetIsRootMotion(true);
 		playerDash->SetAnimationClip(playerDashClip);
 
 		// Lock-On Move and Run

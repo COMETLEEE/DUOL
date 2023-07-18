@@ -166,7 +166,13 @@ void DUOLClient::PlayerState_Ultimate::ChargingFist()
 	if (_rightFistFormAura == nullptr)
 	{
 		_rightFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
-		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 10.f;
+		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 12.f;
+
+		for(auto& child : _rightFistFormAura->GetTransform()->GetChildren())
+		{
+			auto partComp = child->GetGameObject()->GetComponent<DUOLGameEngine::ParticleRenderer>();
+			partComp->GetParticleData()._commonInfo.gSimulationSpeed = 12.f;
+		}
 
 		_rightFistFormAura->GetTransform()->SetParent(_player->_playerRightFistHolder->GetTransform(), false);
 
@@ -196,6 +202,12 @@ void DUOLClient::PlayerState_Ultimate::EndCharging()
 	{
 		_rightFistFormAura->Stop();
 		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 1.f;
+
+		for (auto& child : _rightFistFormAura->GetTransform()->GetChildren())
+		{
+			auto partComp = child->GetGameObject()->GetComponent<DUOLGameEngine::ParticleRenderer>();
+			partComp->GetParticleData()._commonInfo.gSimulationSpeed = 1.f;
+		}
 
 		_rightFistFormAura->GetTransform()->SetParent(nullptr, false);
 

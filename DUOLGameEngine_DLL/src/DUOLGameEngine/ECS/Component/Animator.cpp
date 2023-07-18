@@ -138,7 +138,7 @@ namespace DUOLGameEngine
 		// 이전 프레임보다 현재 프레임이 더 작습니다. ==> 1회 루프가 되었습니다 ..!
 		if (_controllerContext->_currentStateContexts[0]._currentFrame < _controllerContext->_currentStateContexts[0]._prevFrame)
 		{
-			_controllerContext->_currentStateContexts[0]._loopCount++;
+   			_controllerContext->_currentStateContexts[0]._loopCount++;
 			_controllerContext->_currentStateContexts[0]._currentEventIndex = 0;
 		}
 	}
@@ -851,6 +851,12 @@ namespace DUOLGameEngine
 		return 0;
 	}
 
+	void Animator::SetCurrentLoopCount(int loopCount)
+	{
+		if (_controllerContext != nullptr)
+			_controllerContext->_currentStateContexts[0]._loopCount = loopCount;
+	}
+
 	void Animator::SetSpeed(float value)
 	{
 		_speed = value;
@@ -920,11 +926,6 @@ namespace DUOLGameEngine
 
 	float Animator::GetFloat(const DUOLCommon::tstring& paramName) const
 	{
-		if (_controllerContext->_floatParameters.contains(L"AnimationSqeed"))
-		{
-			int a =  0;
-		}
-
 		return _controllerContext->_floatParameters.contains(paramName) ? _controllerContext->_floatParameters.at(paramName) : 0.f;
 	}
 

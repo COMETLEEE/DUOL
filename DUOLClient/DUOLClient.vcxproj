@@ -179,11 +179,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="JumpingBoard.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageFactoryTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageCameraColiision.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\FirstMonsterTrigger.cpp" />
-    <ClCompile Include="include\DUOLClient\ECS\BossZoneTrigger.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\DominationEventHandler.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\BossZoneTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CautionBorder.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\MaterialOptionChanger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Map\MiniMap.cpp" />
@@ -276,10 +278,6 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\TrainAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\BStageFactoryTrigger.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\BStageCameraColiision.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\FirstMonsterTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\BossZoneTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CautionBorder.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_AreaWave.h" />
@@ -375,6 +373,7 @@
     <ClInclude Include="include\DUOLClient\Manager\SystemManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\OpenDoor.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\TrainAnimation.h" />
+    <ClInclude Include="JumpingBoard.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

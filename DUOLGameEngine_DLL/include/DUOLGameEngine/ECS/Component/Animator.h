@@ -135,6 +135,8 @@ namespace DUOLGameEngine
 
 		int GetCurrentLoopCount();
 
+		void SetCurrentLoopCount(int loopCount);
+
 		void SetSpeed(float value);
 
 		void InitializeCurrentLoopCount();

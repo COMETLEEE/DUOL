@@ -1,9 +1,9 @@
-#include "BossZoneTrigger.h"
+#include "DUOLClient/ECS/Component/BossZoneTrigger.h"
 
 
 #include <rttr/registration>
 
-#include "Component/Enemy/EnemyGroupController.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"

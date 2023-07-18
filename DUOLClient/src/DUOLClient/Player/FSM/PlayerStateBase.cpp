@@ -241,7 +241,7 @@ namespace DUOLClient
 
 	bool PlayerStateBase::DashCheck()
 	{
-		return DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY) && _player->_canStartDash ? true : false;
+		return (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY) && _player->_canStartDash && !_player->_isDashCrowdControl) ? true : false;
 	}
 
 	bool PlayerStateBase::SlopeCheck()

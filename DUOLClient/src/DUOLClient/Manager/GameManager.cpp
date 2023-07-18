@@ -40,8 +40,7 @@ RTTR_REGISTRATION
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::String)
-	)
-	;
+	);
 }
 
 namespace DUOLClient
@@ -319,9 +318,6 @@ namespace DUOLClient
 				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
 			}
 		}
-
-		DUOLGameEngine::CameraEventManager::GetInstance()->SetIsTotalScene();
-
 	}
 
 	void GameManager::InitializeStageA(DUOLGameEngine::Scene* stageA)

@@ -194,7 +194,7 @@ namespace DUOLClient
 
 		virtual bool Attack(CharacterBase* target, float damage, AttackType attackType) override;
 
-		virtual bool OnHit(CharacterBase* other, float damage, AttackType attackType) override;
+		virtual bool OnHit(CharacterBase* other, float damage, AttackType attackType, float downPoint = DOWN_POINT_PER_ATTACK) override;
 
 		virtual bool GetIsInvincible() override;
 

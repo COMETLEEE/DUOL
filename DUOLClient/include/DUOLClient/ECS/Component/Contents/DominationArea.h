@@ -4,6 +4,8 @@
 
 namespace DUOLGameEngine
 {
+	class Scrollbar;
+	class MeshRenderer;
 	class BoxCollider;
 }
 
@@ -16,7 +18,9 @@ namespace DUOLGameEngine
  */
 namespace DUOLClient
 {
-	
+
+	constexpr float DOMINATION_BORDER_EMISSIVE_POWER = 7.f;
+
 class DUOL_CLIENT_API DominationArea :public DUOLGameEngine::MonoBehaviourBase
 {
 public:
@@ -24,44 +28,9 @@ public:
 
 	virtual ~DominationArea() override;
 
-///**
-// * \brief 에어리어 지역 크기
-// */
-//	DUOLMath::Vector3 _areaExtents;
+	bool IsCleared() const;
 
-	/**
-	 * \brief 몬스터 수에따른 파괴율 증가수치
-	 */
-	float _destroyIncreasePerMonster;
-
-	/**
-	* \brief 구역의 맥스 정화도
-	*/
-	float _maxClearPercent;
-
-	/**
-	 * \brief 구역의 현재 정화도
-	 */
-	float _currentClearPercent;
-
-	/**
-	 * \brief 플레이어 점령 시간
-	 */
-	float _dominationTime;
-
-	DUOLGameEngine::BoxCollider* _areaCollider;
-
-	int _currentEnemyCountInZone;
-
-	bool _playerInZone;
-
-	/**
-	 * \brief 점령여부
-	 */
-	bool _isCleared;
-
-
-	bool IsIsCleared() const;
+	void SetTotallyClear(bool value);
 
 	/**
  * \brief Behaviour가 사용 가능해졌을 때 호출됩니다.
@@ -100,6 +69,63 @@ public:
 
 
 	void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
+
+	void OnTriggerExit(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
+
+private:
+	/**
+	 * \brief 몬스터 수에따른 파괴율 증가수치
+	 */
+	float _destroyIncreasePerMonster;
+
+	/**
+	* \brief 구역의 맥스 정화도
+	*/
+	float _maxClearPercent;
+
+	/**
+	 * \brief 구역의 현재 정화도
+	 */
+	float _currentClearPercent;
+
+	/**
+	 * \brief 플레이어 점령 시간
+	 */
+	float _dominationTime;
+
+	/**
+	 * \brief 디폴트 파괴율 증가량
+	 */
+	float _defaultDestroyIncrease;
+
+	/**
+	* \brief 클리어조건
+	*/
+	float _clearPercent;
+
+	DUOLGameEngine::GameObject* _uiGameObject;
+
+	DUOLGameEngine::Scrollbar* _dominationGauge;
+
+	DUOLGameEngine::BoxCollider* _areaCollider;
+
+	int _currentEnemyCountInZone;
+
+	bool _playerInZone;
+
+	/**
+	 * \brief 점령여부
+	 */
+	bool _isCleared;
+
+	bool _isTotallyCleared;
+
+
+	DUOLGameEngine::MeshRenderer* _dominationBorder;
+
+	DUOLMath::Vector3 _destroyColor;
+
+	DUOLMath::Vector3 _clearColor;
 
 
 	RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)

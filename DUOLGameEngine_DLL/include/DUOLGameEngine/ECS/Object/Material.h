@@ -76,7 +76,7 @@ namespace DUOLGameEngine
 
 		const DUOLMath::Vector2& GetOffset();
 
-		const DUOLMath::Vector3& GetEmissive();
+        const DUOLMath::Vector3 GetEmissive();
 
 		const float& GetEmissivePower();
 

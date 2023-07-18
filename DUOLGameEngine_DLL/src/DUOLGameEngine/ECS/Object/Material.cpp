@@ -86,7 +86,7 @@ namespace DUOLGameEngine
 		_primitiveMaterial->SetEmissivePower(emissivePower);
 	}
 
-	const DUOLMath::Vector3& Material::GetEmissive()
+	const DUOLMath::Vector3 Material::GetEmissive()
 	{
 		return _primitiveMaterial->GetEmissive();
 	}

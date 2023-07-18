@@ -98,6 +98,7 @@ namespace DUOLClient
 		, _playerRigidbody(nullptr)
 		, _cameraTransform(nullptr)
 		, _playerHitAnimationSpeed(1.0f)
+		, _isDashCrowdControl(false)
 	{
 		SetHP(1000.f);
 	}
@@ -112,7 +113,7 @@ namespace DUOLClient
 		return other->OnHit(this, damage, attackType);
 	}
 
-	bool Player::OnHit(CharacterBase* other, float damage, AttackType attackType)
+	bool Player::OnHit(CharacterBase* other, float damage, AttackType attackType, float downPoint)
 	{
 		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
 
@@ -135,7 +136,7 @@ namespace DUOLClient
 		_hp -= damage;
 		PlaySoundClip(PlayerSoundTable::Hit_Sound_Effect, false);
 
-		_currentDownPoint += DOWN_POINT_PER_ATTACK;
+		_currentDownPoint += downPoint;
 
 		// 슈퍼아머인 경우도 있을텐데 ..
 		DUOLClient::PlayerState_Hit* hitState = reinterpret_cast<DUOLClient::PlayerState_Hit*>(_playerStateMachine.GetState(TEXT("PlayerState_Hit")));
@@ -198,6 +199,11 @@ namespace DUOLClient
 		//DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(_currentDownPoint);
 
 		return true;
+	}
+
+	void Player::SetDashUsable(bool dash)
+	{
+		_isDashCrowdControl = dash;
 	}
 
 	bool Player::GetIsInvincible()
