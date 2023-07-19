@@ -56,7 +56,7 @@ namespace DUOLClient
 		const DUOLMath::Vector3& startPosCenter,
 		const float& startRadius,
 		const float& endRadius,
-		float waveTime)
+		float waveTime, float damage, float downPoint)
 	{
 		_startRadius = startRadius;
 
@@ -67,6 +67,10 @@ namespace DUOLClient
 		_timer = 0;
 
 		_startPos = startPosCenter;
+
+		_damage = damage;
+
+		_downPoint = downPoint;
 
 		_enterCheck.clear();
 
@@ -116,7 +120,7 @@ namespace DUOLClient
 					if (player->GetIsInvincible())
 						continue;
 
-					if (_owner->Attack(player, _owner->GetDamage(), AttackType::HeavyAttack))
+					if (_owner->Attack(player, _damage, AttackType::HeavyAttack, _downPoint))
 					{
 						_enterCheck.insert(gameObject);
 

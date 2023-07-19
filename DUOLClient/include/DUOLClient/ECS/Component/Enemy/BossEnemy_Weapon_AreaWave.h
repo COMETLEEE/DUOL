@@ -40,6 +40,10 @@ namespace DUOLClient
 
 		float _waveTime;
 
+		float _damage;
+
+		float _downPoint;
+
 		std::set<DUOLGameEngine::GameObject*> _enterCheck;
 	public:
 		void SetOwner(DUOLClient::Enemy* owner);
@@ -47,7 +51,7 @@ namespace DUOLClient
 		void StartWave(const DUOLMath::Vector3& startPosCenter,
 			const float& startRadius,
 			const float& endRadius,
-			float waveTime);
+			float waveTime, float damage, float downPoint);
 
 		void EndWave();
 

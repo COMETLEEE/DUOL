@@ -1100,15 +1100,15 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 208.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
-			animationEvent._eventName = TEXT("ComboAttack1");
+			animationEvent._eventName = TEXT("EliteComboAttack");
 			animationEvent._targetFrame = 43.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
-			animationEvent._eventName = TEXT("ComboAttack2");
+			animationEvent._eventName = TEXT("EliteComboAttack");
 			animationEvent._targetFrame = 93.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
-			animationEvent._eventName = TEXT("ComboAttack3");
+			animationEvent._eventName = TEXT("EliteComboAttack");
 			animationEvent._targetFrame = 141.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
@@ -2652,7 +2652,7 @@ namespace DUOLGameEngine
 		//	ShinSeongHyeon_BaBo(merong);
 		//}
 		{
-			animEvent._eventName = TEXT("Attack_Close_x2_speed1.5");
+			animEvent._eventName = TEXT("BossSwordAttack1");
 			animEvent._targetFrame = 25.0f;
 			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2663,7 +2663,7 @@ namespace DUOLGameEngine
 				GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 			}
 
-			animEvent._eventName = TEXT("Attack_Close_x2_speed1.5");
+			animEvent._eventName = TEXT("BossSwordAttack2");
 			animEvent._targetFrame = 72.0f;
 			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2674,7 +2674,7 @@ namespace DUOLGameEngine
 				GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 			}
 
-			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._eventName = TEXT("BossSwordAttack3");
 			animEvent._targetFrame = 112.0f;
 			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2684,7 +2684,7 @@ namespace DUOLGameEngine
 		}
 		{
 
-			animEvent._eventName = TEXT("Attack_Close_x2_speed1.6");
+			animEvent._eventName = TEXT("BossFistAttack1");
 			animEvent._targetFrame = 15.0f;
 			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2695,7 +2695,7 @@ namespace DUOLGameEngine
 				GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 			}
 
-			animEvent._eventName = TEXT("Attack_Close_x2_speed1.5");
+			animEvent._eventName = TEXT("BossFistAttack2");
 			animEvent._targetFrame = 41.0f;
 			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2706,7 +2706,7 @@ namespace DUOLGameEngine
 				GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 			}
 
-			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._eventName = TEXT("BossFistAttack3");
 			animEvent._targetFrame = 90.0f;
 			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2758,7 +2758,7 @@ namespace DUOLGameEngine
 				GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
 			}
 
-			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
+			animEvent._eventName = TEXT("Ultimate_Fist_Attack");
 			animEvent._targetFrame = 194.0f;
 			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
 

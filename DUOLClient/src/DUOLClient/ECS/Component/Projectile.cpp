@@ -3,6 +3,7 @@
 #include <rttr/registration>
 
 #include "DUOLClient/ECS/Component/CharacterBase.h"
+#include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
@@ -65,7 +66,8 @@ namespace DUOLClient
 		DUOLGameEngine::GameObject* owner
 		, float damage,
 		DUOLCommon::tstring targetTag, bool isGravity, float radius,
-		bool isDistroy)
+		bool isDistroy, float downPoint
+	)
 	{
 		GetGameObject()->SetIsActiveSelf(true);
 
@@ -88,6 +90,11 @@ namespace DUOLClient
 		_rigidbody->SetUseGravity(_isGravity);
 
 		_isDestory = isDistroy;
+
+		_downPoint = downPoint;
+
+		if (_downPoint == std::numeric_limits<float>::max())
+			_downPoint = _projectileOwner->GetComponent<Enemy>()->GetParameter<float>(TEXT("DownPoint"));
 	}
 
 	void Projectile::OnStart()
@@ -127,7 +134,8 @@ namespace DUOLClient
 
 		if (other->GetTag() == _targetTag)
 		{
-			other->GetComponent<CharacterBase>()->OnHit(nullptr, _damage, AttackType::LightAttack);
+
+			other->GetComponent<CharacterBase>()->OnHit(nullptr, _damage, AttackType::LightAttack, _downPoint);
 		}
 
 		if (_isDestory)

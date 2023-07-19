@@ -118,15 +118,20 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(funcDestroy, gameObject, startSize, endSize, deleteSpeed));
 	};
 
-	inline void Attack_Close(DUOLClient::Enemy* enemy, float rangeScala, float damageScala, float playerAnimationSpeed)
+	inline void Attack_Close(DUOLClient::Enemy* enemy, float rangeScala, float damageScala, float playerAnimationSpeed, float damage, float downPoint)
 	{
+		if (damage == std::numeric_limits<float>::max())
+			damage = enemy->GetDamage();
+
+		if (downPoint == std::numeric_limits<float>::max())
+			downPoint = enemy->GetParameter<float>(TEXT("DownPoint"));
 		std::vector<DUOLPhysics::RaycastHit> boxcastHits;
 
 		const auto pos = enemy->GetTransform()->GetWorldPosition();
 
 		const auto look = enemy->GetTransform()->GetLook();
 
-		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
+		const DUOLMath::Quaternion boxRotation = enemy->GetTransform()->GetWorldRotation();
 
 
 		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(pos + look, DUOLMath::Vector3(1.5f, 1.5f, enemy->GetParameter<float>(TEXT("NormalAttackRange")) * rangeScala), boxRotation, boxcastHits))
@@ -141,7 +146,7 @@ namespace DUOLClient
 
 					player->SetPlayerHitAnimationSpeed(playerAnimationSpeed);
 
-					if (enemy->Attack(player, enemy->GetDamage() * damageScala, AttackType::HeavyAttack))
+					if (enemy->Attack(player, damage * damageScala, AttackType::HeavyAttack, downPoint))
 					{
 						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
@@ -180,7 +185,7 @@ namespace DUOLClient
 
 		const auto look = enemy->GetTransform()->GetLook() * enemy->GetParameter<float>(TEXT("ChargeAttackRange"));
 
-		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
+		const DUOLMath::Quaternion boxRotation = enemy->GetTransform()->GetWorldRotation();
 
 		auto fistParticle = ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 0.7f);
 
@@ -200,7 +205,7 @@ namespace DUOLClient
 				{
 					auto player = gameObject->GetComponent<DUOLClient::Player>();
 
-					if (enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack))
+					if (enemy->Attack(player, 30.0f, AttackType::HeavyAttack, 120.0f))
 					{
 						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
@@ -317,7 +322,7 @@ namespace DUOLClient
 				{
 					auto player = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					if (enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack))
+					if (enemy->Attack(player, 30.0f, AttackType::HeavyAttack, 120.0f))
 					{
 						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
@@ -334,7 +339,7 @@ namespace DUOLClient
 					if (enemyOther->GetIsInvincible())
 						continue;
 
-					if (enemy->Attack(enemyOther, 0, AttackType::HeavyAttack))
+					if (enemy->Attack(enemyOther, 0, AttackType::HeavyAttack, enemy->GetParameter<float>(TEXT("DownPoint"))))
 					{
 						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
@@ -384,7 +389,7 @@ namespace DUOLClient
 
 					// particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
 
-					if (enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack))
+					if (enemy->Attack(player, 30.0f, AttackType::HeavyAttack, 120.0f))
 					{
 						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 						// 약한 앨리트 몬스터 다단히트 어떻게 할까...! 일단 막아두자...!
@@ -404,7 +409,7 @@ namespace DUOLClient
 					if (enemyOther->GetIsInvincible())
 						continue;
 
-					if (enemy->Attack(enemyOther, 0, AttackType::HeavyAttack))
+					if (enemy->Attack(enemyOther, 0, AttackType::HeavyAttack), enemy->GetParameter<float>(TEXT("DownPoint")))
 					{
 						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 						// 약한 앨리트 몬스터 다단히트 어떻게 할까...! 일단 막아두자...!
@@ -451,7 +456,7 @@ namespace DUOLClient
 
 	}
 
-	void BossEnemyAreaWaveOn(DUOLClient::Enemy* enemy, float startRadius, float endRadius, float waveTime)
+	void BossEnemyAreaWaveOn(DUOLClient::Enemy* enemy, float startRadius, float endRadius, float waveTime, float damage, float downPoint)
 	{
 		DUOLClient::BossEnemy_Weapon_AreaWave* areaWave = static_cast<DUOLClient::BossEnemy_Weapon_AreaWave*>(enemy->GetParameter<void*>(TEXT("AreaWave")));
 
@@ -459,7 +464,7 @@ namespace DUOLClient
 			0.7f, DUOLMath::Vector2(8.0f, 8.0f),
 			enemy->GetTransform());
 
-		areaWave->StartWave(enemy->GetTransform()->GetWorldPosition(), startRadius, endRadius, waveTime);
+		areaWave->StartWave(enemy->GetTransform()->GetWorldPosition(), startRadius, endRadius, waveTime, damage, downPoint);
 	}
 
 	void BossEnemy_Ulitmate_Fist_LastAttack(DUOLClient::Enemy* enemy)
@@ -475,7 +480,7 @@ namespace DUOLClient
 
 		projectile->GetTransform()->SetPosition(startPos);
 
-		projectile->FireProjectile(tr->GetParent()->GetLook(), 5, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 2.0f, false);
+		projectile->FireProjectile(tr->GetParent()->GetLook(), 5, enemy->GetGameObject(), 20.0f, TEXT("Player"), false, 2.0f, false, 120.0f);
 
 		auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::BossUltimateFistFin, 5.f);
 
@@ -499,7 +504,7 @@ namespace DUOLClient
 
 		projectile->GetTransform()->SetPosition(startPos);
 
-		projectile->FireProjectile(tr->GetParent()->GetLook(), 10, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 1.0f, true);
+		projectile->FireProjectile(tr->GetParent()->GetLook(), 10, enemy->GetGameObject(), 15.0f, TEXT("Player"), false, 1.0f, true, 120.0f);
 
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 

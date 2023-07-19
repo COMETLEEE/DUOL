@@ -308,25 +308,32 @@ namespace DUOLClient
 
 	void EnemyManager::Initialize_RegisteEventFuncs()
 	{
-		InsertEventFunc(TEXT("Attack_Close"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.0f));
-		InsertEventFunc(TEXT("Attack_Close_x2"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.0f));
+		InsertEventFunc(TEXT("Attack_Close"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.0f, std::numeric_limits<float>::max(), std::numeric_limits<float>::max()));
+		InsertEventFunc(TEXT("Attack_Close_x2"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.0f, std::numeric_limits<float>::max(), std::numeric_limits<float>::max()));
 
-		InsertEventFunc(TEXT("Attack_Close_x1_speed2"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 2.0f));
-		InsertEventFunc(TEXT("Attack_Close_x1_speed3"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 3.0f));
-		InsertEventFunc(TEXT("Attack_Close_x2_speed1.5"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.5f));
-		InsertEventFunc(TEXT("Attack_Close_x2_speed1.6"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.8f));
+		InsertEventFunc(TEXT("Attack_Close_x1_speed3"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 3.0f, 8.0f, 17.0f));
+
+		InsertEventFunc(TEXT("BossSwordAttack1"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.5f, 5.0f, 20.5f));
+		InsertEventFunc(TEXT("BossSwordAttack2"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.5f, 5.0f, 20.5f));
+		InsertEventFunc(TEXT("BossSwordAttack3"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.0f, 5.0f, 20.5f));
+
+		InsertEventFunc(TEXT("BossFistAttack1"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.8f, 12.0f, 34.0f));
+		InsertEventFunc(TEXT("BossFistAttack2"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.5f, 12.0f, 34.0f));
+		InsertEventFunc(TEXT("BossFistAttack3"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.0f, 12.0f, 34.0f));
 
 		InsertEventFunc(TEXT("Attack_Far"), Attack_Far);
-		InsertEventFunc(TEXT("ComboAttack1"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f));
-		InsertEventFunc(TEXT("ComboAttack2"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f));
-		InsertEventFunc(TEXT("ComboAttack3"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f));
-		InsertEventFunc(TEXT("SmashAttack"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.0f));
+		InsertEventFunc(TEXT("ComboAttack1"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f, 5.0f, 34.0f));
+		InsertEventFunc(TEXT("ComboAttack2"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f, 5.0f, 34.0f));
+		InsertEventFunc(TEXT("ComboAttack3"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f, 5.0f, 34.0f));
+		InsertEventFunc(TEXT("EliteComboAttack"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f, 9.0f, 34.0f));
+		InsertEventFunc(TEXT("SmashAttack"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.0f, std::numeric_limits<float>::max(), std::numeric_limits<float>::max()));
 		InsertEventFunc(TEXT("JumpAttackStart"), JumpAttackStart);
 		InsertEventFunc(TEXT("JumpAttackEnd"), JumpAttackEnd);
 		InsertEventFunc(TEXT("RushAndHit"), RushAndHit);
 		InsertEventFunc(TEXT("SeriousPunch"), Attack_Charge);
 		InsertEventFunc(TEXT("Attack_Charging"), Attack_Charging);
-		InsertEventFunc(TEXT("BossEnemyAreaWaveOn_Basic"), std::bind(BossEnemyAreaWaveOn, std::placeholders::_1, 1.0f, 4.0f, 0.0f));
+		InsertEventFunc(TEXT("Ultimate_Fist_Attack"), std::bind(BossEnemyAreaWaveOn, std::placeholders::_1, 1.0f, 4.0f, 0.0f, 50.0f, 120.0f));
+		InsertEventFunc(TEXT("BossEnemyAreaWaveOn_Basic"), std::bind(BossEnemyAreaWaveOn, std::placeholders::_1, 1.0f, 4.0f, 0.0f, 10.0f, 120.0f));
 		InsertEventFunc(TEXT("BossEnemy_Ulitmate_Fist_LastAttack"), BossEnemy_Ulitmate_Fist_LastAttack);
 		InsertEventFunc(TEXT("BossEnemy_SwordChange_Attack"), BossEnemy_SwordChange_Attack);
 
