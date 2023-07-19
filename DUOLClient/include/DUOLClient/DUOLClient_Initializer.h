@@ -26,6 +26,8 @@ namespace DUOLClient
 
 		static void Overdrive_Fist_Initialize();
 
+		static void JumpPoint_Initialize();
+
 		static void LoadSound();
 
 		static void Load_Player_Sound();

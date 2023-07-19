@@ -112,16 +112,19 @@ namespace DUOLClient
 	{
 		StateBase::OnStateStay(deltaTime);
 
-		// Update desired look direction.
-		LookDirectionUpdate();
+		if (_player->_canInteraction)
+		{
+			// Update desired look direction.
+			LookDirectionUpdate();
 
-		// Look On
-		if (LockOnCheck())
-			FindLockOnTarget();
+			// Look On
+			if (LockOnCheck())
+				FindLockOnTarget();
 
-		InOverdriveCheck()
-			? OnOverdriveStateStay(deltaTime)
-			: OnNormalStateStay(deltaTime);
+			InOverdriveCheck()
+				? OnOverdriveStateStay(deltaTime)
+				: OnNormalStateStay(deltaTime);
+		}
 	}
 
 	void PlayerState_Idle::OnStateExit(float deltaTime)

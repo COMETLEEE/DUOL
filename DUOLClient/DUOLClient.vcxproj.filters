@@ -97,7 +97,8 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageCameraColiision.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageFactoryTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.cpp" />
-    <ClCompile Include="JumpingBoard.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\JumpPlatform.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Jump.cpp" />
     <ClCompile Include="src\DUOLClient\Script\InteractiveScript.cpp" />
     <ClCompile Include="src\DUOLClient\Script\ScriptInfo.cpp" />
   </ItemGroup>
@@ -196,12 +197,17 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\TrainAnimation.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\MaterialOptionChanger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CautionBorder.h" />
-    <ClInclude Include="include\DUOLClient\ECS\BossZoneTrigger.h" />
-    <ClInclude Include="JumpingBoard.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BossZoneTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageCameraColiision.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageFactoryTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\DominationEventHandler.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\FirstMonsterTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\FirstMonsterTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\BStageCameraColiision.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\BStageFactoryTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\JumpPlatform.h" />
     <ClInclude Include="include\DUOLClient\Script\InteractiveScript.h" />
     <ClInclude Include="include\DUOLClient\Script\ScriptInfo.h" />
   </ItemGroup>

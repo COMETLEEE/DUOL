@@ -379,6 +379,5 @@ namespace DUOLClient
 			_swordCondition = SwordCondition::Disappear;
 			SetAppearMaterial();
 		}
-
 	}
 }

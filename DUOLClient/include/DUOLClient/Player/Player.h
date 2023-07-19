@@ -250,8 +250,14 @@ namespace DUOLClient
 		 */
 		bool _canStartDash;
 
+		bool _canInteraction;
+
 		//외부요인에 의한 dash lock기능
 		bool _isDashCrowdControl;
+
+		float _jumpHoldTime;
+
+		float _jumpFlyTime;
 
 
 #pragma region 기본 참조 컴포넌트
@@ -362,7 +368,10 @@ namespace DUOLClient
 
 		void SetPlayerHitAnimationSpeed(float value) { _playerHitAnimationSpeed = value; }
 
-	public:
+		void Jump(float holdTime, float _flyTime);
+
+		void JumpEnd();
+
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
@@ -372,6 +381,8 @@ namespace DUOLClient
 		virtual void OnFixedUpdate(float fixedTimeStep) override;
 
 		virtual void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
+
+		void SetCanInteraction(bool value);
 
 		//virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
 		//단일사운드실행(ex발걸음)
@@ -421,6 +432,8 @@ namespace DUOLClient
 		friend class PlayerState_Overdrive;
 
 		friend class PlayerState_Ultimate;
+
+		friend class PlayerState_Jump;
 
 		friend class Weapon_Sword;
 

@@ -179,7 +179,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="JumpingBoard.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\JumpPlatform.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Jump.cpp" />
     <ClCompile Include="src\DUOLClient\Script\ScriptInfo.cpp" />
     <ClCompile Include="src\DUOLClient\Script\InteractiveScript.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.cpp" />
@@ -280,8 +281,12 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\TrainAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\DUOLClient\ECS\BossZoneTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BossZoneTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageCameraColiision.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageFactoryTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CautionBorder.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\DominationEventHandler.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_AreaWave.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EnemyVoiceSoundPlay.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EnemySoundPlay.h" />
@@ -292,6 +297,8 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemyRandomPattern.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Contents\DominationArea.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\FirstMonsterTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\JumpPlatform.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Map\MiniMap.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\MaterialOptionChanger.h" />
     <ClInclude Include="include\DUOLClient\Manager\EnemyAudioManager.h" />
@@ -314,6 +321,8 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemySpawnTrigger.h" />
     <ClInclude Include="include\DUOLClient\Manager\UIDataManager.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Ultimate.h" />
+    <ClInclude Include="include\DUOLClient\Script\InteractiveScript.h" />
+    <ClInclude Include="include\DUOLClient\Script\ScriptInfo.h" />
     <ClInclude Include="include\DUOLClient\Util\BinaryTree.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Projectile.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAttacks.h" />
@@ -375,9 +384,6 @@
     <ClInclude Include="include\DUOLClient\Manager\SystemManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\OpenDoor.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\TrainAnimation.h" />
-    <ClInclude Include="JumpingBoard.h" />
-    <ClInclude Include="include\DUOLClient\Script\InteractiveScript.h" />
-    <ClInclude Include="include\DUOLClient\Script\ScriptInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

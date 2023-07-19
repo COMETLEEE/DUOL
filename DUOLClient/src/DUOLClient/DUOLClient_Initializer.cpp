@@ -70,6 +70,8 @@ namespace DUOLClient
 
 		Load_CutScene_Sound();
 
+		JumpPoint_Initialize();
+
 		LoadSound();
 	}
 
@@ -162,6 +164,10 @@ namespace DUOLClient
 		playerNormalAnimCon->AddParameter(TEXT("IsFist"), AnimatorControllerParameterType::Bool);
 
 		playerNormalAnimCon->AddParameter(TEXT("AttackCount"), AnimatorControllerParameterType::Int);
+
+		playerNormalAnimCon->AddParameter(TEXT("IsJumping"), AnimatorControllerParameterType::Bool);
+
+		playerNormalAnimCon->AddParameter(TEXT("IsLanding"), AnimatorControllerParameterType::Bool);
 
 		// 애니메이션 재생 속도 배속
 		playerNormalAnimCon->AddParameter(TEXT("AnimationSpeed"), AnimatorControllerParameterType::Float);
@@ -5841,10 +5847,39 @@ namespace DUOLClient
 		auto playerUltToIdle = playerFistUlt->AddTransition(playerIdle);
 		playerUltToIdle->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::False);
 
+		//auto playerUltToMove = playerFistUlt->AddTransition(playerMove);
+		//playerUltToIdle->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::False);
+		//playerUltToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+
+		//auto playerUltToRun = playerFistUlt->AddTransition(playerRun);
+		//playerUltToIdle->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::False);
+		//playerUltToIdle->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+
 #pragma endregion
 
 
 		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(playerOverdriveFistCon);
+	}
+
+	void DUOLClient_Initializer::JumpPoint_Initialize()
+	{
+
+		auto jumpController = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("JumpPlatform_AnimationController"));
+
+		auto stateMachine = jumpController->AddStateMachine(TEXT("OperateJumpPlatform"));
+
+		// 플레이어 상태
+		auto jumpstate = stateMachine->AddState(TEXT("Operate_Jump"));
+		auto jumpclip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("JUMP"));
+		jumpclip->SetIsLoop(false);
+		jumpstate->SetAnimationClip(jumpclip);
+		//auto playerHit2 = playerNormalStateMachine->AddState(TEXT("Player_Hit2"));
+		//auto playerHit2Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_hit_2"));
+		//playerHit2Clip->SetIsUseEventInTransition(false);
+		//playerHit2->SetSpeedParameter(TEXT("AnimationSpeed"));
+		//playerHit2->SetSpeedParameterActive(true);
+		//playerHit2->SetAnimationClip(playerHit2Clip);
+		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(jumpController);
 	}
 
 	void DUOLClient_Initializer::LoadSound()

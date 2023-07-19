@@ -22,6 +22,7 @@
 #include "DUOLClient/Player/FSM//PlayerState_Dash.h"
 #include "DUOLClient/Player/FSM//PlayerState_Run.h"
 #include "DUOLClient/Player/FSM//PlayerState_Die.h"
+#include "DUOLClient/Player/FSM//PlayerState_Jump.h"
 #include "DUOLClient/Player/FSM//PlayerState_Interaction.h"
 
 #include "DUOLClient/Camera/MainCameraController.h"
@@ -99,6 +100,7 @@ namespace DUOLClient
 		, _cameraTransform(nullptr)
 		, _playerHitAnimationSpeed(1.0f)
 		, _isDashCrowdControl(false)
+		, _canInteraction(true)
 	{
 		SetHP(1000.f);
 	}
@@ -322,6 +324,8 @@ namespace DUOLClient
 		PlayerState_Overdrive* overdrive = _playerStateMachine.AddState<PlayerState_Overdrive>(this);
 
 		PlayerState_Ultimate* ult = _playerStateMachine.AddState<PlayerState_Ultimate>(this);
+
+		PlayerState_Jump* jump = _playerStateMachine.AddState<PlayerState_Jump>(this);
 #pragma endregion
 
 #pragma region 
@@ -573,6 +577,20 @@ namespace DUOLClient
 
 #pragma endregion
 	}
+	
+	void Player::Jump(float holdTime, float _flyTime)
+	{
+		_currentPlayerWeapon->HouseSword();
+		_jumpHoldTime = holdTime;
+		_jumpFlyTime = _flyTime;
+
+		_playerStateMachine.TransitionTo(TEXT("PlayerState_Jump"), 0.f);
+	}
+
+	void Player::JumpEnd()
+	{
+		_playerStateMachine.TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+	}
 
 	void Player::OnStart()
 	{
@@ -624,6 +642,11 @@ namespace DUOLClient
 			if (enemy)
 				enemy->PushedOut(GetTransform()->GetWorldPosition());
 		}
+	}
+
+	void Player::SetCanInteraction(bool value)
+	{
+		_canInteraction = value;
 	}
 
 	void Player::PlaySoundClip(PlayerSoundTable soundClip, bool isLoop)
