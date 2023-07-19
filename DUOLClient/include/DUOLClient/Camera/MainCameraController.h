@@ -3,6 +3,8 @@
 
 namespace DUOLClient
 {
+	class Player;
+
 	enum class MainCameraState
 	{
 		// 기본 상태
@@ -35,6 +37,8 @@ namespace DUOLClient
 		/**
 		 * \brief Third person camera movement target.
 		 */
+		Player* _player;
+
 		DUOLGameEngine::Transform* _followTransform;
 
 		DUOLGameEngine::Transform* _playerTransform;

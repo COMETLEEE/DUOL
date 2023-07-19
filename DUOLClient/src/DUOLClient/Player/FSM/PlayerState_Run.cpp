@@ -6,6 +6,7 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 #include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
@@ -30,6 +31,8 @@ namespace DUOLClient
 		}
 		else if (EnterOverdriveSwordCheck())
 		{
+			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Overdrive_Sword_Final", _player->GetTransform());
+
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), fixedTimeStep);
 
 			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
@@ -38,6 +41,8 @@ namespace DUOLClient
 		}
 		else if (EnterOverdriveFistCheck())
 		{
+			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Overdrive_Fist_Final", _player->GetTransform());
+
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), fixedTimeStep);
 
 			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
@@ -135,6 +140,12 @@ namespace DUOLClient
 		}
 		else if (UltimateCheck())
 		{
+			if (_player->_isOverdriveSwordMode)
+				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Sword_Final", _player->GetTransform());
+
+			else if (_player->_isOverdriveFistMode)
+				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Ultimate_Fist_Final", _player->GetTransform());
+
 			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), fixedTimeStep);
 
 			DUOL_TRACE(DUOL_CONSOLE, "Run | UltStart ()");

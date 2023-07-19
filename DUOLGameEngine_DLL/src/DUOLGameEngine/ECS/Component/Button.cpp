@@ -103,6 +103,8 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	{
 		if (!_image->GetRaycastTarget())
 			return;
+		if (!_image->GetGameObject()->GetIsActive())
+			return;
 	}
 
 	// moustpos를 가져온다.

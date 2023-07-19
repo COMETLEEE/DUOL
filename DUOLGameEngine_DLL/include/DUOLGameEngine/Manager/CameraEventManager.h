@@ -40,6 +40,8 @@ namespace DUOLGameEngine
 		 */
 		void LoadCameraEvent(const DUOLCommon::tstring& path);
 
+		void LoadScene();
+
 		/**
 		 * \brief input key value play CameraEvent
 		 * \param key

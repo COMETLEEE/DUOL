@@ -143,9 +143,14 @@ namespace DUOLGameEngine
 				}
 
 				_cameraEvents.emplace(cameraEventInfo->_id, cameraEventInfo);
-
 			}
 		}
+	}
+
+	void CameraEventManager::LoadScene()
+	{
+		_mainCameraTransform = nullptr;
+		_realCameraTransform = nullptr;
 	}
 
 	// 60 frame 
@@ -372,7 +377,6 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::SetMainCamera()
 	{
-
 		auto& allGOs = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		// Transform Information
@@ -411,6 +415,9 @@ namespace DUOLGameEngine
 		_isNextSequence = false;
 
 		_isSequenceMode = value;
+
+		if (_mainCameraTransform == nullptr)
+			SetMainCamera();
 
 		if (!_cameraSequenceList.empty())
 		{

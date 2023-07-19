@@ -253,7 +253,7 @@ namespace DUOLClient
 			, _slopeRaycastDistance, _slopeLayer, _slopeHit))
 		{
 			// 슬로프 맞았다.
-			float angle = std::acosf(DUOLMath::Vector3::Up.Dot(_slopeHit._hitNormal));
+			float angle = std::acosf(DUOLMath:: Vector3::Up.Dot(_slopeHit._hitNormal));
 
 			return angle != 0.f && angle < _maxSlopeAngle;
 		}

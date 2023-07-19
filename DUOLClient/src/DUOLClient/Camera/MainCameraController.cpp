@@ -8,6 +8,8 @@
 #include "DUOLPhysics/Util/PhysicsDataStructure.h"
 
 #include <rttr/registration>
+
+#include "DUOLClient/Player/Player.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -254,6 +256,13 @@ namespace DUOLClient
 	{
 		_preMainCameraState = _mainCameraState;
 		_mainCameraState = state;
+		if(_player)
+		{
+			if (_mainCameraState == MainCameraState::CAMERA_SEQUENCE)
+				_player->SetCanInteraction(false);
+			else if (_mainCameraState == MainCameraState::FOLLOW_PLAYER)
+				_player->SetCanInteraction(true);
+		}
 	}
 
 	void MainCameraController::SetCameraInitPos()
@@ -296,6 +305,7 @@ namespace DUOLClient
 			if (gameObject->GetTag() == TEXT("Player"))
 			{
 				_playerTransform = gameObject->GetTransform();
+				_player = gameObject->GetComponent<Player>();
 			}
 		}
 

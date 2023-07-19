@@ -77,6 +77,12 @@ namespace DUOLClient
 		}
 		else if (UltimateCheck())
 		{
+			if(_player->_isOverdriveSwordMode)
+				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Sword_Final", _player->GetTransform());
+
+			else if(_player->_isOverdriveFistMode)
+				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Ultimate_Fist_Final", _player->GetTransform());
+
 			// TODO : Ultimate Start
 			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
 

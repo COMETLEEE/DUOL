@@ -4,6 +4,7 @@
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/Manager/GameManager.h"
 #include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/Player/Weapon_AreaWave.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
@@ -931,6 +932,12 @@ namespace DUOLClient
 		}
 		else if (UltimateCheck())
 		{
+			if (_player->_isOverdriveSwordMode)
+				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Sword_Final", _player->GetTransform());
+
+			else if (_player->_isOverdriveFistMode)
+				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Ultimate_Fist_Final", _player->GetTransform());
+
 			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
 
 			DUOL_TRACE(DUOL_CONSOLE, "Attack | UltStart ()");

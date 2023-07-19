@@ -235,6 +235,9 @@ namespace  DUOLClient
 		_totalSceneClips.insert(std::make_pair(L"DialogueText_01.png", _soundManager->GetAudioClip(TEXT("NPC_20"))));
 		_totalSceneClips.insert(std::make_pair(L"DialogueText_02.png", _soundManager->GetAudioClip(TEXT("NPC_21"))));
 		_totalSceneClips.insert(std::make_pair(L"DialogueText_03.png", _soundManager->GetAudioClip(TEXT("NPC_22"))));
+
+		// DONT REMOVE!!!
+		_preScriptIndex = -1;
 	}
 
 	void SystemManager::InitializeStageA()
@@ -442,10 +445,7 @@ namespace  DUOLClient
 			}
 		}
 
-		if (_cameraInstance == nullptr)
-		{
-			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
-		}
+	
 
 
 		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
@@ -619,6 +619,12 @@ namespace  DUOLClient
 		_cameraManager = DUOLGameEngine::CameraEventManager::GetInstance();
 
 		_soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		if (_cameraInstance == nullptr)
+		{
+			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
+			_cameraInstance->LoadScene();
+		}
 
 		if (_interactiveScript == nullptr)
 			_interactiveScript = new InteractiveScript();
