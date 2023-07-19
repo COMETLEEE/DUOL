@@ -45,6 +45,7 @@ namespace DUOLClient
 			{
 				gameObject->SetIsActiveSelf(true);
 				_miniMapImage = gameObject->GetComponent<DUOLGameEngine::Image>();
+				_miniMapImageRect = gameObject->GetComponent<DUOLGameEngine::RectTransform>();
 			}
 			if (gameObject->GetName() == TEXT("PlayerMinimap"))
 			{
@@ -70,13 +71,41 @@ namespace DUOLClient
 		SetPlayerPos();
 
 		if (currentSceneName == TEXT("Middle"))
+		{
 			_currentGameScene = GameScene::Middle;
+			_stageSize.x = MIDDLESCENEX;
+			_stageSize.y = MIDDLESCENEY;
+
+			_playerBottomLeft.x = MIDDLEXGAP;
+			_playerBottomLeft.y = MIDDLEYGAP;
+		}
 		else if (currentSceneName == TEXT("StageA"))
+		{
 			_currentGameScene = GameScene::StageA;
+			_stageSize.x = MIDDLESCENEX;
+			_stageSize.y = MIDDLESCENEY;
+
+			_playerBottomLeft.x = MIDDLEXGAP;
+			_playerBottomLeft.y = MIDDLEYGAP;
+		}
 		else if (currentSceneName == TEXT("StageB"))
+		{
 			_currentGameScene = GameScene::StageB;
+			_stageSize.x = StageBSCENEX;
+			_stageSize.y = StageBSCENEY;
+
+			_playerBottomLeft.x = StageBXGAP;
+			_playerBottomLeft.y = StageBYGAP;
+		}
 		else if (currentSceneName == TEXT("StageC"))
+		{
 			_currentGameScene = GameScene::StageC;
+			_stageSize.x = MIDDLESCENEX;
+			_stageSize.y = MIDDLESCENEY;
+
+			_playerBottomLeft.x = MIDDLEXGAP;
+			_playerBottomLeft.y = MIDDLEYGAP;
+		}
 	}
 
 	void MiniMap::SetPlayerPos()
@@ -84,85 +113,34 @@ namespace DUOLClient
 		if (_playerPosRect == nullptr)
 			return;
 
-		auto parent = _miniMapImage->GetImageRectTransform();
-
-		float width = parent->GetWidth();
-		float height = parent->GetHeight();
+		float width = _miniMapImageRect->GetWidth();
+		float height = _miniMapImageRect->GetHeight();
 
 		// {0,0}
-		float playerPosX = parent->GetPosX() - ((width / 2) * parent->GetScale().x);
-		float playerPosY = parent->GetPosY() - ((height / 2) * parent->GetScale().y);
+
+		float playerPosX = _miniMapImageRect->GetPosX() - ((width / 2) * _miniMapImageRect->GetScale().x);
+		float playerPosY = _miniMapImageRect->GetPosY() - ((height / 2) * _miniMapImageRect->GetScale().y);
 
 		_playerPosInMiniMap = DUOLMath::Vector2{ playerPosX ,playerPosY };
 	}
 
 	void MiniMap::OnUpdate(float deltaTime)
 	{
-		switch (_currentGameScene)
-		{
-		case GameScene::Middle:
-		{
-			MiddleUpdate();
-			break;
-		}
-		case GameScene::StageA:
-		{
-			break;
-		}
-		case GameScene::StageB:
-		{
-			SceneBUpdate();
-			break;
-		}
-		case GameScene::StageC:
-		{
-			break;
-		}
-		}
+		if (_miniMapImageRect == nullptr || _playerPosRect == nullptr)
+			return;
 
-	}
-
-	void MiniMap::MiddleUpdate()
-	{
-		auto parent = _miniMapImage->GetImageRectTransform();
-
-		float width = parent->GetWidth();
-		float height = parent->GetHeight();
+		SetPlayerPos();
 
 		// now Player Pos
-		auto nowPlayerPos = _player->GetTransform()->GetLocalPosition();
+		auto nowPlayertransform = _player->GetGameObject()->GetTransform();
 
-		float fianlX = ((width * parent->GetScale().x) / MIDDLESCENEX) * (nowPlayerPos.x - MIDDLEXGAP);
-		float fianlY = ((height * parent->GetScale().y) / MIDDLESCENEY) * (nowPlayerPos.z - MIDDLEYGAP);
+		auto nowPlayerPos = nowPlayertransform->GetLocalPosition();
+
+		float fianlX = (_miniMapImageRect->GetWidth() * _miniMapImageRect->GetScale().x) * ((nowPlayerPos.x - _playerBottomLeft.x) / _stageSize.x);
+		float fianlY = (_miniMapImageRect->GetHeight() * _miniMapImageRect->GetScale().y) * ((nowPlayerPos.z - _playerBottomLeft.y) / _stageSize.y);
 
 		_playerPosRect->SetRectX(_playerPosInMiniMap.x + fianlX + (_playerPosRect->GetWidth() / 2));
 		_playerPosRect->SetRectY(_playerPosInMiniMap.y + fianlY + (_playerPosRect->GetHeight() / 2));
 	}
-
-	void MiniMap::SceneAUpdate()
-	{
-	}
-
-	void MiniMap::SceneBUpdate()
-	{
-		auto parent = _miniMapImage->GetImageRectTransform();
-
-		float width = parent->GetWidth();
-		float height = parent->GetHeight();
-
-		// now Player Pos
-		auto nowPlayerPos = _player->GetTransform()->GetLocalPosition();
-
-		float fianlX = ((width * parent->GetScale().x) / StageBSCENEX) * (nowPlayerPos.x - StageBXGAP);
-		float fianlY = ((height * parent->GetScale().y) / StageBSCENEY) * (nowPlayerPos.z - StageBYGAP);
-
-		_playerPosRect->SetRectX(_playerPosInMiniMap.x + fianlX + (_playerPosRect->GetWidth() / 2));
-		_playerPosRect->SetRectY(_playerPosInMiniMap.y + fianlY + (_playerPosRect->GetHeight() / 2));
-	}
-
-	void MiniMap::SceneCUpdate()
-	{
-	}
-
 
 }

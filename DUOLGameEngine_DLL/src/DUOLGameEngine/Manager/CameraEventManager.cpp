@@ -456,7 +456,7 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::PlayerAction(std::string& name, Transform* transform)
 	{
-		UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(name));
+		UINT64 key = GetKey(name);
 
 		SetPlayKey(key);
 		_isPlayerAction = true;
@@ -466,6 +466,9 @@ namespace DUOLGameEngine
 
 		_realCameraTransform->SetLocalPosition(Vector3(0, 0, 0));
 		_realCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
+
+		_mainCameraTransform->SetLocalPosition(Vector3(0, 0, 0));
+		_mainCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
 
 		_playerMat = transform->GetWorldMatrix();
 

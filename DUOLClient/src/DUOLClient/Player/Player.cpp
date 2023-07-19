@@ -723,6 +723,14 @@ namespace DUOLClient
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 	}
 
+	bool Player::IsOverdriveMode()
+	{
+		if (_isOverdriveSwordMode || _isOverdriveFistMode)
+			return true;
+		else
+			return false;
+	}
+
 	DUOLGameEngine::AudioSource* Player::GetAuraSoundSource()
 	{
 		if (_auraSource != nullptr)

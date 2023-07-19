@@ -6049,6 +6049,7 @@ namespace DUOLClient
 	{
 		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
 
+
 		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_01.wav"), TEXT("NPC_01"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
@@ -6085,7 +6086,7 @@ namespace DUOLClient
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_12.wav"), TEXT("NPC_12"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_12.wav"), TEXT("NPC_12A"));
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_12A.wav"), TEXT("NPC_12A"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_13.wav"), TEXT("NPC_13"));

@@ -50,7 +50,7 @@ namespace DUOLClient
 
 		if (otherGameObject->GetTag() == TEXT("Player") && SystemManager::GetInstance()->GetIsDoor())
 		{
-			DUOLClient::SystemManager::GetInstance()->DoorCollisionStay();
+			DUOLClient::SystemManager::GetInstance()->CloseDoorUI();
 		}
 	}
 }

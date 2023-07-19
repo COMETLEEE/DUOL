@@ -397,6 +397,8 @@ namespace DUOLClient
 
 		void AddOverdrivePoint(float point);
 
+		bool IsOverdriveMode();
+
 		DUOLGameEngine::AudioSource* GetAuraSoundSource();
 
 #pragma region FRIEND_CLASS

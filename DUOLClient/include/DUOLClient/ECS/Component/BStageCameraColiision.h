@@ -4,6 +4,9 @@
 
 namespace DUOLClient
 {
+	/**
+	 * \brief  계단 오르고 밟는 트리거 
+	 */
 	class DUOL_CLIENT_API BStageCameraColiision : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:

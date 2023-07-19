@@ -180,6 +180,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="JumpingBoard.cpp" />
+    <ClCompile Include="src\DUOLClient\Script\ScriptInfo.cpp" />
+    <ClCompile Include="src\DUOLClient\Script\InteractiveScript.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageFactoryTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageCameraColiision.cpp" />
@@ -374,6 +376,8 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\OpenDoor.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\TrainAnimation.h" />
     <ClInclude Include="JumpingBoard.h" />
+    <ClInclude Include="include\DUOLClient\Script\InteractiveScript.h" />
+    <ClInclude Include="include\DUOLClient\Script\ScriptInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -16,6 +16,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class InteractiveScript;
 	class Player;
 	enum class GameScene;
 	class MainCameraController;
@@ -36,6 +37,13 @@ namespace DUOLClient
 }
 namespace DUOLClient
 {
+
+	constexpr DUOLMath::Vector3 A_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(86.5, 7.86, -32);
+
+	constexpr DUOLMath::Vector3 B_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(54.7, 28.6, 71.71f);
+
+	constexpr DUOLMath::Vector3 C_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-130, 7.5, 32);
+
 	/**
 	 * \brief system manager : 게임에 각 구역의 기믹을 관리하는 매니저
 	 */
@@ -55,6 +63,9 @@ namespace DUOLClient
 
 		DUOLClient::MainCameraController* _mainCameraController;
 
+		DUOLClient::InteractiveScript* _interactiveScript;
+
+#pragma region function
 	public:
 		virtual void OnAwake() override;
 
@@ -62,21 +73,47 @@ namespace DUOLClient
 
 		virtual void OnUpdate(float deltaTime) override;
 
-		void FinishTotalScene();
+		static DUOLClient::SystemManager* GetInstance();
+
+		/**
+		 * \brief ALL 
+		 */
+		void SetGameScene(GameScene gamescene) { _currentGameScene = gamescene; }
 
 		void FirstMonsterActionSet() { _isFirstMonsterAction = true; }
 
 		void PlayerCameraAction(std::string name, DUOLGameEngine::Transform* playertransform);
 
-		void SetGameScene(GameScene gamescene) { _currentGameScene = gamescene; }
+		bool GetFirstMonster() { return _isFirstMonster; }
+
+		bool IsGameraSequenceMode() { return _isCameraSequenceMode; }
+
+		bool GetIsEnemyAiPlay() { return _isEnemyAIPlay; }
+
+		void CreatePortal(const DUOLCommon::tstring& portalName, const DUOLCommon::tstring& nextSceneName, const DUOLMath::Vector3& position);;
+
 
 		/**
-		 * \brief Stage A
+		 * \brief Total Scene
 		 */
+		void FinishTotalScene();
+
+
+		/**
+		 * \brief Middle Scene
+		 */
+		void SetMiddleScene() { _isMiddleEvent = true; }
+
 
 		 /**
-		  * \brief Stage B
+		  * \brief A Scene
 		  */
+
+
+		  /**
+		 * \brief B Scene
+		 */
+
 		void SetBStageAllMonsterKill(bool value) { _isBStageAllMonsterKill = value; }
 
 		inline bool GetIsDoor() { return _isDoorMonsterKill; }
@@ -91,25 +128,36 @@ namespace DUOLClient
 
 		void CloseDoorUI();
 
-		void BStageCameraFirstAction();
+		void BStageCameraDoorAction();
 
 		void BStageCameraFactoryAction();
 
 		void BStageCameraMonsterWaveAction();
 
+
+		 /**
+		* \brief C Scene
+		*/
+
+
+
 		/**
-		 * \brief Stage C
+		* \brief Sound
 		 */
-
-		static DUOLClient::SystemManager* GetInstance();
-
-		bool IsGameraSequenceMode() { return _isCameraSequenceMode; }
-
-		bool GetIsEnemyAiPlay() { return _isEnemyAIPlay; }
 
 		void PlayUISound(UISound uiindex, bool istrue);
 
+		void PlayTotalScene(DUOLCommon::tstring sound);
+
+		void PlayMiddleScene(DUOLCommon::tstring sound);
+
+		void PlayStageBScene(DUOLCommon::tstring sound);
+
+
 	private:
+		/**
+		* \brief Init
+		*/
 		void InitializeMiddle();
 
 		void InitializeStageTotal();
@@ -122,46 +170,92 @@ namespace DUOLClient
 
 		void InitializeStage();
 
+
+		/**
+		* \brief UpDate
+		*/
 		void MiddleUpdate(float deltaTime);
 
 		void StageBUpdate(float deltaTime);
 
-		void ChangeScript(int index);
-
-		void ShowScript();
-
-		void ShowInfoUI();
 
 		void BossUI();
 
-		void ScriptCheck(float deltaTime, bool check = false);
-
-		void Infocheck(float deltaTime,bool check=false);
-
 		void PlaySound(DUOLGameEngine::AudioClip* soundClip);
 
+
+#pragma region 
+
 	private:
+		/**
+		 * \brief ALL
+		*/
 		float _currentTime;
 
-		float _currentScriptTime;
+		bool _isCameraSequenceMode;
 
-		float _currentInfoTime;
+		GameScene _currentGameScene;
 
+		DUOLClient::Player* _player;
+
+		DUOLGameEngine::FadeInOut* _fadeInOut;
+
+		std::shared_ptr<DUOLGameEngine::CameraEventManager> _cameraManager;
+
+		std::shared_ptr<DUOLGameEngine::SoundManager> _soundManager;
+
+		static bool _isMiddleEvent;
+
+		static bool _isFirstMonster;
+
+		static bool _isAStageClear;
+
+		static bool _isBStageClear;
+
+		static bool _isCStageClear;
+
+		int _scriptIndex;
+
+		int _preScriptIndex;
+
+		bool _isEnemyAIPlay;
+
+		bool _isShowScript;
+
+		bool _isShowInfo;
 		// each stage first monster meet
 		bool _isFirstMonsterAction;
 
-		int _firstMonsterScriptCount;
-
-		int _firstMonsterInfoCount;
 
 		/**
-		* \brief Stage A
+		 * \brief Total Scene
+		*/
+		bool _isTotalSceneEnd;
+
+
+		/**
+		 * \brief Middle Scene
+		*/
+		bool _isStartScript;
+
+		bool _isPlayerOverdrive;
+
+		bool _isPlayerUltra;
+
+		 /**
+		* \brief A Scene
 		 */
 
 
 		 /**
-		 * \brief Stage B
+		 * \brief B Scene
 		 */
+		DUOLGameEngine::GameObject* _dangerObject;
+
+		DUOLGameEngine::GameObject* _dangerColliderObject;
+
+		DUOLGameEngine::GameObject* _infoObject;
+
 		DUOLGameEngine::GameObject* _rimLightObject;
 
 		DUOLGameEngine::GameObject* _doorObject;
@@ -182,46 +276,29 @@ namespace DUOLClient
 
 		bool _isBStageMonsterWaveAction;
 
-		/**
-		* \brief Stage C
+		bool _isBWaveScriptCheck;
+
+		bool _isCreatePortal;
+
+		 /**
+		* \brief C Scene
 		*/
-
-
-		bool _isCameraSequenceMode;
-
-		GameScene _currentGameScene;
-
-		std::vector<std::tuple<DUOLCommon::tstring, float,bool>> _scriptList;
-
-		std::vector<std::tuple<DUOLCommon::tstring, float, bool>> _infoList;
-
-		std::vector<bool> _infoCheckList;
-
-		DUOLClient::Player* _player;
-
-		DUOLGameEngine::FadeInOut* _fadeInOut;
-
-		DUOLGameEngine::GameObject* _scriptObject;
-
-		DUOLGameEngine::GameObject* _infoObject;
-
 		DUOLGameEngine::GameObject* _bossName;
 
 		DUOLGameEngine::GameObject* _bossHPBar;
 
-		std::shared_ptr<DUOLGameEngine::CameraEventManager> _cameraManager;
+		
 
-		std::shared_ptr<DUOLGameEngine::SoundManager> _soundManager;
+		/**
+		* \brief Sound
+		*/
+		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _totalSceneClips;
 
-		std::vector<DUOLGameEngine::AudioClip*> _firstMonsterClips;
-
-		std::vector<DUOLGameEngine::AudioClip*> _totalSceneClips;
-
-		std::vector<DUOLGameEngine::AudioClip*> _middleSceneClips;
+		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _middleSceneClips;
 
 		std::vector<DUOLGameEngine::AudioClip*> _aSceneClips;
 
-		std::vector<DUOLGameEngine::AudioClip*> _bSceneClips;
+		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _bSceneClips;
 
 		std::vector<DUOLGameEngine::AudioClip*> _cSceneClips;
 
@@ -241,37 +318,11 @@ namespace DUOLClient
 
 		DUOLGameEngine::AudioSource* _auraSource;
 
-		static bool _isMiddleEvent;
 
-		static bool _isFirstMonster;
-
-		static bool _isAStageClear;
-
-		static bool _isBStageClear;
-
-		static bool _isCStageClear;
-
-		int _scriptIndex;
-
-		int _infoIndex;
-
-		float _scriptTime;
-
-		float _infoTime;
-
-		bool _isEnemyAIPlay;
-
-		bool _isNextScript;
-
-		bool _isNextInfo;
-
-		bool _isShowScript;
-
-		bool _isShowInfo;
 	private:
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 
 	};
 

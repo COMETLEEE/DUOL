@@ -3,10 +3,10 @@
 
 #pragma region Middle
 #define MIDDLESCENEX 29.5
-#define MIDDLESCENEY 33
+#define MIDDLESCENEY 36
 
-#define MIDDLEXGAP 0.5
-#define MIDDLEYGAP 7
+#define MIDDLEXGAP 1.5
+#define MIDDLEYGAP 6.5
 #pragma endregion
 
 #pragma region StageA
@@ -14,11 +14,11 @@
 #pragma endregion
 
 #pragma region StageB
-#define StageBSCENEX 118.5
+#define StageBSCENEX 160
 #define StageBSCENEY 120
 
-#define StageBXGAP 2.7
-#define StageBYGAP 57
+#define StageBXGAP -23.435
+#define StageBYGAP 58.450
 #pragma endregion
 
 
@@ -57,11 +57,17 @@ namespace DUOLClient
 
 
 	private:
+		DUOLMath::Vector2 _stageSize;
+
+		DUOLMath::Vector2 _playerBottomLeft;
+
 		GameScene _currentGameScene;
 
 		DUOLGameEngine::Image* _miniMapImage;
 
 		DUOLGameEngine::RectTransform* _playerPosRect;
+
+		DUOLGameEngine::RectTransform* _miniMapImageRect;
 
 		Player* _player;
 

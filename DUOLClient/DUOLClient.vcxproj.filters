@@ -98,6 +98,8 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageFactoryTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.cpp" />
     <ClCompile Include="JumpingBoard.cpp" />
+    <ClCompile Include="src\DUOLClient\Script\InteractiveScript.cpp" />
+    <ClCompile Include="src\DUOLClient\Script\ScriptInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.h" />
@@ -196,5 +198,11 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\CautionBorder.h" />
     <ClInclude Include="include\DUOLClient\ECS\BossZoneTrigger.h" />
     <ClInclude Include="JumpingBoard.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\FirstMonsterTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageCameraColiision.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageFactoryTrigger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\BStageMonsterWaveCameraTrigger.h" />
+    <ClInclude Include="include\DUOLClient\Script\InteractiveScript.h" />
+    <ClInclude Include="include\DUOLClient\Script\ScriptInfo.h" />
   </ItemGroup>
 </Project>

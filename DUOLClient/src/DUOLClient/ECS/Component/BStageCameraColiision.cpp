@@ -38,6 +38,6 @@ void DUOLClient::BStageCameraColiision::OnTriggerEnter(const std::shared_ptr<DUO
 	{
 		DUOL_INFO(DUOL_CONSOLE, "B Stage Camera Action");
 
-		DUOLClient::SystemManager::GetInstance()->BStageCameraFirstAction();
+		DUOLClient::SystemManager::GetInstance()->BStageCameraDoorAction();
 	}
 }
