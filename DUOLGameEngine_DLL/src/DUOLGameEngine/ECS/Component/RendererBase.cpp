@@ -104,6 +104,8 @@ namespace DUOLGameEngine
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 		, _renderEventHandlerIDForGraphics(UINT64_MAX)
 		, _currentSelectedMaterial(0)
+		,_primitiveMaterials()
+		,_materials()
 	{
 
 	}
@@ -113,6 +115,8 @@ namespace DUOLGameEngine
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 		, _renderEventHandlerIDForGraphics(UINT64_MAX)
 		, _currentSelectedMaterial(0)
+		, _primitiveMaterials()
+		, _materials()
 	{
 
 	}

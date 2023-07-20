@@ -6,6 +6,7 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 
 namespace DUOLClient
 {
@@ -282,6 +283,9 @@ namespace DUOLClient
 
 	bool InteractiveScript::ShowTotalSceneScript()
 	{
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Space))
+			Next();
+
 		if (Show())
 		{
 			_systemManager->PlayTotalScene(_playScriptKey);
@@ -306,7 +310,7 @@ namespace DUOLClient
 	void InteractiveScript::ShowASceneScript()
 	{
 		if (Show())
-			_systemManager->PlayStageBScene(_playScriptKey);
+			_systemManager->PlayStageAScene(_playScriptKey);
 
 		ShowInfo();
 	}
@@ -314,7 +318,7 @@ namespace DUOLClient
 	void InteractiveScript::ShowBSceneScript()
 	{
 		if (Show())
-			_systemManager->PlayStageAScene(_playScriptKey);
+			_systemManager->PlayStageBScene(_playScriptKey);
 
 		ShowInfo();
 	}
@@ -420,6 +424,7 @@ namespace DUOLClient
 
 	void InteractiveScript::Next()
 	{
+		_playInfoKey = _playInfoNextKey;
 	}
 
 
