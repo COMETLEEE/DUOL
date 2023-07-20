@@ -253,6 +253,7 @@ namespace DUOLGameEngine
 	{
 		if (_cutList.size() <= _soundIndex)
 			return;
+
 		_audioSource->SetAudioClip(_totalSceneClips[_soundIndex]);
 		_audioSource->SetIsLoop(false);
 		_audioSource->Play();

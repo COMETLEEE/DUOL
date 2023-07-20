@@ -254,6 +254,8 @@ namespace  DUOLClient
 	{
 		_currentGameScene = GameScene::StageA;
 
+		_isMiddleEvent = true;
+
 		_isFirstMonsterAction = false;
 
 		_isStartCameraAction = false;
@@ -328,6 +330,8 @@ namespace  DUOLClient
 	void SystemManager::InitializeStageB()
 	{
 		_currentGameScene = GameScene::StageB;
+
+		_isMiddleEvent = true;
 
 		_isFirstMonsterAction = false;
 		_isBStageDoorAction = false;
@@ -423,6 +427,8 @@ namespace  DUOLClient
 		_currentGameScene = GameScene::StageC;
 
 		_cCurrentTime = 0.f;
+
+		_isMiddleEvent = true;
 
 		_infoChcek = false;
 
@@ -551,6 +557,7 @@ namespace  DUOLClient
 
 	void SystemManager::StageAUpdate(float deltaTime)
 	{
+
 		// 처음 몬스터 만나고 처음 연출이 들어가할때
 		// false true
 		if (!_isFirstMonster && _isFirstMonsterAction)
