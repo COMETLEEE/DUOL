@@ -50,6 +50,8 @@ namespace DUOLClient
 
 		float _distance;
 
+		float _tiemr;
+
 		DUOLMath::Vector3 _dest;
 
 	public:

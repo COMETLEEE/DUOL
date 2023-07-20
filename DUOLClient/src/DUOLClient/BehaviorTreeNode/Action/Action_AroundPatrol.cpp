@@ -6,6 +6,7 @@
 
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 DUOLClient::Action_AroundPatrol::Action_AroundPatrol(const std::string& name, const BT::NodeConfig& config) :
 	StatefulActionNode(name, config),
@@ -51,6 +52,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 	dir.z = y;
 	_dest = targetPos + dir * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
 
+	_tiemr = 2.0f;
 
 	if (_ai && _ai->GetGroupController() && _enemyGroupController->GetGroupEnemys().size() > 1) // 일정 호의 크기를 넘어가지 않도록 제한.
 	{
@@ -129,6 +131,23 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 {
 	if (!_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
+
+	if(_tiemr <= 0.0f)
+	{
+		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
+		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+
+		_animator->SetFloat(TEXT("MoveSpeed"), 0);
+		_animator->SetBool(TEXT("IsWalkRight"), false);
+		_animator->SetBool(TEXT("IsWalkLeft"), false);
+		_animator->SetBool(TEXT("IsWalkBack"), false);
+
+		return BT::NodeStatus::SUCCESS;
+	}
+
+	_tiemr -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+	
 
 	auto distance = DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _transform->GetWorldPosition());
 
