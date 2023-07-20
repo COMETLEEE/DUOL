@@ -22,7 +22,7 @@ namespace DUOLGraphicsLibrary
 		void* _deviceContext;
 	};
 	
-	struct DUOLGRAPHICSLIBRARY_EXPORT RendererDesc
+	struct RendererDesc
 	{
 		long _handle;
 
@@ -100,7 +100,7 @@ namespace DUOLGraphicsLibrary
 		UINT64 _CSInvocations;
 	};
 
-	struct VideoAdapterDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT VideoAdapterDesc
 	{
 		// hardware Name
 		wchar_t _hardwareName[128];

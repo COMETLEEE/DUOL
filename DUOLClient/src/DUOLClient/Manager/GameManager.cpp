@@ -21,6 +21,7 @@
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSecondsRealtime.h"
 #include "DUOLGameEngine/ECS/Object/AudioClip.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 using namespace rttr;
 
@@ -455,6 +456,11 @@ namespace DUOLClient
 
 		SetBGM(_audioClipName);
 
+		//GraphicsSetting
+		auto graphicsSetting = DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsSetting();
+		graphicsSetting._rimLight._clipPoint = 0.15f;
+		graphicsSetting._rimLight._rimDecrease = 1.5f;
+		DUOLGameEngine::GraphicsManager::GetInstance()->SetGraphicsSetting(graphicsSetting);
 	}
 
 	void GameManager::OnUpdate(float deltaTime)

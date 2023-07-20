@@ -246,7 +246,13 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const DUOLCommon::tstring& objectID);
 
+		//For SceneData Load
 		void SetGraphicSetting(GraphicsSetting& setting);
+
+		//실제데이터 수정.
+		GraphicsSettingData GetGraphicsSetting() const;
+
+		void SetGraphicsSetting(const GraphicsSettingData& graphicsSetting);
 
 		void CreateSSAOKernel();
 

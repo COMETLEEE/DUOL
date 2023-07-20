@@ -181,7 +181,7 @@ namespace DUOLClient
 
 	DUOLGameEngine::CoroutineHandler PlayerState_Overdrive::ReserveEndOverdriveState()
 	{
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(OVERDRIVE_DURATION);
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_player->_overdriveDuration);
 
 		// 오버드라이브가 끝날 수 있음을 알린다.
 		auto idleState = reinterpret_cast<DUOLClient::PlayerState_Idle*>(_stateMachine->GetState(TEXT("PlayerState_Idle")));
@@ -272,6 +272,7 @@ namespace DUOLClient
 				_animator->SetAnimatorController(_playerOverdriveSwordAnimCon);
 
 				_player->_isOverdriveSwordMode = true;
+
 			}
 			else
 			{
@@ -279,6 +280,9 @@ namespace DUOLClient
 
 				_player->_isOverdriveFistMode = true;
 			}
+			//새로 갱신해줬으니 스테이트를 다시 갱신하자.
+			if (_player->_isLockOnMode)
+				_animator->SetBool(TEXT("IsLockOn"), true);
 
 			std::function<DUOLGameEngine::CoroutineHandler(void)> reserveFunc = std::bind(&DUOLClient::PlayerState_Overdrive::ReserveEndOverdriveState, this);
 
@@ -294,6 +298,9 @@ namespace DUOLClient
 		else
 		{
 			_animator->SetAnimatorController(_playerNormalAnimCon);
+			//새로 갱신해줬으니 스테이트를 다시 갱신하자.
+			if (_player->_isLockOnMode)
+				_animator->SetBool(TEXT("IsLockOn"), true);
 
 			if (_player->_isOverdriveFistMode)
 			{

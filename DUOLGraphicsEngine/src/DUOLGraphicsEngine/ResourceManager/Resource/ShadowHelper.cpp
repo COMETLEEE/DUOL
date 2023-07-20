@@ -161,6 +161,17 @@ namespace DUOLGraphicsEngine
 			}
 		}
 
+		//중점구하기
+
+		for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++)
+		{
+			for (int boundingBoxPointIdx = 0; boundingBoxPointIdx < 8; boundingBoxPointIdx++)
+			{
+				float dist = (cascadeBoundingBox[cascadeIdx][boundingBoxPointIdx] - cascadeShadowInfos[cascadeIdx]._frustumCenter).Length();
+				cascadeShadowInfos[cascadeIdx]._frustumRadius = std::max<float>(cascadeShadowInfos[cascadeIdx]._frustumRadius, dist);
+			}
+		}
+
 		for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++)
 		{
 			for (int boundingBoxPointIdx = 0; boundingBoxPointIdx < 8; ++boundingBoxPointIdx)
@@ -170,8 +181,8 @@ namespace DUOLGraphicsEngine
 			}
 
      			cascadeShadowInfos[cascadeIdx]._frustumCenter /= 8.f;
-
-			DUOLMath::Vector3 shadowCamPos = cascadeShadowInfos[cascadeIdx]._frustumCenter - (lightDirection * 250);
+				// - (light * (250 + shadowInfo._frustumRadius));
+			DUOLMath::Vector3 shadowCamPos = cascadeShadowInfos[cascadeIdx]._frustumCenter - (lightDirection * (250 + cascadeShadowInfos[cascadeIdx]._frustumRadius));
 			auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, cascadeShadowInfos[cascadeIdx]._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
 
 			for (int boundingBoxIdx = 0; boundingBoxIdx < 4; ++boundingBoxIdx)
@@ -232,19 +243,7 @@ namespace DUOLGraphicsEngine
 			}
 		}
 
-		//중점구하기
 
-		//for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++)
-		//{
-		//	for (int boundingBoxPointIdx = 0; boundingBoxPointIdx < 8; boundingBoxPointIdx++)
-		//	{
-		//		float dist = (cascadeBoundingBox[cascadeIdx][boundingBoxPointIdx] - cascadeShadowInfos[cascadeIdx]._frustumCenter).Length();
-		//		cascadeShadowInfos[cascadeIdx]._frustumRadius = std::max<float>(cascadeShadowInfos[cascadeIdx]._frustumRadius, dist);
-		//	}
-
-		//	//오차줄이기용 코드인것같다.
-		//	//cascadeShadowInfos[cascadeIdx]._frustumRadius = std::floor(cascadeShadowInfos[cascadeIdx]._frustumRadius * 16.f) / 16.f;
-		//}
 
 
 		////texel size만큼	일정하게 분포시킨다.
@@ -294,10 +293,10 @@ namespace DUOLGraphicsEngine
 
 		//fabs(x);
 		//fabs(y);
-		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 200);
+		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * (250 + shadowInfo._frustumRadius));
 
 		auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, shadowInfo._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
-		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(shadowInfo._orthoMin.x, shadowInfo._orthoMax.x, shadowInfo._orthoMin.y, shadowInfo._orthoMax.y, 1,  500);
+		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(shadowInfo._orthoMin.x, shadowInfo._orthoMax.x, shadowInfo._orthoMin.y, shadowInfo._orthoMax.y, 1,  400 + shadowInfo._frustumRadius );
 
 		//auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-x, +x, -y, +y, 0, 500);
 

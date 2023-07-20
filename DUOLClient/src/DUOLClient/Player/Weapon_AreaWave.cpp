@@ -159,7 +159,7 @@ namespace DUOLClient
 				}
 
 				if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
-					_player->AddOverdrivePoint(OVERDRIVE_POINT_PER_FIST);
+					_player->AddOverdrivePoint(_player->_overdrivePointPerFist);
 			}
 		}
 	}

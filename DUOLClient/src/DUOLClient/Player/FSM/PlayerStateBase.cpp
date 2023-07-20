@@ -47,6 +47,8 @@ namespace DUOLClient
 
 			// Lock Off
 			_animator->SetBool(TEXT("IsLockOn"), false);
+			_player->_lockOnTargetTransform = nullptr;
+			_player->_lockOnTargetCharacterBase = nullptr;
 
 			_player->_isLockOnMode = false;
 
@@ -74,17 +76,27 @@ namespace DUOLClient
 
 					_mainCamController->SetViewTransform(lockOnTargetTransform);
 
-					// 플레이어도 Lock on target을 기억하자.
+					// 플레이어도 Lock on target을 기억하자.... 조금 더럽지만 급하다..
 					_player->_lockOnTargetTransform = lockOnTargetTransform;
+					for (auto& findEnemyComp : lockOnTargetTransform->GetParent()->GetChildGameObjects())
+					{
+
+						_player->_lockOnTargetCharacterBase = findEnemyComp->GetComponent<CharacterBase>();
+						if (_player->_lockOnTargetCharacterBase != nullptr)
+							break;
+					}
 
 					_player->_isLockOnMode = true;
 
 					// 쳐다보도록 하자.
+					DUOLMath::Vector3 worldPos = _transform->GetWorldPosition();
 					DUOLMath::Vector3 lockOnYZero = _player->_lockOnTargetTransform->GetWorldPosition();
+
+					lockOnYZero = lockOnYZero - worldPos;
 
 					lockOnYZero.y = 0;
 
-					_transform->LookAt(lockOnYZero, DUOLMath::Vector3::Up);
+					_transform->LookAt(_transform->GetWorldPosition() + lockOnYZero * 10.f, DUOLMath::Vector3::Up);
 
 					// Lock on animation.
 					_animator->SetBool(TEXT("IsLockOn"), true);
@@ -129,7 +141,7 @@ namespace DUOLClient
 		_desiredLook.Normalize(_desiredLook);
 
 		// 여기서 방향에 대한 애니메이터 컨트롤러 변경 .. 호출해보자 ..
- 		SetAnimatorDirectionParameter();
+		SetAnimatorDirectionParameter();
 	}
 
 	void PlayerStateBase::SetAnimatorDirectionParameter()
@@ -253,7 +265,7 @@ namespace DUOLClient
 			, _slopeRaycastDistance, _slopeLayer, _slopeHit))
 		{
 			// 슬로프 맞았다.
-			float angle = std::acosf(DUOLMath:: Vector3::Up.Dot(_slopeHit._hitNormal));
+			float angle = std::acosf(DUOLMath::Vector3::Up.Dot(_slopeHit._hitNormal));
 
 			return angle != 0.f && angle < _maxSlopeAngle;
 		}

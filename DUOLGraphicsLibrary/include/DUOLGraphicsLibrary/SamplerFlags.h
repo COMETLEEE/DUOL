@@ -2,7 +2,7 @@
 
 namespace DUOLGraphicsLibrary
 {
-	enum class SamplerFilter
+	enum class DUOLGRAPHICSLIBRARY_EXPORT SamplerFilter
 	{
 		FILTER_MIN_MAG_MIP_POINT = 0,
 		FILTER_MIN_MAG_POINT_MIP_LINEAR = 0x1,
@@ -42,7 +42,7 @@ namespace DUOLGraphicsLibrary
 		FILTER_MAXIMUM_ANISOTROPIC = 0x1d5
 	};
 
-	enum class SamplerAddressMode
+	enum class DUOLGRAPHICSLIBRARY_EXPORT SamplerAddressMode
 	{
 		ADDRESS_WRAP = 1,
 		ADDRESS_MIRROR = 2,
@@ -51,7 +51,7 @@ namespace DUOLGraphicsLibrary
 		ADDRESS_MIRROR_ONCE = 5
 	};
 
-	enum class ComparisonFunc {
+	enum class DUOLGRAPHICSLIBRARY_EXPORT ComparisonFunc {
 		COMPARISON_NEVER = 1,
 		COMPARISON_LESS = 2,
 		COMPARISON_EQUAL = 3,
@@ -62,7 +62,7 @@ namespace DUOLGraphicsLibrary
 		COMPARISON_ALWAYS = 8
 	};
 
-	struct SamplerDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT SamplerDesc
 	{
 		SamplerDesc() :
 			_addressU(SamplerAddressMode::ADDRESS_MIRROR)

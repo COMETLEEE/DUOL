@@ -46,6 +46,7 @@
 #include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGameEngine/Manager/CameraEventManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLJson/JsonReader.h"
 
 using namespace rttr;
 
@@ -101,6 +102,10 @@ namespace DUOLClient
 		, _playerHitAnimationSpeed(1.0f)
 		, _isDashCrowdControl(false)
 		, _canInteraction(true)
+		, _superArmorDamageDecrease(0.8f)
+		, _overdriveDuration(10.f)
+		, _overdrivePointPerSword(3.f)
+		, _overdrivePointPerFist(4.f)
 	{
 		SetHP(1000.f);
 	}
@@ -135,7 +140,11 @@ namespace DUOLClient
 			return false;
 		}
 
-		_hp -= damage;
+		if(_isSuperArmor)
+			_hp -= damage * _superArmorDamageDecrease;
+		else
+			_hp -= damage;
+
 		PlaySoundClip(PlayerSoundTable::Hit_Sound_Effect, false);
 
 		_currentDownPoint += downPoint;
@@ -275,6 +284,8 @@ namespace DUOLClient
 			}
 		}
 
+
+
 		// 충격파 오브젝트
 		DUOLGameEngine::GameObject* weaponWave = GetGameObject()->GetScene()->CreateEmpty();
 
@@ -304,6 +315,57 @@ namespace DUOLClient
 		_playerRigidbody->SetMaxDepenetrationVelocity(4.f);
 		_playerRigidbody->SetCenterOfMass({ 0, 1.25f, 0 });
 
+#pragma region PlayerData Load
+		auto playerDamageTable = DUOLJson::JsonReader::GetInstance()->LoadJson(TEXT("Asset/DataTable/PlayerDataTable.json"));
+
+		const TCHAR* attackName = _T("Name");
+		const TCHAR* damageName = _T("Damage");
+
+		auto tableArray = playerDamageTable->GetArray();
+		_playerDataTable.reserve(tableArray.Size());
+
+		for (auto& damageList : tableArray)
+		{
+			DUOLCommon::tstring name;
+			float damage = 0;
+
+			if (damageList.HasMember(attackName))
+			{
+				name = damageList[attackName].GetString();
+			}
+
+			if (damageList.HasMember(damageName))
+			{
+				damage = damageList[damageName].GetFloat();
+			}
+
+			_playerDataTable.emplace(name, damage);
+		}
+
+		DUOLJson::JsonReader::GetInstance()->UnloadJson(TEXT("Asset/DataTable/PlayerDataTable.json"));
+#pragma endregion
+
+#pragma region PlayerData Set
+		if (_playerDataTable.contains(TEXT("HP")));
+			_hp = _playerDataTable.find(TEXT("HP"))->second;
+		if (_playerDataTable.contains(TEXT("MoveSpeed")));
+			_defaultMaxMoveSpeed = _playerDataTable.find(TEXT("MoveSpeed"))->second;
+		if (_playerDataTable.contains(TEXT("RunSpeed")));
+			_defaultMaxRunSpeed = _playerDataTable.find(TEXT("RunSpeed"))->second;
+		if (_playerDataTable.contains(TEXT("MaxLockOnMoveSpeed")));	
+			_defaultMaxLockOnMoveSpeed = _playerDataTable.find(TEXT("MaxLockOnMoveSpeed"))->second;
+		if (_playerDataTable.contains(TEXT("MaxLockOnRunSpeed")));
+			_defaultMaxLockOnRunSpeed = _playerDataTable.find(TEXT("MaxLockOnRunSpeed"))->second;
+		if (_playerDataTable.contains(TEXT("OverdriveTime")));
+			_overdriveDuration = _playerDataTable.find(TEXT("OverdriveTime"))->second;
+		if (_playerDataTable.contains(TEXT("OverdrivePointPerSword")));
+			_overdrivePointPerSword = _playerDataTable.find(TEXT("OverdrivePointPerSword"))->second;
+		if (_playerDataTable.contains(TEXT("OverdrivePointPerFist")));
+			_overdrivePointPerFist = _playerDataTable.find(TEXT("OverdrivePointPerFist"))->second;
+		if (_playerDataTable.contains(TEXT("SuperArmorDamageDecrease")));
+			_superArmorDamageDecrease = _playerDataTable.find(TEXT("SuperArmorDamageDecrease"))->second;
+#pragma endregion
+
 #pragma region ADD_ALL_STATE
 		PlayerState_Idle* idle = _playerStateMachine.AddState<PlayerState_Idle>(this);
 
@@ -314,6 +376,8 @@ namespace DUOLClient
 		PlayerState_Dash* dash = _playerStateMachine.AddState<PlayerState_Dash>(this);
 
 		PlayerState_Attack* attack = _playerStateMachine.AddState<PlayerState_Attack>(this);
+		//콤보트리 이니셜라이즈
+		attack->BuildComboTree(_playerDataTable);
 
 		PlayerState_Hit* hit = _playerStateMachine.AddState<PlayerState_Hit>(this);
 
@@ -324,13 +388,12 @@ namespace DUOLClient
 		PlayerState_Overdrive* overdrive = _playerStateMachine.AddState<PlayerState_Overdrive>(this);
 
 		PlayerState_Ultimate* ult = _playerStateMachine.AddState<PlayerState_Ultimate>(this);
-		auto& damageTable = attack->GetDamageTable();
-		if (damageTable.contains(TEXT("UltimateSword_S")));
-			ult->SetUltimateSwordDamage(damageTable.find(TEXT("UltimateSword_S"))->second);
-		if (damageTable.contains(TEXT("UltimateSword_SSSSSS")));
-			ult->SetUltimateSwordWaveDamage(damageTable.find(TEXT("UltimateSword_SSSSSS"))->second);
-		if (damageTable.contains(TEXT("UltimateFist_F")));
-			ult->SetUltimateFistDamage(damageTable.find(TEXT("UltimateFist_F"))->second);
+		if (_playerDataTable.contains(TEXT("UltimateSword_S")));
+			ult->SetUltimateSwordDamage(_playerDataTable.find(TEXT("UltimateSword_S"))->second);
+		if (_playerDataTable.contains(TEXT("UltimateSword_SSSSSS")));
+			ult->SetUltimateSwordWaveDamage(_playerDataTable.find(TEXT("UltimateSword_SSSSSS"))->second);
+		if (_playerDataTable.contains(TEXT("UltimateFist_F")));
+			ult->SetUltimateFistDamage(_playerDataTable.find(TEXT("UltimateFist_F"))->second);
 
 		PlayerState_Jump* jump = _playerStateMachine.AddState<PlayerState_Jump>(this);
 #pragma endregion
@@ -348,7 +411,7 @@ namespace DUOLClient
 	{
 		_isInSuperArmorRimLight = true;
 
-		_playerSkinnedMeshRenderer->SetRimColor(DUOLMath::Vector3(0.f, 211.f, 255.f));
+		_playerSkinnedMeshRenderer->SetRimColor(DUOLMath::Vector3(13.f/255.f, 75 / 255.f, 101.f / 255.f));
 
 		_playerSkinnedMeshRenderer->SetRimLight(true);
 
@@ -612,6 +675,21 @@ namespace DUOLClient
 
 		if (DUOLClient::GameManager::GetInstance()->IsInUIMode())
 			return;
+
+		//lock On Check
+		if(_isLockOnMode)
+		{
+			if (_lockOnTargetCharacterBase != nullptr && _lockOnTargetCharacterBase->GetIsDie())
+			{
+				_mainCamController->SetViewTransform(nullptr);
+
+				// Lock Off
+				_playerAnimator->SetBool(TEXT("IsLockOn"), false);
+				_lockOnTargetTransform = nullptr;
+				_lockOnTargetCharacterBase = nullptr;
+				_isLockOnMode = false;
+			}
+		}
 
 		// 모든 기타 사항에 대해서 갱신을 마무리하고, 플레이어의 스테이트 머신을 갱신합니다.
 		_playerStateMachine.UpdateStateMachine(deltaTime);

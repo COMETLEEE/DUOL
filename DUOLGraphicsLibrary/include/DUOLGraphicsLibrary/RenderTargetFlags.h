@@ -13,7 +13,7 @@ namespace DUOLGraphicsLibrary
 		DepthStencil
 	};
 
-	struct RenderTargetDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT RenderTargetDesc
 	{
 		RenderTargetDesc() :
 			_resolution()

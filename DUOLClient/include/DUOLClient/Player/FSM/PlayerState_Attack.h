@@ -141,8 +141,6 @@ namespace DUOLClient
 
 		DUOLGameEngine::ParticleRenderer* _normalSwordTrail;
 
-		std::unordered_map<DUOLCommon::tstring, float> _damageTable;
-
 
 	private:
 		/**
@@ -184,11 +182,6 @@ namespace DUOLClient
 		 * \brief 캔슬 프레임이 끝날 때, 다음 콤보로의 전환을 체크합니다.
 		 */
 		void CheckCanEnterNextAttack();
-
-		/**
-		 * \brief TODO : 기획자의 데이터 문서를 받아서 콤보 트리를 빌드합니다.
-		 */
-		void BuildComboTree();
 
 		/**
 		 * \brief 현재 공격 스테이트에 맞게 애니메이션 파라미터 등을 전환합니다.
@@ -241,7 +234,10 @@ namespace DUOLClient
 		DUOLGameEngine::CoroutineHandler LaunchAreaWave();
 
 	public:
-		const std::unordered_map<DUOLCommon::tstring, float>& GetDamageTable() const;
+		/**
+	* \brief TODO : 기획자의 데이터 문서를 받아서 콤보 트리를 빌드합니다.
+	*/
+		void BuildComboTree(const std::unordered_map<DUOLCommon::tstring, float>& playerDataTable);
 
 		virtual void OnStateEnter(float deltaTime) override;
 

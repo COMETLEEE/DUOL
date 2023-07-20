@@ -40,6 +40,16 @@ namespace DUOLGameEngine
 		return &_currentSceneInfo;
 	}
 
+	GraphicsSettingData GraphicsManager::GetGraphicsSetting() const
+	{
+		return _graphicsSetting;
+	}
+
+	void GraphicsManager::SetGraphicsSetting(const GraphicsSettingData& graphicsSetting)
+	{
+		_graphicsSetting = graphicsSetting;
+	}
+
 	void GraphicsManager::ReserveRenderObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo)
 	{
 		_renderObjectList.push_back(renderObjectInfo);

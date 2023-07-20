@@ -35,7 +35,8 @@ namespace DUOLGraphicsLibrary
 		RESOURCE_MISC_SHARED_EXCLUSIVE_WRITER
 	};
 
-	enum class ResourceFormat {
+	enum class  ResourceFormat
+	{
 		FORMAT_UNKNOWN = 0,
 		FORMAT_R32G32B32A32_TYPELESS = 1,
 		FORMAT_R32G32B32A32_FLOAT = 2,
@@ -159,6 +160,7 @@ namespace DUOLGraphicsLibrary
 		FORMAT_SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE,
 		FORMAT_FORCE_UINT = 0xfffffff
 	};
+
 	enum class ResourceUsage
 	{
 		USAGE_DEFAULT = 0,

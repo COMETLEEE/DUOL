@@ -130,7 +130,7 @@ namespace DUOLEditor
 			_panels.emplace(TEXT("GraphicsSetting"), graphicsSetting);
 		}
 		// Toolbar
-#pragma endregiona
+#pragma endregion
 
 	}
 

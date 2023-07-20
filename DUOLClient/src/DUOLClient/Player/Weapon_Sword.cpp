@@ -179,7 +179,7 @@ namespace DUOLClient
 						_enemyHitList.push_back(enemyuuid);
 
 						if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
-							_player->AddOverdrivePoint( OVERDRIVE_POINT_PER_SWORD);	
+							_player->AddOverdrivePoint(_player->_overdrivePointPerSword);	
 					}
 				}
 			}

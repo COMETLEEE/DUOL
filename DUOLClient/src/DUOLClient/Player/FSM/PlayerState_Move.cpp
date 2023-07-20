@@ -60,11 +60,14 @@ namespace DUOLClient
 			// Lock on state 움직임 통제
 			if (_player->_isLockOnMode)
 			{
+				DUOLMath::Vector3 worldPos = _transform->GetWorldPosition();
 				DUOLMath::Vector3 lockOnYZero = _player->_lockOnTargetTransform->GetWorldPosition();
+
+				lockOnYZero = lockOnYZero - worldPos;
 
 				lockOnYZero.y = 0;
 
-				_transform->LookAt(lockOnYZero, DUOLMath::Vector3::Up);
+ 				_transform->LookAt(_transform->GetWorldPosition() + lockOnYZero * 10.f, DUOLMath::Vector3::Up);
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothness * fixedTimeStep);
 
@@ -153,11 +156,14 @@ namespace DUOLClient
 			// Lock on state 움직임 통제
 			if (_player->_isLockOnMode)
 			{
+				DUOLMath::Vector3 worldPos = _transform->GetWorldPosition();
 				DUOLMath::Vector3 lockOnYZero = _player->_lockOnTargetTransform->GetWorldPosition();
+
+				lockOnYZero = lockOnYZero - worldPos;
 
 				lockOnYZero.y = 0;
 
-				_transform->LookAt(lockOnYZero, DUOLMath::Vector3::Up);
+				_transform->LookAt(_transform->GetWorldPosition() + lockOnYZero * 10.f, DUOLMath::Vector3::Up);
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothness * fixedTimeStep);
 
@@ -267,5 +273,7 @@ namespace DUOLClient
 		
 		// 애니메이터 파라미터 정리
 		_animator->SetBool(TEXT("IsMove"), false);
+		_animator->SetFloat(TEXT("AnimationSpeed"), 1.f);
+
 	}
 }

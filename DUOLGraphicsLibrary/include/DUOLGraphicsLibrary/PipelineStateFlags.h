@@ -54,7 +54,7 @@ namespace DUOLGraphicsLibrary
 		PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST = 64
 	};
 
-	struct PipelineLayoutDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT PipelineLayoutDesc
 	{
 		PipelineLayoutDesc(ResourceType resourceType, BindFlags bindFlag, StageFlags stageFlag) :
 			_resourceType(resourceType)
@@ -81,7 +81,7 @@ namespace DUOLGraphicsLibrary
 		StageFlags  _stageFlags;
 	};
 
-	enum class StencilOp
+	DUOLGRAPHICSLIBRARY_EXPORT enum class  StencilOp
 	{
 		STENCIL_OP_KEEP = 1,
 		STENCIL_OP_ZERO = 2,
@@ -93,7 +93,7 @@ namespace DUOLGraphicsLibrary
 		STENCIL_OP_DECR = 8
 	};
 
-	struct StencilFaceDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT StencilFaceDesc
 	{
 		StencilFaceDesc() :
 			_stencilFailOp(StencilOp::STENCIL_OP_KEEP)
@@ -122,7 +122,7 @@ namespace DUOLGraphicsLibrary
 		ComparisonFunc _comparisonOp;
 	};
 
-	struct DepthStencilStateDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT DepthStencilStateDesc
 	{
 		DepthStencilStateDesc() :
 			_depthEnable(true)
@@ -153,7 +153,7 @@ namespace DUOLGraphicsLibrary
 		StencilFaceDesc _backFace;
 	};
 
-	struct RasterizerStateDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT RasterizerStateDesc
 	{
 		RasterizerStateDesc() :
 			_fillMode(FillMode::SOLID)
@@ -204,7 +204,7 @@ namespace DUOLGraphicsLibrary
 		bool _antialiasedLineEnable;
 	};
 
-	struct BlendStateDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT BlendStateDesc
 	{
 		BlendStateDesc() :
 			_alphaToCoverageEnable(false)
@@ -280,7 +280,7 @@ namespace DUOLGraphicsLibrary
 		RenderTagetBlendFactor _renderTarget[8];
 	};
 
-	struct PipelineStateDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT PipelineStateDesc
 	{
 		PipelineStateDesc() :
 			_vertexShader(nullptr)
@@ -312,7 +312,7 @@ namespace DUOLGraphicsLibrary
 		PrimitiveTopology _primitiveTopology;
 	};
 
-	struct ComputePipelineStateDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT ComputePipelineStateDesc
 	{
 		ComputePipelineStateDesc() :
 			_computeShader(nullptr)
@@ -324,7 +324,7 @@ namespace DUOLGraphicsLibrary
 	};
 
 
-	struct Viewport
+	struct DUOLGRAPHICSLIBRARY_EXPORT Viewport
 	{
 		inline Viewport(DUOLMath::Vector2 resolution) :
 			_left(0.f)

@@ -6,7 +6,7 @@
 
 namespace DUOLGraphicsLibrary
 {
-	enum class DUOLGRAPHICSLIBRARY_EXPORT ShaderType
+	enum class ShaderType
 	{
 		UNKNOWN = 0,
 		VERTEX = (1 << 0),
@@ -17,7 +17,7 @@ namespace DUOLGraphicsLibrary
 		COMPUTE = (1 << 5)
 	};
 
-	enum class DUOLGRAPHICSLIBRARY_EXPORT ShaderFlags
+	enum class ShaderFlags
 	{
 		UNKNOWN = 0,
 		GEOMETRY_STREAM_OUT = (1 << 0),
@@ -43,7 +43,7 @@ namespace DUOLGraphicsLibrary
 		const char* Definition;
 	}; 
 
-	enum class DUOLGRAPHICSLIBRARY_EXPORT INPUT_CLASSIFICATION
+	enum class INPUT_CLASSIFICATION
 	{
 		VertexData = 0
 		,InstanceData = 1

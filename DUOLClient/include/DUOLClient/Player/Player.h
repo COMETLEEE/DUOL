@@ -47,10 +47,6 @@ namespace DUOLClient
 	constexpr int MAX_SOUND_PLAYER = 5;
 
 #pragma region 플레이어 밸런스
-	constexpr float OVERDRIVE_POINT_PER_SWORD = 2.0f;
-
-	constexpr float OVERDRIVE_POINT_PER_FIST = 4.f;
-
 	// 초월 게이지 PER ATTACK
 
 	constexpr float MAX_DOWN_POINT = 100.f;
@@ -255,6 +251,14 @@ namespace DUOLClient
 		//외부요인에 의한 dash lock기능
 		bool _isDashCrowdControl;
 
+		float _overdriveDuration;
+
+		float _overdrivePointPerSword;
+
+		float _overdrivePointPerFist;
+
+		float _superArmorDamageDecrease;
+
 		float _jumpHoldTime;
 
 		float _jumpFlyTime;
@@ -304,6 +308,8 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* _lockOnTargetTransform;
 
+		CharacterBase* _lockOnTargetCharacterBase;
+
 		/**
 		* \brief 사운드 컴포넌트 듣는
 		*/
@@ -338,6 +344,9 @@ namespace DUOLClient
 		DUOLGameEngine::AudioSource* _voiceSource;
 
 		DUOLGameEngine::AudioSource* _scriptSource;
+
+		std::unordered_map<DUOLCommon::tstring, float> _playerDataTable;
+
 
 #pragma endregion
 

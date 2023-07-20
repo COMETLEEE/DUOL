@@ -5,7 +5,7 @@ namespace DUOLGraphicsLibrary
 {
 	class Resource;
 
-	enum class DUOLGRAPHICSLIBRARY_EXPORT ResourceType
+	enum class ResourceType
 	{
 		UNDEFINED
 		, BUFFER
@@ -16,7 +16,7 @@ namespace DUOLGraphicsLibrary
 	/**
 	 * \brief 이 리소스가 어떤 형식으로 바인딩 되는 가에 대한 flag입니다.
 	 */
-	enum class DUOLGRAPHICSLIBRARY_EXPORT BindFlags
+	enum class BindFlags
 	{
 		UNDEFINED = 0
 		, VERTEXBUFFER = (1 << 0)
@@ -30,7 +30,7 @@ namespace DUOLGraphicsLibrary
 		, SAMPLER = (1 << 8)
 	};
 
-	enum class DUOLGRAPHICSLIBRARY_EXPORT CPUAccessFlags
+	enum class CPUAccessFlags
 	{
 		READ = (1 << 0)
 		, WRITE = (1 << 1)
@@ -41,7 +41,7 @@ namespace DUOLGraphicsLibrary
 	/**
 	 * \brief 어떤 쉐이더스테이지에 바인딩 될 것인가.
 	 */
-	enum class DUOLGRAPHICSLIBRARY_EXPORT StageFlags
+	enum class StageFlags
 	{
 		UNDEFINED = 0,
 		VERTEXSTAGE = (1 << 0),
@@ -53,7 +53,7 @@ namespace DUOLGraphicsLibrary
 		VSPS = (VERTEXSTAGE | PIXELSTAGE)
 	};
 
-	enum class DUOLGRAPHICSLIBRARY_EXPORT ResourceMiscFlags
+	enum class ResourceMiscFlags
 	{
 		RESOURCE_MISC_GENERATE_MIPS = 0x1L,
 		RESOURCE_MISC_SHARED = 0x2L,
