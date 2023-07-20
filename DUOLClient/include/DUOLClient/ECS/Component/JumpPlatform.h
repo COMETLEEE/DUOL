@@ -14,6 +14,8 @@ namespace DUOLClient
 {
 	class Player;
 
+	constexpr float JUMP_ANIM_TIME = 2.0f;
+
 	class DUOL_CLIENT_API JumpPlatform : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
@@ -62,6 +64,8 @@ namespace DUOLClient
 		float _currentCoolTime;
 
 		float _currentStepOnTime;
+
+		float _jumpAnimCount;
 
 		DUOLClient::Player* _usingPlayer;
 

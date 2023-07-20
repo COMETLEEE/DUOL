@@ -246,11 +246,11 @@ namespace DUOLClient
 		else if (gameObject->GetLayer() == TEXT("Player"))
 		{
 			_playerInZone = true;
-		}
 
-		if(!_uiGameObject->GetIsActive())
-		{
-			_uiGameObject->SetIsActiveSelf(true);
+			if (!_uiGameObject->GetIsActive())
+			{
+				_uiGameObject->SetIsActiveSelf(true);
+			}
 		}
 	}
 

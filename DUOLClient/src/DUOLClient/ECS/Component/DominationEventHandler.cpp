@@ -4,6 +4,7 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include <rttr/registration>
 
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
@@ -81,7 +82,10 @@ namespace DUOLClient
 				{
 					dominationArea->SetTotallyClear(true);
 				}
-				//성공이벤트 호출! 
+				//성공이벤트 호출!
+
+				SystemManager::SetAstageClear(true);
+				SystemManager::GetInstance()->CreatePortal(TEXT("AClearPortal"), TEXT("Middle"), A_CLEAR_PORTAL_TO_MIDDLE_POSITION);
 			}
 		}
 		else

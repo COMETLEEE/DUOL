@@ -81,7 +81,7 @@ namespace DUOLClient
 		, _defaultMaxRunSpeed(6.f)
 		, _defaultMaxLockOnMoveSpeed(2.f)
 		, _defaultMaxLockOnRunSpeed(4.f)
-		, _currentDamage(20.f * 2.f)
+		, _currentDamage(10)
 		, _currentMoveSpeed(0.f)
 		, _inAttackPostDelay(0.2f)
 		, _endAttackPostDelay(0.5f)
@@ -324,6 +324,13 @@ namespace DUOLClient
 		PlayerState_Overdrive* overdrive = _playerStateMachine.AddState<PlayerState_Overdrive>(this);
 
 		PlayerState_Ultimate* ult = _playerStateMachine.AddState<PlayerState_Ultimate>(this);
+		auto& damageTable = attack->GetDamageTable();
+		if (damageTable.contains(TEXT("UltimateSword_S")));
+			ult->SetUltimateSwordDamage(damageTable.find(TEXT("UltimateSword_S"))->second);
+		if (damageTable.contains(TEXT("UltimateSword_SSSSSS")));
+			ult->SetUltimateSwordWaveDamage(damageTable.find(TEXT("UltimateSword_SSSSSS"))->second);
+		if (damageTable.contains(TEXT("UltimateFist_F")));
+			ult->SetUltimateFistDamage(damageTable.find(TEXT("UltimateFist_F"))->second);
 
 		PlayerState_Jump* jump = _playerStateMachine.AddState<PlayerState_Jump>(this);
 #pragma endregion

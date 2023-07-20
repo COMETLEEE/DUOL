@@ -117,6 +117,11 @@ namespace  DUOLClient
 		return _systemInstance;
 	}
 
+	void SystemManager::SetAstageClear(bool value)
+	{
+		_isAStageClear = value;
+	}
+
 	void SystemManager::InitializeMiddle()
 	{
 		_currentGameScene = GameScene::Middle;
@@ -686,6 +691,12 @@ namespace  DUOLClient
 		}
 		case GameScene::StageA:
 		{
+
+			if (!_cameraInstance->IsPlayMode())
+			{
+				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+			}
+
 			break;
 		}
 		case GameScene::StageB:
@@ -698,6 +709,12 @@ namespace  DUOLClient
 		}
 		case GameScene::StageC:
 		{
+
+			if (!_cameraInstance->IsPlayMode())
+			{
+				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+			}
+
 			break;
 		}
 		case GameScene::ETC:

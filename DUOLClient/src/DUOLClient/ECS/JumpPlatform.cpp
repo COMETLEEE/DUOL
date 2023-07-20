@@ -84,7 +84,7 @@ void DUOLClient::JumpPlatform::CalculateDistance(float deltaT)
 		_currentGravity = 0;
 		_currentHorizontalSpeed = 0;
 		_currentVerticalSpeed = 0;
-
+		_jumpAnimCount = 0.f;
 		return;
 	}
 
@@ -106,7 +106,7 @@ void DUOLClient::JumpPlatform::SetTarget(DUOLGameEngine::GameObject* object)
 	_distanceVector.y = 0;
 	auto length = _distanceVector.Length();
 	_distanceVector.Normalize();
-
+	object->GetTransform()->LookAt(_startPoint + _distanceVector);
 	DUOLMath::Vector2 topPoint{ length / 2, _maxHeight };
 	//_moveTime/2 동안 _maxHeight를 갈 수 있는 처음시작속도는..
 
@@ -130,11 +130,13 @@ void DUOLClient::JumpPlatform::OnTriggerStay(const std::shared_ptr<DUOLPhysics::
 
 				if (_currentStepOnTime > _stepOnTime)
 				{
+					_jumpBoardAnimator->SetCurrentLoopCount(0);
+
 					//관련 숫자들 초기화
 					_currentCoolTime = 0;
 					_currentStepOnTime = 0;
 					SetTarget(gameObject);
-					_usingPlayer->Jump(1.5f, _moveTime);
+					_usingPlayer->Jump(JUMP_ANIM_TIME, _moveTime);
 					_isUsingJumpingBoard = true;
 				}
 			}
@@ -153,7 +155,11 @@ void DUOLClient::JumpPlatform::OnUpdate(float deltaTime)
 {
 	if (_isUsingJumpingBoard)
 	{
-		CalculateDistance(deltaTime);
+		_jumpAnimCount += deltaTime;
+		if (_jumpAnimCount > JUMP_ANIM_TIME)
+		{
+			CalculateDistance(deltaTime);
+		}
 	}
 
 	if (_currentCoolTime <= _cooltime)

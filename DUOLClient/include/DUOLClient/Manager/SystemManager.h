@@ -75,6 +75,9 @@ namespace DUOLClient
 
 		static DUOLClient::SystemManager* GetInstance();
 
+		static void SetAstageClear(bool value);
+
+
 		/**
 		 * \brief ALL 
 		 */

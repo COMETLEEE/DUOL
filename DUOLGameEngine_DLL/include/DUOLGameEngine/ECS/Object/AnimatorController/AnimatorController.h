@@ -37,6 +37,7 @@ namespace DUOLGameEngine
 		, Bool = 2
 		, Trigger = 3
 		, SFX = 4
+		, Damage = 5
 	};
 
 	/**

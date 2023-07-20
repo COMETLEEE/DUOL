@@ -53,7 +53,7 @@ namespace DUOLClient
 
 	// 초월 게이지 PER ATTACK
 
-	constexpr float MAX_DOWN_POINT = 12.f;
+	constexpr float MAX_DOWN_POINT = 100.f;
 
 	constexpr float RESET_DOWN_POINT = 3.f;
 

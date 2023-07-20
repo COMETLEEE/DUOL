@@ -141,6 +141,10 @@ namespace DUOLClient
 
 		DUOLGameEngine::ParticleRenderer* _normalSwordTrail;
 
+		std::unordered_map<DUOLCommon::tstring, float> _damageTable;
+
+
+	private:
 		/**
 		 * \brief 캔슬 프레임 구간을 시작합니다.
 		 */
@@ -237,6 +241,8 @@ namespace DUOLClient
 		DUOLGameEngine::CoroutineHandler LaunchAreaWave();
 
 	public:
+		const std::unordered_map<DUOLCommon::tstring, float>& GetDamageTable() const;
+
 		virtual void OnStateEnter(float deltaTime) override;
 
 		virtual void OnStateStayFixed(float fixedTimeStep) override;

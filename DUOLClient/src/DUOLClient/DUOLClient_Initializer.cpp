@@ -165,7 +165,7 @@ namespace DUOLClient
 
 		playerNormalAnimCon->AddParameter(TEXT("AttackCount"), AnimatorControllerParameterType::Int);
 
-		playerNormalAnimCon->AddParameter(TEXT("IsJumping"), AnimatorControllerParameterType::Bool);
+		playerNormalAnimCon->AddParameter(TEXT("IsFlying"), AnimatorControllerParameterType::Bool);
 
 		playerNormalAnimCon->AddParameter(TEXT("IsLanding"), AnimatorControllerParameterType::Bool);
 
@@ -193,6 +193,15 @@ namespace DUOLClient
 		//playerDashClip->SetIsLoop(false);
 		playerDashClip->SetIsUseEventInTransition(false);
 		playerDash->SetAnimationClip(playerDashClip);
+
+		//Jump
+		auto playerJump = playerNormalStateMachine->AddState(TEXT("Player_Jump"));
+		auto playerJumpClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_jump_loop"));
+		playerJump->SetAnimationClip(playerJumpClip);
+
+		auto playerJumpEnd = playerNormalStateMachine->AddState(TEXT("Player_End"));
+		auto playerJumpEndClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_jump_end"));
+		playerJumpEnd->SetAnimationClip(playerJumpEndClip);
 
 		// Lock-On Move and Run
 		auto playerLockOnLeftMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnLeftMove"));
@@ -1189,6 +1198,19 @@ namespace DUOLClient
 		playerDashToRun->SetTransitionDuration(0.2f);
 		playerDashToRun->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
 		playerDashToRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+#pragma endregion
+
+#pragma region Jump_Start
+		auto playerIdleToJump = playerIdle->AddTransition(playerJump);
+		playerIdleToJump->AddCondition(TEXT("IsFlying"), AnimatorConditionMode::True);
+
+		auto playerJumpingToLanding = playerJump->AddTransition(playerJumpEnd);
+		playerJumpingToLanding->AddCondition(TEXT("IsFlying"), AnimatorConditionMode::False);
+		playerJumpingToLanding->AddCondition(TEXT("IsLanding"), AnimatorConditionMode::True);
+
+		auto playerLandingToIdle = playerJump->AddTransition(playerIdle);
+		playerLandingToIdle->AddCondition(TEXT("IsFlying"), AnimatorConditionMode::False);
+		playerLandingToIdle->AddCondition(TEXT("IsLanding"), AnimatorConditionMode::False);
 #pragma endregion
 
 #pragma region DOWN_START_END

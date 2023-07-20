@@ -26,7 +26,7 @@ void DUOLClient::PlayerState_Jump::OnStateStay(float deltaTime)
 	_currentHoldTime += deltaTime;
 	_currentFlyTime += deltaTime;
 
-	if (_player->_jumpHoldTime > _currentHoldTime)
+	if (_player->_jumpHoldTime < _currentHoldTime)
 	{
 		_animator->SetBool(TEXT("IsFlying"), true);
 
@@ -44,7 +44,7 @@ void DUOLClient::PlayerState_Jump::OnStateStay(float deltaTime)
 			{
 				if (rayHitInfo._hitDistance < 0.3f)
 				{
-					_animator->SetBool(TEXT("IsFlying"), false);
+					_animator->SetBool(TEXT("IsJumping"), false);
 					_animator->SetBool(TEXT("IsLanding"), true);
 				}
 			}

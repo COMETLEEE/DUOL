@@ -6,7 +6,13 @@
 
 namespace DUOLGameEngine
 {
-	enum class DIRECTIONSTAT { LEFT_TO_RIGHT, RIGHT_TO_LEFT, TOP_TO_DOWN, DOWN_TO_TOP };
+	enum class DIRECTIONSTAT
+	{
+		LEFT_TO_RIGHT,
+		RIGHT_TO_LEFT,
+		TOP_TO_DOWN,
+		DOWN_TO_TOP
+	};
 
 	class DUOL_GAMEENGINE_API Scrollbar final : public DUOLGameEngine::BehaviourBase
 	{

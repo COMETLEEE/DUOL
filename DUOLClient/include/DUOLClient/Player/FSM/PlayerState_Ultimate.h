@@ -34,6 +34,12 @@ namespace DUOLClient
 
 		std::unordered_map<int, DUOLGameEngine::AudioClip*>  _audioClips;
 
+		float _ultimateSwordDamage;
+
+		float _ultimateSwordWaveDamage;
+
+		float _ultimateFistDamage;
+
 	private:
 		void BulletTimeInUltimate();
 
@@ -63,13 +69,15 @@ namespace DUOLClient
 
 		DUOLGameEngine::CoroutineHandler LaunchAreaWave();
 
-		void StartSwordAttackFrame();
-
-		void EndSwordAttackFrame();
-
 		void PlaySoundEffect(PlayerSoundTable sounds);
 
 	public:
+		void SetUltimateSwordDamage(float ultimateSwordDamage);
+
+		void SetUltimateSwordWaveDamage(float ultimateSwordWaveDamage);
+
+		void SetUltimateFistDamage(float ultimateFistDamage);
+
 		virtual void OnStateEnter(float deltaTime) override;
 
 		virtual void OnStateStay(float deltaTime) override;

@@ -25,6 +25,10 @@
 DUOLClient::PlayerState_Ultimate::PlayerState_Ultimate(DUOLClient::Player* player) :
 	PlayerStateBase(TEXT("PlayerState_Ultimate"), player)
 	, _ultFirstRun(true)
+	, _ultimateSwordDamage(10.f)
+	, _ultimateSwordWaveDamage(50.f)
+	, _ultimateFistDamage(70.f)
+
 {
 #pragma region Ultimate_EVENT
 	//이벤트가 
@@ -55,11 +59,11 @@ DUOLClient::PlayerState_Ultimate::PlayerState_Ultimate(DUOLClient::Player* playe
 	_player->AddEventFunction(TEXT("SwordWaveHit"),
 		std::bind(&DUOLClient::PlayerState_Ultimate::SwordWaveHit, this));
 
-	_player->AddEventFunction(TEXT("StartSwordAttackFrame"),
-		std::bind(&DUOLClient::PlayerState_Ultimate::StartSwordAttackFrame, this));
+	//_player->AddEventFunction(TEXT("StartSwordAttackFrame"),
+	//	std::bind(&DUOLClient::PlayerState_Ultimate::StartSwordAttackFrame, this));
 
-	_player->AddEventFunction(TEXT("EndSwordAttackFrame"),
-		std::bind(&DUOLClient::PlayerState_Ultimate::EndSwordAttackFrame, this));
+	//_player->AddEventFunction(TEXT("EndSwordAttackFrame"),
+	//	std::bind(&DUOLClient::PlayerState_Ultimate::EndSwordAttackFrame, this));
 
 	_player->AddEventFunction(TEXT("BulletTimeInUltimate"),
 		std::bind(&DUOLClient::PlayerState_Ultimate::BulletTimeInUltimate, this));
@@ -83,6 +87,21 @@ DUOLClient::PlayerState_Ultimate::PlayerState_Ultimate(DUOLClient::Player* playe
 
 DUOLClient::PlayerState_Ultimate::~PlayerState_Ultimate()
 {
+}
+
+void DUOLClient::PlayerState_Ultimate::SetUltimateSwordDamage(float ultimateSwordDamage)
+{
+	_ultimateSwordDamage = ultimateSwordDamage;
+}
+
+void DUOLClient::PlayerState_Ultimate::SetUltimateSwordWaveDamage(float ultimateSwordWaveDamage)
+{
+	_ultimateSwordWaveDamage = ultimateSwordWaveDamage;
+}
+
+void DUOLClient::PlayerState_Ultimate::SetUltimateFistDamage(float ultimateFistDamage)
+{
+	_ultimateFistDamage = ultimateFistDamage;
 }
 
 void DUOLClient::PlayerState_Ultimate::BulletTimeInUltimate()
@@ -135,6 +154,7 @@ void DUOLClient::PlayerState_Ultimate::EndUltimateAnimation()
 
 void DUOLClient::PlayerState_Ultimate::StartSwordTrail()
 {
+	_player->_currentDamage = _ultimateSwordDamage;
 	_overdriveSwordTrail = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveSwordTrail, 0.5f);
 
 	if (_overdriveSwordTrail == nullptr)
@@ -239,7 +259,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchAreaWav
 
 	//co_yield nullptr;
 
-	_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Hit_Sound);\
+	_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Hit_Sound);
 	_player->PlaySoundClipAndVoice(PlayerSoundTable::UltimateMagnumPunch,PlayerVoiceSoundSet::Overdrive_FistUlt);
 
 
@@ -257,7 +277,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchWave()
 	DUOLMath::Vector3  hitCenterOffset = DUOLMath::Vector3(0.f, 0.5f, 0.2f);
 	float hitRadius = 2.f;
 	float hitMaxDistance = 6.f;
-	DUOLMath::Vector3 waveVelocity = DUOLMath::Vector3::Forward * 40.f;
+	DUOLMath::Vector3 waveVelocity = DUOLMath::Vector3::Forward * 50.f;
 	float waveTime = 0.3f;
 	DUOLMath::Vector3 startWaveBoxHalfExtents = DUOLMath::Vector3(5.f, 2.5f, 0.75f);
 	DUOLMath::Vector3 endWaveBoxHalfExtents = DUOLMath::Vector3(5.75f, 3.f, 1.f);
@@ -286,6 +306,7 @@ void DUOLClient::PlayerState_Ultimate::FistWaveHit()
 	if (!_isOnStay)
 		return;
 
+	_player->_currentDamage = _ultimateFistDamage;
 	// 웨이브 공격 날립니다.
 	std::function<DUOLGameEngine::CoroutineHandler(void)> routine = std::bind(&DUOLClient::PlayerState_Ultimate::LaunchAreaWave, this);
 	_player->StartCoroutine(routine);
@@ -309,6 +330,8 @@ void DUOLClient::PlayerState_Ultimate::SwordWaveHit()
 		return;
 
 	// 웨이브 공격 날립니다.
+	_player->_currentDamage = _ultimateSwordWaveDamage;
+
 	std::function<DUOLGameEngine::CoroutineHandler(void)> routine = std::bind(&DUOLClient::PlayerState_Ultimate::LaunchWave, this);
 	_player->StartCoroutine(routine);
 
@@ -332,18 +355,6 @@ DUOLGameEngine::CoroutineHandler  DUOLClient::PlayerState_Ultimate::StartBulletT
 
 		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 }
-
-void DUOLClient::PlayerState_Ultimate::StartSwordAttackFrame()
-{
-	_player->_playerOverdriveWeaponSwordCollider->SetIsEnabled(true);
-	_player->_currentPlayerWeapon->ResetAttackList();
-}
-
-void DUOLClient::PlayerState_Ultimate::EndSwordAttackFrame()
-{
-	_player->_playerOverdriveWeaponSwordCollider->SetIsEnabled(false);
-}
-
 void DUOLClient::PlayerState_Ultimate::PlaySoundEffect(PlayerSoundTable sounds)
 {
 	_player->PlaySoundClip(sounds, false);
@@ -368,6 +379,9 @@ void DUOLClient::PlayerState_Ultimate::OnStateStay(float deltaTime)
 	//혹시 loop 카운터가 초기화 되지 않을 경우를 대비하여 bool 값 변수 추가
 	if (_ultFirstRun)
 	{
+
+
+
 		//처음시작인데 loop 카운터가 초기화가 안되어있네..?
 		if (_animator->GetCurrentLoopCount() > 0)
 		{

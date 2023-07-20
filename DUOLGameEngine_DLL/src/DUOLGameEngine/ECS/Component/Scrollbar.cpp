@@ -25,6 +25,7 @@ RTTR_PLUGIN_REGISTRATION
 		, value("DOWN_TO_TOP", DUOLGameEngine::DIRECTIONSTAT::DOWN_TO_TOP)
 		, value("TOP_TO_DOWN", DUOLGameEngine::DIRECTIONSTAT::TOP_TO_DOWN)
 	);
+
 	rttr::registration::class_<DUOLGameEngine::Scrollbar>("Scrollbar")
 	.constructor()
 	(
@@ -59,6 +60,7 @@ DUOLGameEngine::Scrollbar::Scrollbar() :
 	, _scrollImage()
 	, _maxGauge(100.0f)
 	, _nowGauge(1.0f)
+	, _directionState(DIRECTIONSTAT::LEFT_TO_RIGHT)
 {
 }
 
@@ -67,6 +69,7 @@ DUOLGameEngine::Scrollbar::Scrollbar(DUOLGameEngine::GameObject* owner, const DU
 	, _scrollImage()
 	, _maxGauge(100.0f)
 	, _nowGauge(1.0f)
+	, _directionState(DIRECTIONSTAT::LEFT_TO_RIGHT)
 {
 	Initialize(owner);
 }
