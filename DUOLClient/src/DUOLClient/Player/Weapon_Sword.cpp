@@ -50,6 +50,7 @@ namespace DUOLClient
 	Weapon_Sword::Weapon_Sword(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
 		, _generateTime(2.5f)
+		, _swordCondition(SwordCondition::Disappear)
 	{
 	}
 
@@ -228,6 +229,7 @@ namespace DUOLClient
 
 		_originMaterials = mats;
 
+
 		for (auto& iter : mats)
 		{
 			auto matDesc = iter->GetPrimitiveMaterial()->GetMaterialDesc();
@@ -240,7 +242,7 @@ namespace DUOLClient
 			_appearMaterials.push_back(genMat);
 
 			const auto& noisPath = TEXT("SampleNoise.png");
-
+			iter->SetEmissivePower(4.5f);
 
 			//노이즈맵 바인드.
 			auto noiseTexture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(noisPath);
@@ -332,6 +334,7 @@ namespace DUOLClient
 			_meshRenderer->AddMaterial(iter);
 
 		_meshRenderer->SetPaperBurnColor(DUOLMath::Vector4(0.3f, 1.0f, 0.8f, 1.0f), DUOLMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		_meshRenderer->SetOffset(1);
 	}
 
 	void Weapon_Sword::SetDefaultMaterial()
@@ -357,9 +360,10 @@ namespace DUOLClient
 			GetTransform()->SetLocalPosition(DUOLMath::Vector3{ 0.f, 0.f ,0.f });
 			GetTransform()->SetLocalRotation(DUOLMath::Quaternion::Identity);
 
-			_meshRenderer->SetOffset(startHeight);
 			_swordCondition = SwordCondition::Appear;
 			SetAppearMaterial();
+
+			_meshRenderer->SetOffset(startHeight);
 		}
 	}
 
@@ -374,10 +378,10 @@ namespace DUOLClient
 			GetTransform()->SetLocalScale(DUOLMath::Vector3{ 1.f, 1.f ,1.f });
 			_meshRenderer->GetTransform()->SetLocalScale(DUOLMath::Vector3{ 1.f, 1.f ,1.f });
 
-			_meshRenderer->SetOffset(maxHeight);
-
 			_swordCondition = SwordCondition::Disappear;
 			SetAppearMaterial();
+
+			_meshRenderer->SetOffset(maxHeight);
 		}
 	}
 }

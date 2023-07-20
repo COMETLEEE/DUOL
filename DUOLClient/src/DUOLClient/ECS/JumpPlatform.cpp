@@ -106,7 +106,8 @@ void DUOLClient::JumpPlatform::SetTarget(DUOLGameEngine::GameObject* object)
 	_distanceVector.y = 0;
 	auto length = _distanceVector.Length();
 	_distanceVector.Normalize();
-	object->GetTransform()->LookAt(_startPoint + _distanceVector);
+
+	object->GetTransform()->LookAt(_startPoint + _distanceVector * 10.f);
 	DUOLMath::Vector2 topPoint{ length / 2, _maxHeight };
 	//_moveTime/2 동안 _maxHeight를 갈 수 있는 처음시작속도는..
 
