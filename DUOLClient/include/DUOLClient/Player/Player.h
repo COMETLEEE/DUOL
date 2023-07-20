@@ -51,7 +51,7 @@ namespace DUOLClient
 
 	constexpr float MAX_DOWN_POINT = 100.f;
 
-	constexpr float RESET_DOWN_POINT = 3.f;
+	constexpr float RESET_DOWN_POINT = 4.f;
 
 #pragma endregion
 
@@ -216,6 +216,10 @@ namespace DUOLClient
 		 */
 		float _currentDownPoint;
 
+		float _downPointResetTime;
+
+		float _currentDownPointResetTime;
+		
 		/**
 		 * \brief 현재 오버드라이브 수치 (100이 되면 변신)
 		 */
@@ -234,6 +238,8 @@ namespace DUOLClient
 		bool _isSuperArmor;
 
 		bool _isInSuperArmorRimLight;
+
+		bool _isUltimate;
 
 		float _playerHitAnimationSpeed;
 		/**

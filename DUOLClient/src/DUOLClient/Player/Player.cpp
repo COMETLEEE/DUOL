@@ -106,6 +106,9 @@ namespace DUOLClient
 		, _overdriveDuration(10.f)
 		, _overdrivePointPerSword(3.f)
 		, _overdrivePointPerFist(4.f)
+		, _downPointResetTime(4.f)
+		, _currentDownPointResetTime(0.f)
+		
 	{
 		SetHP(1000.f);
 	}
@@ -124,18 +127,20 @@ namespace DUOLClient
 	{
 		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
 
+		//다운포인트 리셋타임을 초기화합니다.
+		_currentDownPointResetTime = 0;
+
 		// 무적인 상황에 대해서는 넘어가 ..!
 		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down")
-			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction"))
+			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction") || currentStateName == TEXT("PlayerState_Ultimate"))
 			return false;
 
 		DUOLGameEngine::StateBase* prevState = _playerStateMachine.GetPrevState();
 
 		auto& prevStateName = prevState->GetName();
 
-		// 아직 트랜지션 중이고 현재 상태는 Idle, 이전 상태가 Hit 이면 .. 무적 !
-		if (_playerAnimator->IsOnTransition() == true && currentStateName == TEXT("PlayerState_Idle")
-			&& prevStateName == TEXT("PlayerState_Hit"))
+		// 아직 트랜지션 중이고 현재 상태는 Idle, 이전 상태가 Hit 이면 .. 무적 ! 혹은 궁극기를 쓰고있다면...
+		if ((_playerAnimator->IsOnTransition() == true && currentStateName == TEXT("PlayerState_Idle") && prevStateName == TEXT("PlayerState_Hit")) || _isUltimate )
 		{
 			return false;
 		}

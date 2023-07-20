@@ -365,6 +365,7 @@ void DUOLClient::PlayerState_Ultimate::OnStateEnter(float deltaTime)
 	PlayerStateBase::OnStateEnter(deltaTime);
 
 	_ultFirstRun = true;
+	_player->_isUltimate = true;
 	RunUltimateAnimation();
 
 	//카메라 이벤트도 여기다 넣도록하자. 혹은 애니메이션에다 넣어도 괜찮을듯.
@@ -379,9 +380,6 @@ void DUOLClient::PlayerState_Ultimate::OnStateStay(float deltaTime)
 	//혹시 loop 카운터가 초기화 되지 않을 경우를 대비하여 bool 값 변수 추가
 	if (_ultFirstRun)
 	{
-
-
-
 		//처음시작인데 loop 카운터가 초기화가 안되어있네..?
 		if (_animator->GetCurrentLoopCount() > 0)
 		{
@@ -397,6 +395,7 @@ void DUOLClient::PlayerState_Ultimate::OnStateStay(float deltaTime)
 void DUOLClient::PlayerState_Ultimate::OnStateExit(float deltaTime)
 {
 	PlayerStateBase::OnStateExit(deltaTime);
+	_player->_isUltimate = false;
 
 	_animator->SetBool(TEXT("IsUltimate"), false);
 }
