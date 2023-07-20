@@ -50,7 +50,7 @@ namespace DUOLClient
 
 		void ShowMiddleSceneScript();
 
-		//void ShowASceneScript();
+		void ShowASceneScript();
 
 		void ShowBSceneScript();
 

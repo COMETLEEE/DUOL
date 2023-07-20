@@ -46,11 +46,11 @@ namespace DUOLGameEngine
 
 		void PlayCutScene(float deltaTime);
 
-		bool ChangeCutImage();
-
 		void SetStart(bool value);
 
 		void SkipImage();
+
+		void CutSetting();
 
 		void PlayCutSound();
 	private:
@@ -66,15 +66,11 @@ namespace DUOLGameEngine
 
 		int _nowCutCount;
 
-		int _nowChildCutCount;
-
-		GameObject* _nowCutObject;
+		std::vector<GameObject*> _cutList;
 		
 		FadeInOutMode _skilFadeMode;
 
 		DUOLGameEngine::FadeInOut* _skipFade;
-
-		std::vector<GameObject*> _nowChildCutScene;
 
 		DUOLGameEngine::FadeInOut* _fadeInOut;
 

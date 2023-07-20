@@ -130,6 +130,25 @@ namespace DUOLClient
 				_infoObject->SetIsActiveSelf(false);
 			}
 		}
+
+		if (!_systemManager->GetFirstMonster())
+		{
+			_scriptList.insert(std::make_pair(L"DialogueText_08.png", new ScriptInfo(L"DialogueText_08.png", L"DialogueText_09.png", L"NULL", 9.0f, true, false)));
+			_scriptList.insert(std::make_pair(L"DialogueText_09.png", new ScriptInfo(L"DialogueText_09.png", L"DialogueText_10.png", L"Info07.png", 14.0f, true, false)));
+			_scriptList.insert(std::make_pair(L"DialogueText_10.png", new ScriptInfo(L"DialogueText_10.png", L"NULL", L"NULL", 11.0f, true, false)));
+			_scriptList.insert(std::make_pair(L"Info07.png", new ScriptInfo(L"Info07.png", L"NULL", L"NULL", 11.0f, true, false)));
+		}
+
+		_scriptList.insert(std::make_pair(L"DialogueText_13.png", new ScriptInfo(L"DialogueText_13.png", L"NULL", L"NULL", 10.0f, true, false)));
+		_scriptList.insert(std::make_pair(L"Info08.png", new ScriptInfo(L"Info08.png", L"END", L"END", 5.0f, true, false)));
+
+		_scriptList.insert(std::make_pair(L"DialogueText_19.png", new ScriptInfo(L"DialogueText_19.png", L"NULL", L"NULL", 13.0f, true, false)));
+
+		_playScriptKey = L"NULL";
+		_playInfoKey = L"NULL";
+
+		_playScriptNextKey = _playScriptKey;
+		_playInfoNextKey = _playInfoKey;
 	}
 
 	void InteractiveScript::InitializeStageB()
@@ -164,6 +183,9 @@ namespace DUOLClient
 		_scriptList.insert(std::make_pair(L"Info11.png", new ScriptInfo(L"Info11.png", L"NULL", L"NULL", 5.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"DialogueText_16.png", new ScriptInfo(L"DialogueText_16.png", L"END", L"END", 7.0f, true, false)));
 
+
+		_scriptList.insert(std::make_pair(L"DialogueText_19.png", new ScriptInfo(L"DialogueText_19.png", L"NULL", L"NULL", 13.0f, true, false)));
+
 		_playScriptKey = L"NULL";
 		_playInfoKey = L"NULL";
 
@@ -188,6 +210,25 @@ namespace DUOLClient
 				_infoObject->SetIsActiveSelf(false);
 			}
 		}
+
+		if (!_systemManager->GetFirstMonster())
+		{
+			_scriptList.insert(std::make_pair(L"DialogueText_08.png", new ScriptInfo(L"DialogueText_08.png", L"DialogueText_09.png", L"NULL", 9.0f, true, false)));
+			_scriptList.insert(std::make_pair(L"DialogueText_09.png", new ScriptInfo(L"DialogueText_09.png", L"DialogueText_10.png", L"Info07.png", 14.0f, true, false)));
+			_scriptList.insert(std::make_pair(L"DialogueText_10.png", new ScriptInfo(L"DialogueText_10.png", L"NULL", L"NULL", 11.0f, true, false)));
+			_scriptList.insert(std::make_pair(L"Info07.png", new ScriptInfo(L"Info07.png", L"NULL", L"NULL", 11.0f, true, false)));
+		}
+
+		_scriptList.insert(std::make_pair(L"Info14.png", new ScriptInfo(L"Info14.png", L"NULL", L"NULL", 7.0f, true, false)));
+
+
+		_scriptList.insert(std::make_pair(L"DialogueText_19.png", new ScriptInfo(L"DialogueText_19.png", L"NULL", L"NULL", 13.0f, true, false)));
+
+		_playScriptKey = L"NULL";
+		_playInfoKey = L"NULL";
+
+		_playScriptNextKey = _playScriptKey;
+		_playInfoNextKey = _playInfoKey;
 	}
 
 	void InteractiveScript::InitializeStage()
@@ -262,10 +303,18 @@ namespace DUOLClient
 			_systemManager->SetMiddleScene();
 	}
 
-	void InteractiveScript::ShowBSceneScript()
+	void InteractiveScript::ShowASceneScript()
 	{
 		if (Show())
 			_systemManager->PlayStageBScene(_playScriptKey);
+
+		ShowInfo();
+	}
+
+	void InteractiveScript::ShowBSceneScript()
+	{
+		if (Show())
+			_systemManager->PlayStageAScene(_playScriptKey);
 
 		ShowInfo();
 	}

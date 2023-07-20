@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 
+#include "TimeManager.h"
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/CameraEventInfo.h"
@@ -28,6 +29,7 @@ namespace DUOLGameEngine
 	private:
 		virtual ~CameraEventManager();
 
+		std::shared_ptr<TimeManager> _timaManager;
 
 	public:
 		void Initialize();
@@ -104,8 +106,5 @@ namespace DUOLGameEngine
 		bool _isPlayerAction;
 
 		DUOLMath::Matrix _playerMat;
-
-		DUOLGameEngine::FadeInOut* _fadeInOut;
-
 	};
 }

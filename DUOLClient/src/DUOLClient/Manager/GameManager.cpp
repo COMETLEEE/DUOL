@@ -84,10 +84,10 @@ namespace DUOLClient
 			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [this, sceneName = message._parameter]()
 				{
 					if (_currentGameMode == DUOLClient::GameMode::UI_MODE)
-					_isOutInGameUIMode = true;
+						_isOutInGameUIMode = true;
 
-			DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(sceneName);
+					DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+					DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(sceneName);
 				});
 		}
 		else
@@ -229,7 +229,7 @@ namespace DUOLClient
 			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [this]()
 				{
 					if (_currentGameMode == DUOLClient::GameMode::UI_MODE)
-					_isOutInGameUIMode = true;
+						_isOutInGameUIMode = true;
 
 					DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 					MouseUnLock();
@@ -273,9 +273,12 @@ namespace DUOLClient
 		_currentGameScene = GameScene::Middle;
 
 #pragma region PORTALS
-		CreatePortal(middle, TEXT("Portal_A"), TEXT("StageA"), MIDDLE_PORTAL_TO_A_POSITION);
-		CreatePortal(middle, TEXT("Portal_B"), TEXT("StageB"), MIDDLE_PORTAL_TO_B_POSITION);
-		CreatePortal(middle, TEXT("Portal_C"), TEXT("StageC"), MIDDLE_PORTAL_TO_C_POSITION);
+		if (!SystemManager::GetInstance()->IsAStage())
+			CreatePortal(middle, TEXT("Portal_A"), TEXT("StageA"), MIDDLE_PORTAL_TO_A_POSITION);
+		if (!SystemManager::GetInstance()->IsBStage())
+			CreatePortal(middle, TEXT("Portal_B"), TEXT("StageB"), MIDDLE_PORTAL_TO_B_POSITION);
+		if (!SystemManager::GetInstance()->IsCStage())
+			CreatePortal(middle, TEXT("Portal_C"), TEXT("StageC"), MIDDLE_PORTAL_TO_C_POSITION);
 #pragma endregion
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
@@ -411,7 +414,7 @@ namespace DUOLClient
 
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "GameManager 'OnStart' function called.")
 
-		_fadeInOut = nullptr;
+			_fadeInOut = nullptr;
 
 		//if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("Main") || DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("CutScene"))
 		//{

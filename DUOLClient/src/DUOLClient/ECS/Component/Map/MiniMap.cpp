@@ -82,11 +82,11 @@ namespace DUOLClient
 		else if (currentSceneName == TEXT("StageA"))
 		{
 			_currentGameScene = GameScene::StageA;
-			_stageSize.x = MIDDLESCENEX;
-			_stageSize.y = MIDDLESCENEY;
+			_stageSize.x = StageASCENEX;
+			_stageSize.y = StageASCENEY;
 
-			_playerBottomLeft.x = MIDDLEXGAP;
-			_playerBottomLeft.y = MIDDLEYGAP;
+			_playerBottomLeft.x = StageAXGAP;
+			_playerBottomLeft.y = StageAYGAP;
 		}
 		else if (currentSceneName == TEXT("StageB"))
 		{
@@ -136,8 +136,8 @@ namespace DUOLClient
 
 		auto nowPlayerPos = nowPlayertransform->GetLocalPosition();
 
-		float fianlX = (_miniMapImageRect->GetWidth() * _miniMapImageRect->GetScale().x) * ((nowPlayerPos.x - _playerBottomLeft.x) / _stageSize.x);
-		float fianlY = (_miniMapImageRect->GetHeight() * _miniMapImageRect->GetScale().y) * ((nowPlayerPos.z - _playerBottomLeft.y) / _stageSize.y);
+		float fianlX = (_miniMapImageRect->GetWidth() * _miniMapImageRect->GetScale().x) * (std::abs(nowPlayerPos.x - _playerBottomLeft.x) / _stageSize.x);
+		float fianlY = (_miniMapImageRect->GetHeight() * _miniMapImageRect->GetScale().y) * (std::abs(nowPlayerPos.z - _playerBottomLeft.y) / _stageSize.y);
 
 		_playerPosRect->SetRectX(_playerPosInMiniMap.x + fianlX + (_playerPosRect->GetWidth() / 2));
 		_playerPosRect->SetRectY(_playerPosInMiniMap.y + fianlY + (_playerPosRect->GetHeight() / 2));

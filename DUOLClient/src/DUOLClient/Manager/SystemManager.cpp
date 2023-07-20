@@ -83,6 +83,11 @@ namespace  DUOLClient
 		, _infoObject(nullptr)
 		, _isBWaveScriptCheck(false)
 		, _isCreatePortal(false)
+		, _isStartCameraAction(false)
+		, _isFirstMonsterCheck(false)
+		, _cCurrentTime(0.f)
+		, _infoChcek(false)
+		,_isInfo(false)
 	{
 	}
 
@@ -249,6 +254,13 @@ namespace  DUOLClient
 	{
 		_currentGameScene = GameScene::StageA;
 
+		_isFirstMonsterAction = false;
+
+		_isStartCameraAction = false;
+
+		_isFirstMonsterCheck = false;
+
+		_isInfo = false;
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		for (auto gameObject : gameObjects)
@@ -269,6 +281,19 @@ namespace  DUOLClient
 			{
 				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
+			if (gameObject->GetName() == TEXT("Combo") || gameObject->GetName() == TEXT("ComboNum"))
+			{
+				gameObject->SetIsActiveSelf(false);
+				gameObject->SetIsActiveSelf(false);
+			}
+			if (gameObject->GetName() == TEXT("UIAudioSource"))
+			{
+				_uiAudioSource = gameObject->AddComponent<DUOLGameEngine::AudioSource>();;
+			}
+			if (gameObject->GetName() == TEXT("Minimap"))
+			{
+				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
+			}
 		}
 
 
@@ -277,13 +302,27 @@ namespace  DUOLClient
 			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
 		}
 
-		_aSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_10")));
+		// first action
+		if (!_isFirstMonster)
+		{
+			_aSceneClips.insert(std::make_pair(L"DialogueText_08.png", _soundManager->GetAudioClip(TEXT("NPC_05"))));
+			_aSceneClips.insert(std::make_pair(L"DialogueText_09.png", _soundManager->GetAudioClip(TEXT("NPC_06"))));
+			_aSceneClips.insert(std::make_pair(L"DialogueText_10.png", _soundManager->GetAudioClip(TEXT("NPC_07"))));
 
-		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
-		object->GetTransform()->SetParent(this->GetTransform());
-		object->SetName(TEXT("UIAudioSource"));
-		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
-		_uiAudioSource = comp;
+		}
+
+		// StageB
+		_aSceneClips.insert(std::make_pair(L"DialogueText_13.png", _soundManager->GetAudioClip(TEXT("NPC_10"))));
+		_aSceneClips.insert(std::make_pair(L"DialogueText_14.png", _soundManager->GetAudioClip(TEXT("NPC_01"))));
+
+		if (_uiAudioSource == nullptr)
+		{
+			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+			object->GetTransform()->SetParent(this->GetTransform());
+			object->SetName(TEXT("UIAudioSource"));
+			auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+			_uiAudioSource = comp;
+		}
 	}
 
 	void SystemManager::InitializeStageB()
@@ -296,6 +335,7 @@ namespace  DUOLClient
 		_isBStageMonsterWaveAction = false;
 		_isBWaveScriptCheck = false;
 		_isCreatePortal = false;
+		_isFirstMonsterCheck = false;
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -343,13 +383,15 @@ namespace  DUOLClient
 				gameObject->SetIsActiveSelf(false);
 				gameObject->SetIsActiveSelf(false);
 			}
+			if (gameObject->GetName() == TEXT("UIAudioSource"))
+			{
+				_uiAudioSource = gameObject->AddComponent<DUOLGameEngine::AudioSource>();;
+			}
+			if (gameObject->GetName() == TEXT("Minimap"))
+			{
+				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
+			}
 		}
-
-		if (_cameraInstance == nullptr)
-		{
-			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
-		}
-
 		// first action
 		if (!_isFirstMonster)
 		{
@@ -364,18 +406,25 @@ namespace  DUOLClient
 		_bSceneClips.insert(std::make_pair(L"DialogueText_15.png", _soundManager->GetAudioClip(TEXT("NPC_12"))));
 		_bSceneClips.insert(std::make_pair(L"DialogueText_15A.png", _soundManager->GetAudioClip(TEXT("NPC_12A)"))));
 		_bSceneClips.insert(std::make_pair(L"DialogueText_16.png", _soundManager->GetAudioClip(TEXT("NPC_13"))));
+		_bSceneClips.insert(std::make_pair(L"DialogueText_19.png", _soundManager->GetAudioClip(TEXT("NPC_01"))));
 
-
-		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
-		object->GetTransform()->SetParent(this->GetTransform());
-		object->SetName(TEXT("UIAudioSource"));
-		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
-		_uiAudioSource = comp;
+		if (_uiAudioSource == nullptr)
+		{
+			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+			object->GetTransform()->SetParent(this->GetTransform());
+			object->SetName(TEXT("UIAudioSource"));
+			auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+			_uiAudioSource = comp;
+		}
 	}
 
 	void SystemManager::InitializeStageC()
 	{
 		_currentGameScene = GameScene::StageC;
+
+		_cCurrentTime = 0.f;
+
+		_infoChcek = false;
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -397,6 +446,19 @@ namespace  DUOLClient
 			{
 				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
+			if (gameObject->GetName() == TEXT("Combo") || gameObject->GetName() == TEXT("ComboNum"))
+			{
+				gameObject->SetIsActiveSelf(false);
+				gameObject->SetIsActiveSelf(false);
+			}
+			if (gameObject->GetName() == TEXT("UIAudioSource"))
+			{
+				_uiAudioSource = gameObject->AddComponent<DUOLGameEngine::AudioSource>();;
+			}
+			if (gameObject->GetName() == TEXT("Minimap"))
+			{
+				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
+			}
 		}
 
 		if (_cameraInstance == nullptr)
@@ -404,22 +466,16 @@ namespace  DUOLClient
 			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
 		}
 
+		_cSceneClips.insert(std::make_pair(L"DialogueText_19.png", _soundManager->GetAudioClip(TEXT("NPC_01"))));
 
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_14")));
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_15")));
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_02")));
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_03")));
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_04")));
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_16")));
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_17")));
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_18")));
-		_cSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_19")));
-
-		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
-		object->GetTransform()->SetParent(this->GetTransform());
-		object->SetName(TEXT("UIAudioSource"));
-		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
-		_uiAudioSource = comp;
+		if (_uiAudioSource == nullptr)
+		{
+			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+			object->GetTransform()->SetParent(this->GetTransform());
+			object->SetName(TEXT("UIAudioSource"));
+			auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+			_uiAudioSource = comp;
+		}
 
 	}
 
@@ -448,16 +504,20 @@ namespace  DUOLClient
 			{
 				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
+			if (gameObject->GetName() == TEXT("UIAudioSource"))
+			{
+				_uiAudioSource = gameObject->AddComponent<DUOLGameEngine::AudioSource>();;
+			}
 		}
-
 	
-
-
-		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
-		object->GetTransform()->SetParent(this->GetTransform());
-		object->SetName(TEXT("UIAudioSource"));
-		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
-		_uiAudioSource = comp;
+		if (_uiAudioSource == nullptr)
+		{
+			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+			object->GetTransform()->SetParent(this->GetTransform());
+			object->SetName(TEXT("UIAudioSource"));
+			auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+			_uiAudioSource = comp;
+		}
 	}
 
 	void SystemManager::MiddleUpdate(float deltaTime)
@@ -489,6 +549,54 @@ namespace  DUOLClient
 		}
 	}
 
+	void SystemManager::StageAUpdate(float deltaTime)
+	{
+		// 처음 몬스터 만나고 처음 연출이 들어가할때
+		// false true
+		if (!_isFirstMonster && _isFirstMonsterAction)
+		{
+			_isFirstMonsterAction = false;
+			_isFirstMonsterCheck = true;
+			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaA");
+			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
+			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			_interactiveScript->SetPlayScriptKey(L"DialogueText_08.png");
+			_isCameraSequenceMode = true;
+
+			_isFirstMonster = true;
+		}
+		// true true
+		else if (_isFirstMonster && _isFirstMonsterAction)
+		{
+			_isFirstMonsterAction = false;
+			_isFirstMonsterCheck = true;
+			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaB");
+			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
+			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			_isCameraSequenceMode = true;
+		}
+
+		if(_isStartCameraAction && !_cameraInstance->IsPlayMode() && _isInfo)
+		{
+			_interactiveScript->SetPlayInfoKey(L"Info08.png");
+			_isInfo = false;
+		}
+
+		if (_interactiveScript)
+		{
+			_interactiveScript->ShowBSceneScript();
+			_interactiveScript->ScriptPlay(deltaTime);
+			_interactiveScript->InfoPlay(deltaTime);
+		}
+
+		if (_isCameraSequenceMode && !_cameraInstance->IsPlayMode())
+		{
+			_isCameraSequenceMode = false;
+			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+		}
+
+	}
+
 	void SystemManager::StageBUpdate(float deltaTime)
 	{
 
@@ -504,6 +612,8 @@ namespace  DUOLClient
 
 			_isFirstMonster = true;
 			_isFirstMonsterAction = false;
+			_isFirstMonsterCheck = true;
+
 		}
 		else if (_isFirstMonster && _isFirstMonsterAction)
 		{
@@ -511,10 +621,9 @@ namespace  DUOLClient
 			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
 			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
 			_isCameraSequenceMode = true;
-
 			_isFirstMonsterAction = false;
+			_isFirstMonsterCheck = true;
 		}
-
 
 		if (_interactiveScript)
 		{
@@ -537,15 +646,61 @@ namespace  DUOLClient
 			{
 				if (control1->GetIsClearGroup() && !_isCreatePortal)
 				{
-					_interactiveScript->SetPlayScriptKey(L"DialogueText_16.png");
-					// Create Portal
-					this->CreatePortal(TEXT("Portal_Middle"), TEXT("Middle"), B_CLEAR_PORTAL_TO_MIDDLE_POSITION);
 					_isCreatePortal = true;
 					_isBStageClear = true;
+					_interactiveScript->SetPlayScriptKey(L"DialogueText_16.png");
+					// Create Portal
+					this->CreatePortal(TEXT("Portal_B"), TEXT("Middle"), B_CLEAR_PORTAL_TO_MIDDLE_POSITION);
+					_miniMapImage->LoadTexture(L"Minimap_B_Portal2.png");
 				}
 			}
 		}
 #pragma endregion
+
+		if (_isCameraSequenceMode && !_cameraInstance->IsPlayMode())
+		{
+			_isCameraSequenceMode = false;
+			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+		}
+	}
+
+	void SystemManager::StageCUpdate(float deltaTime)
+	{
+		_cCurrentTime += deltaTime;
+
+		// 몬스터랑 처음으로 만남
+		if (!_isFirstMonster && _isFirstMonsterAction)
+		{
+			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaC");
+			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
+			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			_interactiveScript->SetPlayScriptKey(L"DialogueText_08.png");
+			_isCameraSequenceMode = true;
+
+			_isFirstMonster = true;
+			_isFirstMonsterAction = false;
+			_isFirstMonsterCheck = true;
+
+		}
+
+		if( 240.0f<=_cCurrentTime && !_infoChcek)
+		{
+			_interactiveScript->SetPlayInfoKey(L"DialogueText_14.png");
+			_infoChcek = true;
+		}
+
+		// Middle Boss UI Open
+		//if()
+		//{
+		//	
+		//}
+
+		if (_interactiveScript)
+		{
+			_interactiveScript->ShowBSceneScript();
+			_interactiveScript->ScriptPlay(deltaTime);
+			_interactiveScript->InfoPlay(deltaTime);
+		}
 
 		if (_isCameraSequenceMode && !_cameraInstance->IsPlayMode())
 		{
@@ -567,6 +722,11 @@ namespace  DUOLClient
 	void SystemManager::PlayMiddleScene(DUOLCommon::tstring sound)
 	{
 		_player->PlayScriptSoundClip(_middleSceneClips[sound], false);
+	}
+
+	void SystemManager::PlayStageAScene(DUOLCommon::tstring sound)
+	{
+		_player->PlayScriptSoundClip(_aSceneClips[sound], false);
 	}
 
 	void SystemManager::PlayStageBScene(DUOLCommon::tstring sound)
@@ -692,28 +852,22 @@ namespace  DUOLClient
 		case GameScene::StageA:
 		{
 
-			if (!_cameraInstance->IsPlayMode())
-			{
-				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
-			}
 
+			StageAUpdate(deltaTime);
 			break;
 		}
 		case GameScene::StageB:
 		{
 			StageBUpdate(deltaTime);
 			BSystem(deltaTime);
-
-
+			
 			break;
 		}
 		case GameScene::StageC:
 		{
 
-			if (!_cameraInstance->IsPlayMode())
-			{
-				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
-			}
+
+			StageCUpdate(deltaTime);
 
 			break;
 		}
@@ -730,16 +884,48 @@ namespace  DUOLClient
 
 	}
 
+
+	void SystemManager::FirstMonsterActionSet()
+	{
+		if (!_isFirstMonsterCheck)
+			_isFirstMonsterAction = true;
+	}
+
 	void DUOLClient::SystemManager::PlayerCameraAction(std::string name, DUOLGameEngine::Transform* playertransform)
 	{
 		// Camera Mode Change
 		_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
 
-
-
 		_cameraInstance->PlayerAction(name, playertransform);
 
 		_isCameraSequenceMode = true;
+
+	}
+
+	void SystemManager::AAreaCameraAction()
+	{
+		if (_isStartCameraAction)
+			return;
+
+		std::vector<UINT64> _sequenceCamera;
+		UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MapGimick_AreaA_Part1");
+		_sequenceCamera.emplace_back(key);
+		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MapGimick_AreaA_Part2");
+		_sequenceCamera.emplace_back(key);
+		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MapGimick_AreaA_Part3");
+		_sequenceCamera.emplace_back(key);
+
+		// Camera Action Start
+		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceList(_sequenceCamera);
+		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceMode(true);
+
+		_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+		_isCameraSequenceMode = true;
+
+		_interactiveScript->SetPlayScriptKey(L"DialogueText_13.png");
+
+		_isStartCameraAction = true;
+		_isInfo = true;
 
 	}
 
@@ -816,6 +1002,22 @@ namespace  DUOLClient
 		_isBStageMonsterWaveAction = true;
 	}
 
+	void SystemManager::EliteMonsterCameraAction()
+	{
+		// UI Close
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Cnvas"))
+			{
+				gameObject->SetIsActiveSelf(false);
+			}
+		}
+
+		// CameraAction
+
+	}
 
 
 	void DUOLClient::SystemManager::BSystem(float deltaTime)
@@ -868,9 +1070,9 @@ namespace  DUOLClient
 		meshrender->SetEmissive(DUOLMath::Vector3(253, 253, 0));
 
 		// Dark
-		if (5.f <= _currentTime)
+		if (3.f <= _currentTime)
 		{
-			if (10.f <= _currentTime)
+			if (6.f <= _currentTime)
 				_currentTime = 0.f;
 
 			_rimPower -= (deltaTime * 5);
@@ -915,9 +1117,9 @@ namespace  DUOLClient
 		auto transform = _doorObject->GetComponent<DUOLGameEngine::Transform>();
 		auto pos = transform->GetLocalPosition();
 
-		if (1.5f * _moveDoor <= 6.0f)
+		if (1.2f * _moveDoor <= 7.0f)
 		{
-			pos.y += 1.5f * _moveDoor;
+			pos.y += 1.2f * _moveDoor;
 
 			transform->SetLocalPosition(pos);
 		}
@@ -937,10 +1139,12 @@ namespace  DUOLClient
 		portal->AddComponent<DUOLGameEngine::BoxCollider>()->SetSize(DUOLMath::Vector3(3.f, 1.f, 3.f));
 
 		portal->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsTrigger(true);
-
 		DUOLClient::Portal* portalCom = portal->AddComponent<DUOLClient::Portal>();
 
-		portalCom->SetNextSceneName(nextSceneName);
+		if(_isAStageClear && _isBStageClear && _isCStageClear)
+			portalCom->SetNextSceneName(L"BossScene");
+		else
+			portalCom->SetNextSceneName(nextSceneName);
 	}
 
 	void SystemManager::FinishTotalScene()
@@ -968,4 +1172,6 @@ namespace  DUOLClient
 
 		_isTotalSceneEnd = true;
 	}
+
+
 }

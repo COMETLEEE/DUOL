@@ -4,6 +4,7 @@
 
 namespace DUOLGameEngine
 {
+	class Image;
 	class SoundManager;
 	class AudioClip;
 	class CameraEventManager;
@@ -75,7 +76,15 @@ namespace DUOLClient
 
 		static DUOLClient::SystemManager* GetInstance();
 
+
 		static void SetAstageClear(bool value);
+
+
+		static bool IsAStage() { return _isAStageClear; }
+
+		static bool IsBStage() { return _isBStageClear; }
+
+		static bool IsCStage() { return _isCStageClear; }
 
 
 		/**
@@ -83,7 +92,7 @@ namespace DUOLClient
 		 */
 		void SetGameScene(GameScene gamescene) { _currentGameScene = gamescene; }
 
-		void FirstMonsterActionSet() { _isFirstMonsterAction = true; }
+		void FirstMonsterActionSet();
 
 		void PlayerCameraAction(std::string name, DUOLGameEngine::Transform* playertransform);
 
@@ -94,7 +103,6 @@ namespace DUOLClient
 		bool GetIsEnemyAiPlay() { return _isEnemyAIPlay; }
 
 		void CreatePortal(const DUOLCommon::tstring& portalName, const DUOLCommon::tstring& nextSceneName, const DUOLMath::Vector3& position);;
-
 
 		/**
 		 * \brief Total Scene
@@ -111,7 +119,7 @@ namespace DUOLClient
 		 /**
 		  * \brief A Scene
 		  */
-
+		void AAreaCameraAction();
 
 		  /**
 		 * \brief B Scene
@@ -141,7 +149,7 @@ namespace DUOLClient
 		 /**
 		* \brief C Scene
 		*/
-
+		void EliteMonsterCameraAction();
 
 
 		/**
@@ -153,6 +161,8 @@ namespace DUOLClient
 		void PlayTotalScene(DUOLCommon::tstring sound);
 
 		void PlayMiddleScene(DUOLCommon::tstring sound);
+
+		void PlayStageAScene(DUOLCommon::tstring sound);
 
 		void PlayStageBScene(DUOLCommon::tstring sound);
 
@@ -179,8 +189,11 @@ namespace DUOLClient
 		*/
 		void MiddleUpdate(float deltaTime);
 
+		void StageAUpdate(float deltaTime);
+
 		void StageBUpdate(float deltaTime);
 
+		void StageCUpdate(float deltaTime);
 
 		void BossUI();
 
@@ -198,6 +211,8 @@ namespace DUOLClient
 		bool _isCameraSequenceMode;
 
 		GameScene _currentGameScene;
+
+		DUOLGameEngine::Image* _miniMapImage;
 
 		DUOLClient::Player* _player;
 
@@ -229,6 +244,7 @@ namespace DUOLClient
 		// each stage first monster meet
 		bool _isFirstMonsterAction;
 
+		bool _isFirstMonsterCheck;
 
 		/**
 		 * \brief Total Scene
@@ -248,8 +264,9 @@ namespace DUOLClient
 		 /**
 		* \brief A Scene
 		 */
+		bool _isStartCameraAction;
 
-
+		bool _isInfo;
 		 /**
 		 * \brief B Scene
 		 */
@@ -290,7 +307,9 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _bossHPBar;
 
-		
+		float _cCurrentTime;
+
+		bool _infoChcek;
 
 		/**
 		* \brief Sound
@@ -299,11 +318,11 @@ namespace DUOLClient
 
 		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _middleSceneClips;
 
-		std::vector<DUOLGameEngine::AudioClip*> _aSceneClips;
+		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _aSceneClips;
 
 		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _bSceneClips;
 
-		std::vector<DUOLGameEngine::AudioClip*> _cSceneClips;
+		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _cSceneClips;
 
 		std::vector<DUOLGameEngine::AudioClip*> _uiClips;
 

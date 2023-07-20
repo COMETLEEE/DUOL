@@ -101,6 +101,8 @@
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Jump.cpp" />
     <ClCompile Include="src\DUOLClient\Script\InteractiveScript.cpp" />
     <ClCompile Include="src\DUOLClient\Script\ScriptInfo.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\AStageAreaCameraTirgger.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\CStageMiddleBossAction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.h" />
@@ -210,5 +212,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\JumpPlatform.h" />
     <ClInclude Include="include\DUOLClient\Script\InteractiveScript.h" />
     <ClInclude Include="include\DUOLClient\Script\ScriptInfo.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\AStageAreaCameraTirgger.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CStageMiddleBossAction.h" />
   </ItemGroup>
 </Project>

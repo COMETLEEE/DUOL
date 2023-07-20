@@ -18,7 +18,6 @@ namespace DUOLGameEngine
 		, _isEnd(false)
 		, _currentTime(0.f)
 		, _nowCutCount(0)
-		, _nowChildCutCount(0)
 		, _cutImageName("cut")
 		, _skipImageTime(0.f)
 		, _skilFadeMode(FadeInOutMode::DONE)
@@ -39,12 +38,6 @@ namespace DUOLGameEngine
 		_currentTime = 0.f;
 
 		_nowCutCount = 0;
-
-		_nowChildCutCount = 0;
-
-		_nowCutObject = nullptr;
-
-		_nowChildCutScene.clear();
 
 		_soundManager = DUOLGameEngine::SoundManager::GetInstance();
 
@@ -117,7 +110,7 @@ namespace DUOLGameEngine
 	{
 		Initialize();
 
-		GameObject* canvas = nullptr;
+		GameObject* parent = nullptr;
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -131,9 +124,10 @@ namespace DUOLGameEngine
 			{
 				_skipFade = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 			}
-			if (gameObject->GetName() == TEXT("Canvas"))
+			if (gameObject->GetName() == TEXT("Cut"))
 			{
-				canvas = gameObject;
+				parent = gameObject;
+				gameObject->SetIsActiveSelf(true);
 			}
 			if (gameObject->GetName() == TEXT("UIAudioSource"))
 			{
@@ -142,7 +136,7 @@ namespace DUOLGameEngine
 			}
 		}
 
-		if(_audioSource==nullptr && _audioListener ==nullptr)
+		if (_audioSource == nullptr && _audioListener == nullptr)
 		{
 			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 			object->SetName(TEXT("UIAudioSource"));
@@ -155,36 +149,30 @@ namespace DUOLGameEngine
 
 		_isStart = true;
 
-		if (canvas != nullptr)
+		if (parent != nullptr)
 		{
-			for(auto child : canvas->GetTransform()->GetChildGameObjects())
+			for (auto child : parent->GetTransform()->GetChildGameObjects())
 			{
-				child->SetIsActiveSelf(false);
+				child->SetIsActiveSelf(true);
+				_cutList.emplace_back(child);
 			}
 		}
 
-		std::string path = _cutImageName + std::to_string(_nowCutCount) + std::to_string(_nowChildCutCount);
+		if (_cutList.size() < _nowCutCount)
+			return;
 
-		auto firstImage = DUOLGameEngine::UIManager::GetInstance()->FindImage(path);
 
-		if (firstImage == nullptr)
-			DUOL_INFO(DUOL_CONSOLE, "CUTSCENE PARENTOBJECT NULLPTR / THIS current count is {}", _nowCutCount);
-
-		auto parentObject = firstImage->GetGameObject();
-
-		_nowCutObject = parentObject->GetComponent<Transform>()->GetParent()->GetGameObject();
-
-		_nowCutObject->SetIsActiveSelf(true);
-
-		auto childObject = _nowCutObject->GetComponent<Transform>()->GetAllChildGameObjects();
-
-		for (auto child : childObject)
+		for (int i = 0; i < _cutList.size(); i++)
 		{
-			_nowChildCutScene.emplace_back(child);
+			_cutList[i]->GetComponent<Image>()->SetLayer(_cutList.size()-i);
 		}
 
-		if (!_nowChildCutScene.empty())
-			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(true);
+
+		//if (_nowCutCount + 1 < _cutList.size())
+		//{
+		//	_cutList[_nowCutCount+1]->SetIsActiveSelf(false);
+		//	_cutList[_nowCutCount+1]->GetComponent<Image>()->SetLayer(1);
+		//}
 
 		PlayCutSound();
 		_soundIndex++;
@@ -200,72 +188,15 @@ namespace DUOLGameEngine
 		if (27.0f <= _currentTime)
 		{
 
-			if (_nowChildCutScene[_nowChildCutCount]->GetComponent<Image>() == nullptr)
+			if (_cutList[_nowCutCount]->GetComponent<Image>() == nullptr)
 				return;
 
-			//if(<=_nowCutCount )
-
-			// pre active is false
-			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(false);
-
-			_nowChildCutCount++;
-
-			if (_nowChildCutScene.size() <= _nowChildCutCount)
-			{
-				if (!ChangeCutImage())
-					return;
-			}
-
-			// next active is true
-			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(true);
+			CutSetting();
 
 			PlayCutSound();
-			_soundIndex++;
 
 			_currentTime = 0.f;
 		}
-	}
-
-	bool CutSceneManager::ChangeCutImage()
-	{
-		_nowCutCount++;
-		int preChildCount = _nowChildCutCount;
-		_nowChildCutCount = 0;
-
-		_nowCutObject->SetIsActiveSelf(false);
-
-		std::string path = _cutImageName + std::to_string(_nowCutCount) + std::to_string(_nowChildCutCount);
-
-		auto firstImage = DUOLGameEngine::UIManager::GetInstance()->FindImage(path);
-
-		if (firstImage == nullptr)
-		{
-			_nowCutObject->SetIsActiveSelf(true);
-
-			_nowChildCutScene[preChildCount - 1]->SetIsActiveSelf(true);
-			_isEnd = true;
-			return false;
-		}
-
-		_nowChildCutScene.clear();
-
-		auto parentObject = firstImage->GetGameObject();
-
-		_nowCutObject = parentObject->GetComponent<Transform>()->GetParent()->GetGameObject();
-
-		_nowCutObject->SetIsActiveSelf(true);
-
-		auto childObject = _nowCutObject->GetComponent<Transform>()->GetAllChildGameObjects();
-
-		for (auto child : childObject)
-		{
-			_nowChildCutScene.emplace_back(child);
-		}
-
-		if (!_nowChildCutScene.empty())
-			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(true);
-
-		return true;
 	}
 
 	void CutSceneManager::SetStart(bool value)
@@ -297,8 +228,31 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void CutSceneManager::CutSetting()
+	{
+		if (_nowCutCount + 1 < _cutList.size())
+		{
+			_cutList[_nowCutCount]->SetIsActiveSelf(false);
+			/*_cutList[_nowCutCount + 1]->SetIsActiveSelf(true);
+			_cutList[_nowCutCount + 1]->GetComponent<Image>()->SetLayer(1);
+			_cutList[_nowCutCount]->SetIsActiveSelf(false);
+			_cutList[_nowCutCount + 1]->GetComponent<Image>()->SetLayer(2);*/
+		}
+		else
+		{
+			// end
+			_isEnd = true;
+			return;
+		}
+
+		_nowCutCount++;
+		_soundIndex++;
+	}
+
 	void CutSceneManager::PlayCutSound()
 	{
+		if (_cutList.size() <= _soundIndex)
+			return;
 		_audioSource->SetAudioClip(_totalSceneClips[_soundIndex]);
 		_audioSource->SetIsLoop(false);
 		_audioSource->Play();

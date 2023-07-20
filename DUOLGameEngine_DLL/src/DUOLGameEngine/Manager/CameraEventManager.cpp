@@ -28,7 +28,7 @@ namespace DUOLGameEngine
 		, _playerMat()
 		, _mainCameraTransform(nullptr)
 		, _realCameraTransform(nullptr)
-		, _fadeInOut(nullptr)
+		, _timaManager(nullptr)
 	{
 	}
 
@@ -38,30 +38,7 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::Update(float deltaTime)
 	{
-		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
-		//{
-		//	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 
-		//	UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_A"));
-
-		//	SetPlayKey(key);
-		//}
-		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::N))
-		//{
-		//	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
-
-		//	UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_B"));
-
-		//	SetPlayKey(key);
-		//}
-		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::M))
-		//{
-		//	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
-
-		//	UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_C"));
-
-		//	SetPlayKey(key);
-		//}
 		if (_playMode)
 		{
 			if (_isSequenceMode)
@@ -82,11 +59,16 @@ namespace DUOLGameEngine
 
 		LoadCameraEvent(TEXT("Asset/DataTable/CameraSequences.json"));
 
+		_timaManager = TimeManager::GetInstance();
+
 		DUOL_INFO(DUOL_FILE, "CameraEventManager Initialize Success");
 	}
 
 	void CameraEventManager::UnInitialize()
 	{
+		_mainCameraTransform = nullptr;
+		_realCameraTransform = nullptr;
+		_timaManager = nullptr;
 	}
 
 	void CameraEventManager::LoadCameraEvent(const DUOLCommon::tstring& path)
@@ -151,6 +133,9 @@ namespace DUOLGameEngine
 	{
 		_mainCameraTransform = nullptr;
 		_realCameraTransform = nullptr;
+		_timaManager = nullptr;
+
+		_timaManager = TimeManager::GetInstance();
 	}
 
 	// 60 frame 
@@ -159,8 +144,11 @@ namespace DUOLGameEngine
 		if (_mainCameraTransform == nullptr)
 			SetMainCamera();
 
+		if(_timaManager==nullptr)
+			_timaManager = TimeManager::GetInstance();
+
 		// not same => camera action play
-		_currentTime += deltaTime;
+		_currentTime += (deltaTime / _timaManager->GetTimeScale());
 
 		// 현재 시간에 맞는 프레임
 		float currentFrame = _currentTime * 60;

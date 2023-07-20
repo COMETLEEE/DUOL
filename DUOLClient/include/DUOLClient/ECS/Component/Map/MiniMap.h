@@ -10,7 +10,11 @@
 #pragma endregion
 
 #pragma region StageA
+#define StageASCENEX 180
+#define StageASCENEY 110
 
+#define StageAXGAP 170
+#define StageAYGAP 20
 #pragma endregion
 
 #pragma region StageB
