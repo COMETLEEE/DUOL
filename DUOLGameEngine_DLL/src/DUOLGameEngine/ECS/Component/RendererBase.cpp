@@ -159,14 +159,27 @@ namespace DUOLGameEngine
 			else
 				iter++;
 		}
-		
 
-		if (_materials.empty())
+		for (std::vector<DUOLGraphicsEngine::Material*>::iterator iter = _primitiveMaterials.begin(); iter != _primitiveMaterials.end();)
+		{
+			if ((*iter) == nullptr)
+			{
+				iter = _primitiveMaterials.erase(iter);
+			}
+			else
+				iter++;
+		}
+
+
+		if (_materials.size() > 0)
+			_materials.pop_back();
+		if (_primitiveMaterials.size() > 0)
+			_primitiveMaterials.pop_back();
+
+
+		if (_materials.empty() || _primitiveMaterials.empty())
 			return;
 
-
-		_materials.pop_back();
-		_primitiveMaterials.pop_back();
 	}
 
 	void RendererBase::DeleteAllMaterial()
@@ -335,3 +348,4 @@ namespace DUOLGameEngine
 		return _materials[_currentSelectedMaterial]->GetRoughness();
 	}
 }
+ 
