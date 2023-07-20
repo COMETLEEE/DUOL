@@ -465,7 +465,14 @@ namespace DUOLGameEngine
 		_mainCameraTransform->SetLocalPosition(Vector3(0, 0, 0));
 		_mainCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
 
-		_playerMat = transform->GetWorldMatrix();
+		auto mat = transform->GetWorldMatrix();
+
+		// 회전 행렬 빼야한다.
+		DUOLMath::Vector3 pos; Quaternion quaternion; DUOLMath::Vector3 scale;
+
+		mat.Decompose(scale, quaternion, pos);
+
+		_playerMat = DUOLMath::Matrix::CreateTranslation(pos);
 
 	}
 

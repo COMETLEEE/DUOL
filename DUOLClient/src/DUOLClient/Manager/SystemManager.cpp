@@ -577,9 +577,10 @@ namespace  DUOLClient
 		{
 			_isFirstMonsterAction = false;
 			_isFirstMonsterCheck = true;
-			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaB");
+			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaA");
 			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
 			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			_interactiveScript->SetPlayScriptKey(L"DialogueText_08.png");
 			_isCameraSequenceMode = true;
 		}
 
@@ -591,7 +592,7 @@ namespace  DUOLClient
 
 		if (_interactiveScript)
 		{
-			_interactiveScript->ShowBSceneScript();
+			_interactiveScript->ShowASceneScript();
 			_interactiveScript->ScriptPlay(deltaTime);
 			_interactiveScript->InfoPlay(deltaTime);
 		}
