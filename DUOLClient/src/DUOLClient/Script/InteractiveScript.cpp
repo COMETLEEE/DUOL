@@ -99,9 +99,8 @@ namespace DUOLClient
 		_scriptList.insert(std::make_pair(L"Info01.png", new ScriptInfo(L"Info01.png", L"DialogueText_06.png", L"NULL", 5.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"DialogueText_06.png", new ScriptInfo(L"DialogueText_06.png", L"NULL", L"Info02.png", 6.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"Info02.png", new ScriptInfo(L"Info02.png", L"DialogueText_11.png", L"Info03.png", 5.0f, true, false)));
-		_scriptList.insert(std::make_pair(L"DialogueText_11.png", new ScriptInfo(L"DialogueText_11.png", L"NULL", L"Info04.png", 11.0f, true, false)));
+		_scriptList.insert(std::make_pair(L"DialogueText_11.png", new ScriptInfo(L"DialogueText_11.png", L"DialogueText_12.png", L"Info05.png", 11.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"Info03.png", new ScriptInfo(L"Info03.png", L"NULL", L"NULL", 7.0f, true, false)));
-		_scriptList.insert(std::make_pair(L"Info04.png", new ScriptInfo(L"Info04.png", L"DialogueText_12.png", L"Info05.png", 5.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"DialogueText_12.png", new ScriptInfo(L"DialogueText_12.png", L"NULL", L"NULL", 11.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"Info05.png", new ScriptInfo(L"Info05.png", L"NULL", L"NULL", 11.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"Info06.png", new ScriptInfo(L"Info06.png", L"DialogueText_07.png", L"NULL", 10.f, true, false)));
@@ -222,7 +221,9 @@ namespace DUOLClient
 		}
 
 		_scriptList.insert(std::make_pair(L"Info14.png", new ScriptInfo(L"Info14.png", L"NULL", L"NULL", 7.0f, true, false)));
-
+		_scriptList.insert(std::make_pair(L"DialogueText_17.png", new ScriptInfo(L"DialogueText_17.png", L"DialogueText_18.png", L"NULL", 8.0f, true, false)));
+		_scriptList.insert(std::make_pair(L"DialogueText_18.png", new ScriptInfo(L"DialogueText_18.png", L"NULL", L"Info12.png", 8.0f, true, false)));
+		_scriptList.insert(std::make_pair(L"Info12.png", new ScriptInfo(L"Info12.png", L"NULL", L"NULL", 5.0f, true, false)));
 
 		_scriptList.insert(std::make_pair(L"DialogueText_19.png", new ScriptInfo(L"DialogueText_19.png", L"NULL", L"NULL", 13.0f, true, false)));
 
@@ -284,6 +285,7 @@ namespace DUOLClient
 
 	bool InteractiveScript::ShowTotalSceneScript()
 	{
+		// 개발자용 나중에 막기
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Space))
 			Next();
 
@@ -320,6 +322,14 @@ namespace DUOLClient
 	{
 		if (Show())
 			_systemManager->PlayStageBScene(_playScriptKey);
+
+		ShowInfo();
+	}
+
+	void InteractiveScript::ShowCSceneScript()
+	{
+		if (Show())
+			_systemManager->PlayStageCScene(_playScriptKey);
 
 		ShowInfo();
 	}

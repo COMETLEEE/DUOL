@@ -66,7 +66,7 @@ namespace DUOLGameEngine
 
 		bool IsPlayMode();
 
-		void PlayerAction(std::string& name, Transform* transform);
+		void PlayerAction(std::string& name, Transform* transform,bool rot = true);
 
 		UINT64 GetKey(std::string name);
 

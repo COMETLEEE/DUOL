@@ -25,15 +25,6 @@ namespace DUOLClient
 
 namespace DUOLClient
 {
-	enum class UISound
-	{
-		ButtonClick,
-		ButtonNoClick,
-		WindowActive,
-		WindowInActive,
-
-		NONE
-	};
 
 }
 namespace DUOLClient
@@ -76,9 +67,7 @@ namespace DUOLClient
 
 		static DUOLClient::SystemManager* GetInstance();
 
-
 		static void SetAstageClear(bool value);
-
 
 		static bool IsAStage() { return _isAStageClear; }
 
@@ -86,6 +75,7 @@ namespace DUOLClient
 
 		static bool IsCStage() { return _isCStageClear; }
 
+		void MiniMapChange(DUOLCommon::tstring path);
 
 		/**
 		 * \brief ALL 
@@ -94,7 +84,7 @@ namespace DUOLClient
 
 		void FirstMonsterActionSet();
 
-		void PlayerCameraAction(std::string name, DUOLGameEngine::Transform* playertransform);
+		void PlayerCameraAction(std::string name, DUOLGameEngine::Transform* playertransform,bool rot =true);
 
 		bool GetFirstMonster() { return _isFirstMonster; }
 
@@ -149,14 +139,14 @@ namespace DUOLClient
 		 /**
 		* \brief C Scene
 		*/
-		void EliteMonsterCameraAction();
+		void CStageEliteMonsterCameraAction();
 
 
 		/**
 		* \brief Sound
 		 */
 
-		void PlayUISound(UISound uiindex, bool istrue);
+		void PlayUISound(DUOLCommon::tstring name, bool istrue);
 
 		void PlayTotalScene(DUOLCommon::tstring sound);
 
@@ -165,6 +155,8 @@ namespace DUOLClient
 		void PlayStageAScene(DUOLCommon::tstring sound);
 
 		void PlayStageBScene(DUOLCommon::tstring sound);
+
+		void PlayStageCScene(DUOLCommon::tstring sound);
 
 
 	private:
@@ -180,6 +172,8 @@ namespace DUOLClient
 		void InitializeStageB();
 
 		void InitializeStageC();
+
+		void InitializeStageBoss();
 
 		void InitializeStage();
 
@@ -303,13 +297,26 @@ namespace DUOLClient
 		 /**
 		* \brief C Scene
 		*/
+
+		DUOLGameEngine::GameObject* _uiObject;
+
 		DUOLGameEngine::GameObject* _bossName;
 
 		DUOLGameEngine::GameObject* _bossHPBar;
 
 		float _cCurrentTime;
 
-		bool _infoChcek;
+		float _cFadeOutTime;
+
+		bool _isInfoChcek;
+
+		bool _isEliteMonsterActionCheck;
+
+		bool _isFadeOut;
+
+		bool _isFadeIn;
+
+		bool _isLastScript;
 
 		/**
 		* \brief Sound
@@ -324,7 +331,7 @@ namespace DUOLClient
 
 		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _cSceneClips;
 
-		std::vector<DUOLGameEngine::AudioClip*> _uiClips;
+		std::map<DUOLCommon::tstring, DUOLGameEngine::AudioClip*> _uiClips;
 
 		/**
 		* \brief 사운드 컴포넌트 발생 / 오디오가 없을경우 발생하기 위해 넣어줌

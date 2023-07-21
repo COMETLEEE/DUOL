@@ -38,6 +38,8 @@ namespace DUOLClient
 
 		static void Load_UI_Sound();
 
+		static void Load_ETC_Sound();
+
 		static void Load_CutScene_Sound();
 
 

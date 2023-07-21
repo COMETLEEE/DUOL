@@ -54,6 +54,8 @@ namespace DUOLClient
 
 		void ShowBSceneScript();
 
+		void ShowCSceneScript();
+
 
 		bool ShowInfo();
 

@@ -85,6 +85,7 @@ namespace DUOLClient
 				//성공이벤트 호출!
 
 				SystemManager::SetAstageClear(true);
+				SystemManager::GetInstance()->MiniMapChange(L"StageAMiniMapPortal");
 				SystemManager::GetInstance()->CreatePortal(TEXT("AClearPortal"), TEXT("Middle"), A_CLEAR_PORTAL_TO_MIDDLE_POSITION);
 			}
 		}

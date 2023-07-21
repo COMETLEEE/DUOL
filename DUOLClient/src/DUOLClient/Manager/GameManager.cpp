@@ -139,7 +139,7 @@ namespace DUOLClient
 	{
 		MouseUnLock();
 
-		SystemManager::GetInstance()->PlayUISound(UISound::WindowActive, true);
+		SystemManager::GetInstance()->PlayUISound(L"Window_Active", true);
 
 		_gameModePrevUIMode = _currentGameMode;
 
@@ -178,7 +178,7 @@ namespace DUOLClient
 
 	void GameManager::EndUIMode()
 	{
-		SystemManager::GetInstance()->PlayUISound(UISound::WindowInActive, false);
+		SystemManager::GetInstance()->PlayUISound(L"Window_Inactive", false);
 
 		auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -388,6 +388,38 @@ namespace DUOLClient
 		UIDataManager::GetInstance()->InitializeStageC();
 	}
 
+	void GameManager::InitializeStageBoss(DUOLGameEngine::Scene* stageC)
+	{
+		_currentGameScene = GameScene::StageBoss;
+
+		CreatePortal(stageC, TEXT("Portal_Middle"), TEXT("Middle"), BOSS_PORTAL_TO_MIDDLE_POSITION);
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+			}
+			if (gameObject->GetTag() == TEXT("Player"))
+			{
+				UIDataManager::GetInstance()->InitializeMiddle(gameObject);
+			}
+			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				auto _mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+				_mainCameraController->SetCameraInitPos();
+			}
+		}
+
+		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+
+		// UIDataManager::GetInstance()->InitializeStageC();
+	}
+
 	void GameManager::OnAwake()
 	{
 		MonoBehaviourBase::OnAwake();
@@ -446,6 +478,9 @@ namespace DUOLClient
 			InitializeStageB(currentScene);
 		else if (currentSceneName == TEXT("StageC"))
 			InitializeStageC(currentScene);
+		else if(currentSceneName == TEXT("StageBoss"))
+			InitializeStageBoss(currentScene);
+
 		else
 		{
 			_canPausable = false;

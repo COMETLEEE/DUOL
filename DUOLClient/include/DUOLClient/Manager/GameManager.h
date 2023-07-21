@@ -31,6 +31,8 @@ namespace DUOLClient
 
 	constexpr DUOLMath::Vector3 C_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-25.739f, 0.2f, -5.499f);
 
+	constexpr DUOLMath::Vector3 BOSS_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-92, 4.5, 40);
+
 	enum class GameMode
 	{
 		DEFAULT
@@ -61,6 +63,7 @@ namespace DUOLClient
 		, StageA
 		, StageB
 		, StageC
+		, StageBoss
 
 		, ETC
 	};
@@ -208,6 +211,9 @@ namespace DUOLClient
 		void InitializeStageB(DUOLGameEngine::Scene* stageB);
 
 		void InitializeStageC(DUOLGameEngine::Scene* stageC);
+
+		void InitializeStageBoss(DUOLGameEngine::Scene* stageC);
+
 #pragma endregion
 
 	public:

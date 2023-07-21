@@ -68,6 +68,8 @@ namespace DUOLClient
 
 		Load_UI_Sound();
 
+		Load_ETC_Sound();
+
 		Load_CutScene_Sound();
 
 		JumpPoint_Initialize();
@@ -6204,6 +6206,18 @@ namespace DUOLClient
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/UI/Window_Inactive.wav"), TEXT("Window_Inactive"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+	}
+
+	void DUOLClient_Initializer::Load_ETC_Sound()
+	{
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/ETC/door_sound_effect.wav"), TEXT("door_sound_effect"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/ETC/Jump.wav"), TEXT("Jump"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 	}

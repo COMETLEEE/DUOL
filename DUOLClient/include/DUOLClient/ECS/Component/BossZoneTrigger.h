@@ -23,7 +23,7 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _cautionCollider;
 
-		DUOLGameEngine::GameObject* _bossZoneTrigger;
+		//DUOLGameEngine::GameObject* _bossZoneTrigger;
 
 		DUOLGameEngine::GameObject* _eliteBossMonsterController;
 
