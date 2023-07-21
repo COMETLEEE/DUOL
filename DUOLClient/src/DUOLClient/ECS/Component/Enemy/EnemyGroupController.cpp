@@ -476,6 +476,7 @@ bool DUOLClient::EnemyGroupController::GetIsClearGroup()
 	if (_triggerCount > 0) return false;
 	if (!_firstAndSecondInfo.empty()) return false;
 	if (!_enemys.empty()) return false;
+	if (_isCreateEnemy) return false;
 
 	return true;
 }
