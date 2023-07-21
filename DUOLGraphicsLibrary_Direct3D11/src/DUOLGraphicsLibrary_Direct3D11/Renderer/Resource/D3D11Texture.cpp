@@ -12,6 +12,202 @@ namespace DUOLGraphicsLibrary
 		Texture(guid, textureDesc)
 		, _mipGenerate(false)
 	{
+		//if (textureDesc._texturePath == nullptr)
+		//{
+		//	if (textureDesc._mipLevels == 0)
+		//		_mipGenerate = true;
+
+		//	if (textureDesc._initData != nullptr)
+		//	{
+		//		D3D11_SUBRESOURCE_DATA subresource;
+		//		subresource.pSysMem = textureDesc._initData;
+
+		//		// R8G8B8A8
+		//		subresource.SysMemPitch = textureDesc._textureExtent.x * 4;
+		//		subresource.SysMemSlicePitch = 0;
+
+		//		switch (textureDesc._type)
+		//		{
+		//		case TextureType::TEXTURE1D:
+		//		case TextureType::TEXTURE1DARRAY:
+		//		{
+
+		//			CreateTexture1D(device, textureDesc, &subresource);
+		//			break;
+		//		}
+		//		case TextureType::TEXTURE2D:
+		//		case TextureType::TEXTURE2DARRAY:
+		//		case TextureType::TEXTURECUBE:
+		//		case TextureType::TEXTURECUBEARRAY:
+		//		{
+		//			CreateTexture2D(device, textureDesc, &subresource);
+		//			break;
+		//		}
+		//		case TextureType::TEXTURE3D:
+		//		{
+		//			CreateTexture3D(device, textureDesc, &subresource);
+		//			break;
+		//		}
+		//		case TextureType::TEXTURE2DMS:
+		//		case TextureType::TEXTURE2DMSARRAY:
+		//		{
+		//			CreateTexture2D(device, textureDesc, &subresource);
+		//			break;
+		//		}
+		//		default:
+		//			DUOLGRAPHICS_ASSERT("failed to create texture with invalid texture type")
+		//				break;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		switch (textureDesc._type)
+		//		{
+		//		case TextureType::TEXTURE1D:
+		//		case TextureType::TEXTURE1DARRAY:
+		//		{
+
+		//			CreateTexture1D(device, textureDesc);
+		//			break;
+		//		}
+		//		case TextureType::TEXTURE2D:
+		//		case TextureType::TEXTURE2DARRAY:
+		//		case TextureType::TEXTURECUBE:
+		//		case TextureType::TEXTURECUBEARRAY:
+		//		{
+		//			CreateTexture2D(device, textureDesc);
+		//			break;
+		//		}
+		//		case TextureType::TEXTURE3D:
+		//		{
+		//			CreateTexture3D(device, textureDesc);
+		//			break;
+		//		}
+		//		case TextureType::TEXTURE2DMS:
+		//		case TextureType::TEXTURE2DMSARRAY:
+		//		{
+		//			CreateTexture2D(device, textureDesc);
+		//			break;
+		//		}
+		//		default:
+		//			DUOLGRAPHICS_ASSERT("failed to create texture with invalid texture type")
+		//				break;
+		//		}
+		//	}
+
+		//	if (textureDesc._bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE))
+		//	{
+		//		CreateShaderResourceView(device);
+		//	}
+		//	if (textureDesc._bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS))
+		//	{
+		//		CreateUnorderedAccessView(device);
+		//	}
+
+		//}
+		//else
+		//{
+		//	CreateTextureFromFile(device, textureDesc);
+		//}
+
+		//_textureDesc._textureExtent = DUOLMath::Vector3{ floor(_textureDesc._textureExtent.x), floor(_textureDesc._textureExtent.y) , floor(_textureDesc._textureExtent.z) };
+	}
+
+	D3D11Texture::D3D11Texture(const UINT64& guid, const TextureDesc& textureDesc) :
+		Texture(guid, textureDesc)
+		, _mipGenerate(false)
+	{
+	}
+
+	D3D11Texture::~D3D11Texture()
+	{
+	}
+
+
+	D3D11Texture::FileFormat D3D11Texture::CheckFileFormat(const char* path)
+	{
+		std::string pathstr(path);
+
+		if (pathstr.length() > 1)
+		{
+			auto extensionStartPoint = pathstr.find_last_of('.') + 1;
+
+			std::string fileFormat = pathstr.substr(extensionStartPoint);
+
+			if (fileFormat == "dds" || fileFormat == "DDS")
+			{
+				return D3D11Texture::FileFormat::DDS;
+			}
+			else if (fileFormat == "tga" || fileFormat == "TGA")
+			{
+				return D3D11Texture::FileFormat::TGA;
+			}
+			else if (fileFormat == "hdr" || fileFormat == "HDR")
+			{
+				return D3D11Texture::FileFormat::HDR;
+			}
+			else
+			{
+				return D3D11Texture::FileFormat::WIC;
+			}
+		}
+
+		return D3D11Texture::FileFormat::WIC;
+	}
+
+	void D3D11Texture::SetTextureDesc(DXGI_FORMAT format, const DUOLMath::Vector3& extent, UINT mipLevels, UINT arraySize)
+	{
+		_textureDesc._textureExtent = DUOLMath::Vector3{ floor(extent.x), floor(extent.y) , floor(extent.z) };
+		_textureDesc._mipLevels = mipLevels;
+		_textureDesc._arraySize = arraySize;
+		_textureDesc._format = static_cast<ResourceFormat>(format);
+	}
+
+	UINT D3D11Texture::SetTextureMiscFlags(const TextureDesc& textureDesc)
+	{
+		UINT flagsD3D = 0;
+
+		if (IsMipMappedTexture(textureDesc))
+		{
+			const long requiredFlags = static_cast<long>(BindFlags::SHADERRESOURCE) | static_cast<long>(BindFlags::SAMPLER);
+			const long disallowedFlags = static_cast<long>(BindFlags::DEPTHSTENCIL);
+			if ((textureDesc._bindFlags & (requiredFlags | disallowedFlags)) | requiredFlags)
+				flagsD3D |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+		}
+
+		if (IsCubeTexture(textureDesc._type))
+			flagsD3D |= D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+		return flagsD3D;
+	}
+
+	ID3D11ShaderResourceView* D3D11Texture::GetSubResourceShaderResourceView(int startMip, int mipSize, int startArray,
+		int arraySize, ID3D11Device* device)
+	{
+		//해당 텍스쳐에서 "일부분"만 쉐이더리소스를 등록한다. ex) Array or Mips같은...
+		startMip = std::min<int>(startMip, 255);
+		mipSize = std::min<int>(mipSize, 255);
+		startArray = std::min<int>(startArray, 255);
+		arraySize = std::min<int>(arraySize, 255);
+
+		int packedid = (startMip << 24) | (mipSize << 16) | (startArray << 8) | (arraySize);
+
+		auto ret = _subresourceShaderResourceView.find(packedid);
+
+		if (ret == _subresourceShaderResourceView.end())
+		{
+			auto srv = CreateSubResourceShaderResourceView(device, startMip, mipSize, startArray, arraySize);
+
+			_subresourceShaderResourceView.emplace(packedid, srv);
+
+			return srv.Get();
+		}
+
+		return ret->second.Get();
+	}
+
+	void D3D11Texture::Initialize(ID3D11Device* device, const TextureDesc& textureDesc)
+	{
 		if (textureDesc._texturePath == nullptr)
 		{
 			if (textureDesc._mipLevels == 0)
@@ -114,103 +310,10 @@ namespace DUOLGraphicsLibrary
 		_textureDesc._textureExtent = DUOLMath::Vector3{ floor(_textureDesc._textureExtent.x), floor(_textureDesc._textureExtent.y) , floor(_textureDesc._textureExtent.z) };
 	}
 
-	D3D11Texture::D3D11Texture(const UINT64& guid, const TextureDesc& textureDesc) :
-		Texture(guid, textureDesc)
-		, _mipGenerate(false)
-	{
-	}
-
-	D3D11Texture::~D3D11Texture()
-	{
-	}
-
-
-	D3D11Texture::FileFormat D3D11Texture::CheckFileFormat(const char* path)
-	{
-		std::string pathstr(path);
-
-		if (pathstr.length() > 1)
-		{
-			auto extensionStartPoint = pathstr.find_last_of('.') + 1;
-
-			std::string fileFormat = pathstr.substr(extensionStartPoint);
-
-			if (fileFormat == "dds" || fileFormat == "DDS")
-			{
-				return D3D11Texture::FileFormat::DDS;
-			}
-			else if (fileFormat == "tga" || fileFormat == "TGA")
-			{
-				return D3D11Texture::FileFormat::TGA;
-			}
-			else if (fileFormat == "hdr" || fileFormat == "HDR")
-			{
-				return D3D11Texture::FileFormat::HDR;
-			}
-			else
-			{
-				return D3D11Texture::FileFormat::WIC;
-			}
-		}
-
-		return D3D11Texture::FileFormat::WIC;
-	}
-
-	void D3D11Texture::SetTextureDesc(DXGI_FORMAT format, const DUOLMath::Vector3& extent, UINT mipLevels, UINT arraySize)
-	{
-		_textureDesc._textureExtent = DUOLMath::Vector3{ floor(extent.x), floor(extent.y) , floor(extent.z) };
-		_textureDesc._mipLevels = mipLevels;
-		_textureDesc._arraySize = arraySize;
-		_textureDesc._format = static_cast<ResourceFormat>(format);
-	}
-
-	UINT D3D11Texture::SetTextureMiscFlags(const TextureDesc& textureDesc)
-	{
-		UINT flagsD3D = 0;
-
-		if (IsMipMappedTexture(textureDesc))
-		{
-			const long requiredFlags = static_cast<long>(BindFlags::SHADERRESOURCE) | static_cast<long>(BindFlags::SAMPLER);
-			const long disallowedFlags = static_cast<long>(BindFlags::DEPTHSTENCIL);
-			if ((textureDesc._bindFlags & (requiredFlags | disallowedFlags)) | requiredFlags)
-				flagsD3D |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
-		}
-
-		if (IsCubeTexture(textureDesc._type))
-			flagsD3D |= D3D11_RESOURCE_MISC_TEXTURECUBE;
-
-		return flagsD3D;
-	}
-
-	ID3D11ShaderResourceView* D3D11Texture::GetSubResourceShaderResourceView(int startMip, int mipSize, int startArray,
-		int arraySize, ID3D11Device* device)
-	{
-		//해당 텍스쳐에서 "일부분"만 쉐이더리소스를 등록한다. ex) Array or Mips같은...
-		startMip = std::min<int>(startMip, 255);
-		mipSize = std::min<int>(mipSize, 255);
-		startArray = std::min<int>(startArray, 255);
-		arraySize = std::min<int>(arraySize, 255);
-
-		int packedid = (startMip << 24) | (mipSize << 16) | (startArray << 8) | (arraySize);
-
-		auto ret = _subresourceShaderResourceView.find(packedid);
-
-		if (ret == _subresourceShaderResourceView.end())
-		{
-			auto srv = CreateSubResourceShaderResourceView(device, startMip, mipSize, startArray, arraySize);
-
-			_subresourceShaderResourceView.emplace(packedid, srv);
-
-			return srv.Get();
-		}
-
-		return ret->second.Get();
-	}
-
 	void D3D11Texture::CreateTexture1D(ID3D11Device* device, const TextureDesc& textureDesc,
-		const D3D11_SUBRESOURCE_DATA* initialData,
-		const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc,
-		const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
+	                                   const D3D11_SUBRESOURCE_DATA* initialData,
+	                                   const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc,
+	                                   const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
 	{
 		D3D11_TEXTURE1D_DESC texture1DDesc;
 		{

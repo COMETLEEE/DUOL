@@ -665,16 +665,16 @@ namespace DUOLGraphicsLibrary
 		D2D1_FACTORY_OPTIONS options;
 		options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
 
-		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, options, _d2dFactory.GetAddressOf());
+		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, options, _d2dFactory.GetAddressOf());
 #else
 		hr = D2D1CreateFactory(
-			D2D1_FACTORY_TYPE_SINGLE_THREADED,
+			D2D1_FACTORY_TYPE_MULTI_THREADED,
 			_d2dFactory.GetAddressOf()
 		);
 #endif
 
 		hr = _d2dFactory->CreateDevice(dxgiDevice, _d2dDevice.GetAddressOf());
-		hr = _d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, _d2dDeviceContext.GetAddressOf());
+		hr = _d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS, _d2dDeviceContext.GetAddressOf());
 
 		//_writeFactory->RegisterFontCollectionLoader(_fontCollectionLoader.Get());
 		//_writeFactory->CreateCustomFontCollection(_fontCollectionLoader.Get(), );

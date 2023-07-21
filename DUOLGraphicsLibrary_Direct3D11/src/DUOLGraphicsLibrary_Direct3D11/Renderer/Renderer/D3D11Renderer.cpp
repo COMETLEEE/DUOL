@@ -240,6 +240,34 @@ namespace DUOLGraphicsLibrary
 
 	Texture* D3D11Renderer::CreateTexture(const UINT64& objectID, const TextureDesc& textureDesc)
 	{
+
+		static std::mutex mutex1;
+
+		mutex1.lock();
+		auto foundObject = _D3D11Textures.find(objectID);
+		auto endObject = _D3D11Textures.end();
+
+		if (foundObject != endObject)
+		{
+			mutex1.unlock();
+			//새로운걸로 바꿔줄까.. 아니면 원래꺼 해줄까..
+			return foundObject->second.get();
+
+		}
+		else
+		{
+			static_assert(std::is_base_of_v<DUOLGraphicsLibrary::EntityBase, D3D11Texture>, "SubType must inherited from EntityBase");
+			auto texture = std::make_unique<D3D11Texture>(objectID, textureDesc);
+
+			auto ret =_D3D11Textures.emplace(objectID, std::move(texture));
+			mutex1.unlock();
+
+			ret.first->second->Initialize(_D3D11Device.Get(), textureDesc);
+			ret.first->second->SetGUID(objectID);//위험하지만 일단 모든 오브젝트들은 entitybase를 상속하고있으므로..
+
+			return ret.first->second.get();
+		}
+
 		return TakeOwnershipFromUniquePtrWithMutex(objectID, _D3D11Textures, std::make_unique<D3D11Texture>(objectID, _D3D11Device.Get(), textureDesc));
 	}
 

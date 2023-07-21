@@ -253,6 +253,13 @@ namespace DUOLClient
 
 	bool PlayerStateBase::DashCheck()
 	{
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY))
+		{
+			DUOL_TRACE(DUOL_CONSOLE, "DASH | DashKey {0}", DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY));
+			DUOL_TRACE(DUOL_CONSOLE, "DASH | payercandash {0}", _player->_canStartDash);
+			DUOL_TRACE(DUOL_CONSOLE, "DASH | dashCC {0}", _player->_isDashCrowdControl);
+		}
+
 		return (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY) && _player->_canStartDash && !_player->_isDashCrowdControl) ? true : false;
 	}
 

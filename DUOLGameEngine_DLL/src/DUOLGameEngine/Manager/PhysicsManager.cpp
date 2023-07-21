@@ -45,6 +45,7 @@ namespace DUOLGameEngine
 		_physicsSystem->Init(physicsDesc);
 
 		// TODO : 여기 있으면 안되는 구문들 .. 전부 클라이언트 쪽으로 빼야한다.
+
 #pragma region USING_CLIENT_PHYSICS_LAYER
 		_physicsSystem->AddLayer(TEXT("Default"));
 		_physicsSystem->AddLayer(TEXT("TransparentFX"));
@@ -95,6 +96,9 @@ namespace DUOLGameEngine
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Weapon"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Obstacle"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Ground"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("EnemyBottomCheck"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("EnemyRigidbody"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("EnemyProjectile"), false);
 
 		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("Enemy"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("EnemyRigidbody"), false);

@@ -54,7 +54,7 @@ namespace DUOLGraphicsLibrary
 	{
 		FrameRateDesc() :
 			_refreshRate(60)
-			, _interval(1)
+			, _interval(0)
 		{
 
 		}

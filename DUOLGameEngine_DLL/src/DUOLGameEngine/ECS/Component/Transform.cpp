@@ -177,7 +177,7 @@ namespace DUOLGameEngine
 		}
 	}
 
-	const Vector3& Transform::GetLocalEulerAngleWithoutCheck()
+	Vector3 Transform::GetLocalEulerAngleWithoutCheck()
 	{
 		return Vector3(DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.x), 
 			DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.y), DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.z));
@@ -515,7 +515,7 @@ namespace DUOLGameEngine
 		SetPosition(position, Space::Self);
 	}
 
-	void Transform::SetLocalEulerAngle(const Vector3& eulers)
+	void Transform::SetLocalEulerAngle(Vector3 eulers)
 	{
 		const Vector3 radianEulers = Vector3(MathHelper::DegreeToRadian(eulers.x), MathHelper::DegreeToRadian(eulers.y),
 			MathHelper::DegreeToRadian(eulers.z));

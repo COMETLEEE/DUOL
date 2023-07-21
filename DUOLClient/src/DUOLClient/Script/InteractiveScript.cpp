@@ -60,7 +60,8 @@ namespace DUOLClient
 			}
 		}
 
-		_infoObject == nullptr;
+		//TODO::: 이상한코드?
+		_infoObject = nullptr;
 
 		_scriptList.insert(std::make_pair(L"DialogueText_01.png", new ScriptInfo(L"DialogueText_01.png", L"DialogueText_02.png", L"NULL", 8.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"DialogueText_02.png", new ScriptInfo(L"DialogueText_02.png", L"DialogueText_03.png", L"NULL", 12.0f, true, false)));

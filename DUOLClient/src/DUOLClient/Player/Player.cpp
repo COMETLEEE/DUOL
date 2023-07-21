@@ -132,7 +132,7 @@ namespace DUOLClient
 
 		// 무적인 상황에 대해서는 넘어가 ..!
 		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down")
-			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction") || currentStateName == TEXT("PlayerState_Ultimate"))
+			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction") || currentStateName == TEXT("PlayerState_Ultimate") || currentStateName == TEXT("PlayerState_OverDrive"))
 			return false;
 
 		DUOLGameEngine::StateBase* prevState = _playerStateMachine.GetPrevState();
@@ -351,23 +351,23 @@ namespace DUOLClient
 #pragma endregion
 
 #pragma region PlayerData Set
-		if (_playerDataTable.contains(TEXT("HP")));
+		if (_playerDataTable.contains(TEXT("HP")))
 			_hp = _playerDataTable.find(TEXT("HP"))->second;
-		if (_playerDataTable.contains(TEXT("MoveSpeed")));
+		if (_playerDataTable.contains(TEXT("MoveSpeed")))
 			_defaultMaxMoveSpeed = _playerDataTable.find(TEXT("MoveSpeed"))->second;
-		if (_playerDataTable.contains(TEXT("RunSpeed")));
+		if (_playerDataTable.contains(TEXT("RunSpeed")))
 			_defaultMaxRunSpeed = _playerDataTable.find(TEXT("RunSpeed"))->second;
-		if (_playerDataTable.contains(TEXT("MaxLockOnMoveSpeed")));	
+		if (_playerDataTable.contains(TEXT("MaxLockOnMoveSpeed")))
 			_defaultMaxLockOnMoveSpeed = _playerDataTable.find(TEXT("MaxLockOnMoveSpeed"))->second;
-		if (_playerDataTable.contains(TEXT("MaxLockOnRunSpeed")));
+		if (_playerDataTable.contains(TEXT("MaxLockOnRunSpeed")))
 			_defaultMaxLockOnRunSpeed = _playerDataTable.find(TEXT("MaxLockOnRunSpeed"))->second;
-		if (_playerDataTable.contains(TEXT("OverdriveTime")));
+		if (_playerDataTable.contains(TEXT("OverdriveTime")))
 			_overdriveDuration = _playerDataTable.find(TEXT("OverdriveTime"))->second;
-		if (_playerDataTable.contains(TEXT("OverdrivePointPerSword")));
+		if (_playerDataTable.contains(TEXT("OverdrivePointPerSword")))
 			_overdrivePointPerSword = _playerDataTable.find(TEXT("OverdrivePointPerSword"))->second;
-		if (_playerDataTable.contains(TEXT("OverdrivePointPerFist")));
+		if (_playerDataTable.contains(TEXT("OverdrivePointPerFist")))
 			_overdrivePointPerFist = _playerDataTable.find(TEXT("OverdrivePointPerFist"))->second;
-		if (_playerDataTable.contains(TEXT("SuperArmorDamageDecrease")));
+		if (_playerDataTable.contains(TEXT("SuperArmorDamageDecrease")))
 			_superArmorDamageDecrease = _playerDataTable.find(TEXT("SuperArmorDamageDecrease"))->second;
 #pragma endregion
 
@@ -393,11 +393,11 @@ namespace DUOLClient
 		PlayerState_Overdrive* overdrive = _playerStateMachine.AddState<PlayerState_Overdrive>(this);
 
 		PlayerState_Ultimate* ult = _playerStateMachine.AddState<PlayerState_Ultimate>(this);
-		if (_playerDataTable.contains(TEXT("UltimateSword_S")));
+		if (_playerDataTable.contains(TEXT("UltimateSword_S")))
 			ult->SetUltimateSwordDamage(_playerDataTable.find(TEXT("UltimateSword_S"))->second);
-		if (_playerDataTable.contains(TEXT("UltimateSword_SSSSSS")));
+		if (_playerDataTable.contains(TEXT("UltimateSword_SSSSSS")))
 			ult->SetUltimateSwordWaveDamage(_playerDataTable.find(TEXT("UltimateSword_SSSSSS"))->second);
-		if (_playerDataTable.contains(TEXT("UltimateFist_F")));
+		if (_playerDataTable.contains(TEXT("UltimateFist_F")))
 			ult->SetUltimateFistDamage(_playerDataTable.find(TEXT("UltimateFist_F"))->second);
 
 		PlayerState_Jump* jump = _playerStateMachine.AddState<PlayerState_Jump>(this);

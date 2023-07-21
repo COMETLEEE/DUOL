@@ -81,7 +81,7 @@ namespace DUOLGraphicsLibrary
 		StageFlags  _stageFlags;
 	};
 
-	DUOLGRAPHICSLIBRARY_EXPORT enum class  StencilOp
+	enum class StencilOp
 	{
 		STENCIL_OP_KEEP = 1,
 		STENCIL_OP_ZERO = 2,

@@ -104,7 +104,9 @@ namespace DUOLGraphicsLibrary
 			return _shaderResourceView.Get();
 		}
 
+
 	public:
+		void Initialize(ID3D11Device* device, const TextureDesc& textureDesc);
 
 		void CreateTexture1D(
 			ID3D11Device* device,

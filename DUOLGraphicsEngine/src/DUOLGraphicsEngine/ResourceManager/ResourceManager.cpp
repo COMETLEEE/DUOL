@@ -266,7 +266,6 @@ namespace DUOLGraphicsEngine
 		}
 
 		auto texture = _renderer->CreateTexture(keyValue, textureDesc);
-
 		_textureMutex.lock();
 		_textures.emplace(keyValue, texture);
 		_textureMutex.unlock();

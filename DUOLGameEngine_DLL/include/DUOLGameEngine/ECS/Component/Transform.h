@@ -168,7 +168,7 @@ namespace DUOLGameEngine
 
 		const Quaternion& GetLocalRotationWithoutCheck() { return _localRotation; }
 
-		const Vector3& GetLocalEulerAngleWithoutCheck();
+		Vector3 GetLocalEulerAngleWithoutCheck();
 
 	public:
 		inline const Vector3& GetLocalPosition() { CheckIsDirtAndUpdate(); return _localPosition; }
@@ -300,7 +300,7 @@ namespace DUOLGameEngine
 		 * \brief Set local rotation by euler angle and modify other properties.
 		 * \param eulers The angle to applying.
 		 */
-		void SetLocalEulerAngle(const Vector3& eulers);
+		void SetLocalEulerAngle(Vector3 eulers);
 
 		void SetLocalRotation(const Quaternion& quaternion);
 
