@@ -34,6 +34,8 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onStart()
 {
 	if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
 
+	_enemyGroupController = _ai->GetGroupController();
+
 	return BT::NodeStatus::RUNNING;
 }
 
@@ -41,8 +43,6 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 {
 	if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
 
-	if (!_enemyGroupController)
-		_enemyGroupController = _ai->GetGroupController();
 
 	_ai->SetNavOnRigidbodyOff();
 	_navMeshAgent->SetMaxSpeed(_ai->GetParameter<float>(TEXT("MaxSpeed")));

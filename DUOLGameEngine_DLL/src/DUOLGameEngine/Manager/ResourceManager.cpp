@@ -2121,27 +2121,27 @@ namespace DUOLGameEngine
 		monsterSwordIdleToSwordPattern3->SetTransitionOffset(0.0f);
 
 		FistPattern1ToNormalIdle->AddCondition(TEXT("IsFistPattern1"), AnimatorConditionMode::False);
-		FistPattern1ToNormalIdle->SetTransitionDuration(0.01f);
+		FistPattern1ToNormalIdle->SetTransitionDuration(0.1f);
 		FistPattern1ToNormalIdle->SetTransitionOffset(0.0f);
 
 		FistPattern2ToNormalIdle->AddCondition(TEXT("IsFistPattern2"), AnimatorConditionMode::False);
-		FistPattern2ToNormalIdle->SetTransitionDuration(0.01f);
+		FistPattern2ToNormalIdle->SetTransitionDuration(0.1f);
 		FistPattern2ToNormalIdle->SetTransitionOffset(0.0f);
 
 		FistPattern3ToNormalIdle->AddCondition(TEXT("IsFistPattern3"), AnimatorConditionMode::False);
-		FistPattern3ToNormalIdle->SetTransitionDuration(0.01f);
+		FistPattern3ToNormalIdle->SetTransitionDuration(0.1f);
 		FistPattern3ToNormalIdle->SetTransitionOffset(0.0f);
 
 		SwordPattern1ToNormalIdle->AddCondition(TEXT("IsSwordPattern1"), AnimatorConditionMode::False);
-		SwordPattern1ToNormalIdle->SetTransitionDuration(0.01f);
+		SwordPattern1ToNormalIdle->SetTransitionDuration(0.1f);
 		SwordPattern1ToNormalIdle->SetTransitionOffset(0.0f);
 
 		SwordPattern2ToNormalIdle->AddCondition(TEXT("IsSwordPattern2"), AnimatorConditionMode::False);
-		SwordPattern2ToNormalIdle->SetTransitionDuration(0.01f);
+		SwordPattern2ToNormalIdle->SetTransitionDuration(0.1f);
 		SwordPattern2ToNormalIdle->SetTransitionOffset(0.0f);
 
 		SwordPattern3ToNormalIdle->AddCondition(TEXT("IsSwordPattern3"), AnimatorConditionMode::False);
-		SwordPattern3ToNormalIdle->SetTransitionDuration(0.01f);
+		SwordPattern3ToNormalIdle->SetTransitionDuration(0.1f);
 		SwordPattern3ToNormalIdle->SetTransitionOffset(0.0f);
 
 		monsterHit_BackToNormalIdle->SetTransitionDuration(0.0f);

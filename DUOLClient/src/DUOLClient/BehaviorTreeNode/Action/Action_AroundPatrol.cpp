@@ -31,8 +31,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 {
 	if (_targetTransform == nullptr || _navMeshAgent == nullptr || !_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
 
-	if (!_enemyGroupController)
-		_enemyGroupController = _ai->GetGroupController();
+	_enemyGroupController = _ai->GetGroupController();
 
 	const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition();
 
@@ -132,7 +131,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 {
 	if (!_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
 
-	if(_tiemr <= 0.0f)
+	if (_tiemr <= 0.0f)
 	{
 		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
@@ -147,7 +146,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 	_tiemr -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
 
-	
+
 
 	auto distance = DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _transform->GetWorldPosition());
 

@@ -636,7 +636,7 @@ namespace DUOLClient
 		{
 		case EnemyMaterial::DIE:
 		{
-			constexpr float speed = 0.2f;
+			constexpr float speed = 0.4f;
 
 			float offset = GetParameter<float>(TEXT("PaperBurnOffset"));
 
