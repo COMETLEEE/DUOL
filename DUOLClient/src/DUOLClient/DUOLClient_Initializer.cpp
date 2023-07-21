@@ -74,6 +74,8 @@ namespace DUOLClient
 
 		JumpPoint_Initialize();
 
+		Elite_Monster_Generate_Animator();
+
 		LoadSound();
 	}
 
@@ -5906,6 +5908,42 @@ namespace DUOLClient
 		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(jumpController);
 	}
 
+	void DUOLClient_Initializer::Elite_Monster_Generate_Animator()
+	{
+		using namespace DUOLGameEngine;
+
+		auto resourceManager = ResourceManager::GetInstance();
+		auto eliteAnimCon = std::make_shared<AnimatorController>(TEXT("Elite_Monster_Generate_Animator"));
+
+		const wchar_t* idle_str = TEXT("elite_idle");
+		const wchar_t* eliteRoar_str = TEXT("elite_roar");
+		const wchar_t* jumpAttack_str = TEXT("elite_attack_jump");
+
+		auto stateMachine = eliteAnimCon->AddStateMachine(TEXT("AnimationStateMachine"));
+
+		auto monsterIdle = stateMachine->AddState(TEXT("Idle"));
+		monsterIdle->SetAnimationClip(resourceManager->GetAnimationClip(idle_str));
+		auto monsterJump = stateMachine->AddState(TEXT("Jump"));
+		monsterJump->SetAnimationClip(resourceManager->GetAnimationClip(jumpAttack_str));
+		auto monsterRoar = stateMachine->AddState(TEXT("Roar"));
+		monsterRoar->SetAnimationClip(resourceManager->GetAnimationClip(eliteRoar_str));
+
+		auto idleTojump = monsterIdle->AddTransition(monsterJump);
+		idleTojump->AddCondition(TEXT("IsJumpAttack"), AnimatorConditionMode::True);
+		auto jumpToidle = monsterJump->AddTransition(monsterIdle);
+		jumpToidle->AddCondition(TEXT("IsJumpAttack"), AnimatorConditionMode::False);
+
+		auto idleToroar = monsterIdle->AddTransition(monsterRoar);
+		idleToroar->AddCondition(TEXT("IsRoar"), AnimatorConditionMode::True);
+		auto roarToidle = monsterRoar->AddTransition(monsterIdle);
+		roarToidle->AddCondition(TEXT("IsRoar"), AnimatorConditionMode::False);
+
+		eliteAnimCon->AddParameter(TEXT("IsJumpAttack"), AnimatorControllerParameterType::Bool);
+		eliteAnimCon->AddParameter(TEXT("IsRoar"), AnimatorControllerParameterType::Bool);
+
+		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(eliteAnimCon);
+	}
+
 	void DUOLClient_Initializer::LoadSound()
 	{
 		Load_Player_Sound();
@@ -6239,6 +6277,7 @@ namespace DUOLClient
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 	}
+
 
 	void DUOLClient_Initializer::Load_BGM_Sound()
 	{

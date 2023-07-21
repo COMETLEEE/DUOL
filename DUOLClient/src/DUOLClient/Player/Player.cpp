@@ -319,6 +319,7 @@ namespace DUOLClient
 		_playerRigidbody->SetMaxLinearVelocity(30.f);
 		_playerRigidbody->SetMaxDepenetrationVelocity(4.f);
 		_playerRigidbody->SetCenterOfMass({ 0, 1.25f, 0 });
+		_playerRigidbody->SetIsInterpolate(true);
 
 #pragma region PlayerData Load
 		auto playerDamageTable = DUOLJson::JsonReader::GetInstance()->LoadJson(TEXT("Asset/DataTable/PlayerDataTable.json"));

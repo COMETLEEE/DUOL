@@ -28,6 +28,8 @@ namespace DUOLClient
 
 		static void JumpPoint_Initialize();
 
+		static void Elite_Monster_Generate_Animator();
+
 		static void LoadSound();
 
 		static void Load_Player_Sound();
@@ -41,7 +43,6 @@ namespace DUOLClient
 		static void Load_ETC_Sound();
 
 		static void Load_CutScene_Sound();
-
 
 		static bool _isInit;
 

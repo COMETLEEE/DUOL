@@ -103,6 +103,9 @@
     <ClCompile Include="src\DUOLClient\Script\ScriptInfo.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\AStageAreaCameraTirgger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\CStageMiddleBossAction.cpp" />
+    <ClCompile Include="src\DUOLClient\Script\AnimationScript\EliteMonsterScript.cpp" />
+    <ClCompile Include="src\DUOLClient\Script\AnimationScript\DummyMonoBehavior.cpp" />
+    <ClCompile Include="src\DUOLClient\Script\AnimationScript\BossMonsterScript.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CStageEliteCameraTrigger.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +218,8 @@
     <ClInclude Include="include\DUOLClient\Script\ScriptInfo.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\AStageAreaCameraTirgger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CStageMiddleBossAction.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\CStageEliteCameraTrigger.h" />
+    <ClInclude Include="include\DUOLClient\Script\AnimationScript\EliteMonsterScript.h" />
+    <ClInclude Include="include\DUOLClient\Script\AnimationScript\BossMonsterScript.h" />
+    <ClInclude Include="include\DUOLClient\Script\AnimationScript\DummyMonoBehavior.h" />
   </ItemGroup>
 </Project>
