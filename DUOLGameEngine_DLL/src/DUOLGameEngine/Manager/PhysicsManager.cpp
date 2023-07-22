@@ -705,7 +705,7 @@ namespace DUOLGameEngine
 			float coefficient = (currentTime - prevTime) / (nextTime - prevTime);
 
 			transform->SetPosition(DUOLMath::Vector3::Lerp(interpolateData.first._position,
-				interpolateData.second._position, coefficient));
+				interpolateData.second._position, std::min(coefficient, 1.f)));
 
 			// TODO : 일단 로테이션은 막자. 해당 프레임에 피직스 업데이트가 이루어지지 않으면 .. 문제가 생긴다
 			/*transform->SetRotation(DUOLMath::Quaternion::Slerp(interpolateData.first._rotation,

@@ -100,6 +100,11 @@ namespace DUOLGameEngine
 		_fadeEvent = fadeEvent;
 	}
 
+	void FadeInOut::SetUIOption(bool value)
+	{
+			GetGameObject()->SetIsActiveSelf(value);
+	}
+
 	void FadeInOut::StartFadeOut(float duration, std::function<void()> fadeEvent)
 	{
 		//if (_currentFadeInOutMode != FadeInOutMode::NOT 

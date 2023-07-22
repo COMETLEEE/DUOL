@@ -30,6 +30,8 @@ namespace DUOLClient
 		DUOLGameEngine::CoroutineHandler ScripteRun(DUOLGameEngine::GameObject* player);
 
 	private:
+		DUOLGameEngine::GameObject* _playerSpawnPoint;
+
 		DUOLGameEngine::GameObject* _eliteBossMonsterController;
 
 		DUOLGameEngine::GameObject* _eliteBossTrigger;
@@ -46,6 +48,8 @@ namespace DUOLClient
 		MainCameraController* _mainCameraController;
 
 		EliteMonsterScript* _eliteScript;
+
+		bool _isPlay;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 		RTTR_REGISTRATION_FRIEND

@@ -91,12 +91,19 @@ namespace DUOLClient
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * fixedTimeStep);
 
+
 				_player->_currentMoveSpeed = moveVelocity.Length();
 
+				DUOL_TRACE(DUOL_CONSOLE, "Run Speed {0}", _player->_currentMoveSpeed)
+
 				if (SlopeCheck())
+				{
 					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				}
 				else
+				{
 					moveVelocity.y = _gravity;
+				}
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 			}

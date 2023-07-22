@@ -298,6 +298,7 @@ namespace DUOLGameEngine
 			//}
 
 			// 생성 요청된 오브젝트들을 생성합니다.
+
 			_currentScene->CreateGameObjects();
 
 			_currentScene->Update(deltaTime);

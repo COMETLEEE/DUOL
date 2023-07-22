@@ -42,6 +42,9 @@ namespace DUOLGameEngine
 
 		void StartBlinkOut(float duration, std::function<void()> fadeEvent);
 
+		void SetUIOption(bool value);
+
+
 		FadeInOutMode& GetFadeMode() { return _currentFadeInOutMode; }
 
 		std::function<void()> _fadeEvent;
@@ -50,6 +53,7 @@ namespace DUOLGameEngine
 		virtual void OnAwake() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 

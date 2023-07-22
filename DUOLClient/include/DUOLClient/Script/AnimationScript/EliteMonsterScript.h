@@ -70,7 +70,7 @@ namespace DUOLClient
 		/**
 		 * \brief PlayerInfo
 		 */
-		DUOLMath::Vector3 _playerLocalPosition;
+		//DUOLMath::Vector3 _playerLocalPosition;
 
 		float _playerAnimStart;
 
@@ -81,6 +81,8 @@ namespace DUOLClient
 		bool _isAnimPlayed;
 
 		bool _isJumping;
+
+		DUOLGameEngine::GameObject* _playerPos;
 	private:
 		DUOLGameEngine::CoroutineHandler EliteBossGenerate();
 

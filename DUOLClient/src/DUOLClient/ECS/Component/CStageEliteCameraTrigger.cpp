@@ -30,6 +30,8 @@ RTTR_REGISTRATION
 
 DUOLClient::CStageEliteCameraTrigger::CStageEliteCameraTrigger(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 	MonoBehaviourBase(owner, name)
+	, _isPlay(false)
+	, _isFadeOut(false)
 {
 }
 
@@ -105,13 +107,12 @@ void DUOLClient::CStageEliteCameraTrigger::OnTriggerEnter(const std::shared_ptr<
 		}
 	}
 
-	if (gameObject->GetTag() == TEXT("Player"))
+	if (gameObject->GetTag() == TEXT("Player") && !_isPlay)
 	{
 		DUOL_INFO(DUOL_CONSOLE, "C Stage Elite Action");
 
 		DUOLClient::SystemManager::GetInstance()->SetUiObject(true);
 		StartCoroutine(&DUOLClient::CStageEliteCameraTrigger::ScripteRun, gameObject);
-		GetGameObject()->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsEnabled(false);
 	}
 }
 
@@ -121,10 +122,10 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageEliteCameraTrigger::ScripteRu
 	//스크립트하기전 사용하는 변수를 초기화하자!
 	auto cameraEventManager = DUOLGameEngine::CameraEventManager::GetInstance();
 
+	_isPlay = true;
 	_isFadeOut = false;
 	//플레이어를 꺼둔다
 	player->SetIsActiveSelf(false);
-
 	//첫번째 연출
 	//보스 등장
 
@@ -164,23 +165,29 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageEliteCameraTrigger::ScripteRu
 	//업데이트가 겹치지 않도록 차등을 둔다.
 	co_yield nullptr;
 
-	while (cameraEventManager->IsPlayMode())
+	while (cameraEventManager->IsPlayMode() || _fadeInOut->GetFadeMode() != DUOLGameEngine::FadeInOutMode::DONE)
 	{
-		if(cameraEventManager->GetCurrentTime1() > 45.f && !_isFadeOut)
+		if(cameraEventManager->GetCurrentTime1() * 60.f > 45.f && !_isFadeOut)
 		{
 			//연출하면서 페이드인.
 			_fadeInOut->StartFadeOut(2, []() {});
 			_isFadeOut = true;
-		}	
+		}
+
+		if(_fadeInOut->GetFadeMode() == DUOLGameEngine::FadeInOutMode::DONE)
+		{
+			_fadeInOut->SetUIOption(true);
+		}
+
 		//끝날때까지 대기
 		co_yield nullptr;
 	}
+
 
 	//잠깐암전상태 대기
 	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(1.f);
 
 	//페이드아웃 시작
-
 	_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
 	player->SetIsActiveSelf(true);
 
@@ -189,9 +196,10 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageEliteCameraTrigger::ScripteRu
 	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(2);
 	                                                                         
 	DUOLClient::SystemManager::GetInstance()->SetUiObject(false);
-	//_eliteBossTrigger->SetIsActiveSelf(true);
 	_isFadeOut = false;
 
+	_eliteBossTrigger->SetIsActiveSelf(true);
+	GetGameObject()->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsEnabled(false);
 	////UIChange
 	//_fadeInOut->StartFadeIn(2, []() {});
 

@@ -98,9 +98,12 @@ namespace DUOLClient
 		lookVec.y = 0;
 		lookVec.Normalize();
 
+		_rigidbody->SetLinearVelocity(DUOLMath::Vector3::Zero);
+
 		//물리버그
 		//를 없애기위해 rootMotion을 쓰지 않습니다.
 		auto mass = _rigidbody->GetMass();
+		
 		if (SlopeCheck())
 		{
 			auto moveVec = lookVec * mass * DASH_IMPULSE;
