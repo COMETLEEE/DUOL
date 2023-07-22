@@ -112,6 +112,9 @@ namespace DUOLClient
 		float _hitTimer;
 
 		bool _isWaveCodition;
+
+		bool _isWaveClear;
+
 	private:
 		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos, float radius, float rotateDegree);
 		DUOLGameEngine::CoroutineHandler CreateEnemyCoroutine(); // 몬스터 생성.
@@ -155,7 +158,9 @@ namespace DUOLClient
 
 		DUOLMath::Vector3 GetGroupCenterPos();
 
-		void SetTrueWaveCondition();
+		void SetTrueWaveCondition(bool value);
+
+		void SetIsWaveClear(bool isWaveClear);
 
 	public:
 		virtual void OnAwake() override;

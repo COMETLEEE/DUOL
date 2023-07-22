@@ -679,12 +679,14 @@ namespace DUOLGameEngine
 		// 현재 켜져 있는 컴포넌트들에 대해서만 OnEnable 호출
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
-			abledBehaviour->OnEnable();
+			if(abledBehaviour->GetIsEnabled())
+				abledBehaviour->OnEnable();
 		}
 
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
-			abledMonoBehaviour->OnEnable();
+			if(abledMonoBehaviour->GetIsEnabled())
+				abledMonoBehaviour->OnEnable();
 
 			abledMonoBehaviour->AllProcessOnEnable();
 		}

@@ -123,15 +123,21 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_triggerCount(0),
 	_isPrevHit(false),
 	_hitTimer(0),
-	_isWaveCodition(false)
+	_isWaveCodition(false),
+	_isWaveClear(false)
 {
 }
 
 
+void DUOLClient::EnemyGroupController::SetIsWaveClear(bool isWaveClear)
+{
+	_isWaveClear = isWaveClear;
+}
+
 DUOLClient::Enemy* DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name,
-	const DUOLMath::Vector3& targetPos,
-	float radius,
-	float rotateDegree)
+                                                              const DUOLMath::Vector3& targetPos,
+                                                              float radius,
+                                                              float rotateDegree)
 {
 
 	const auto gameObject = EnemyManager::GetInstance()->Pop<DUOLGameEngine::GameObject>(name);
@@ -415,27 +421,30 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 			break;
 		case EnemyCreateType::ConditionWave:
 		{
-			while (!_isWaveCodition)
+			while (!_isWaveClear)
 			{
-				for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
+				while (!_isWaveCodition)
 				{
-					// Todo : 보스 생성할 때 Warning 치기.
-					auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.first._createPos, 0, createInfoPair.first._rotateDegree);
-					boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
-					boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
+					for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
+					{
+						// Todo : 보스 생성할 때 Warning 치기.
+						auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.first._createPos, 0, createInfoPair.first._rotateDegree);
+						boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
+						boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
+					}
+					for (int i = 0; i < createInfoPair.first._eliteEnemyCount; i++)
+						PopEnemy(TEXT("EnemyElite"), createInfoPair.first._createPos, 0, createInfoPair.first._rotateDegree);
+					for (int i = 0; i < createInfoPair.first._weakEliteEnemyCount; i++)
+						PopEnemy(TEXT("WeakEnemyElite"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
+					for (int i = 0; i < createInfoPair.first._closeEnemyCount; i++)
+						PopEnemy(TEXT("EnemyNear"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
+					for (int i = 0; i < createInfoPair.first._farEnemyCount; i++)
+						PopEnemy(TEXT("EnemyFar"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
+					co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
 				}
-				for (int i = 0; i < createInfoPair.first._eliteEnemyCount; i++)
-					PopEnemy(TEXT("EnemyElite"), createInfoPair.first._createPos, 0, createInfoPair.first._rotateDegree);
-				for (int i = 0; i < createInfoPair.first._weakEliteEnemyCount; i++)
-					PopEnemy(TEXT("WeakEnemyElite"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
-				for (int i = 0; i < createInfoPair.first._closeEnemyCount; i++)
-					PopEnemy(TEXT("EnemyNear"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
-				for (int i = 0; i < createInfoPair.first._farEnemyCount; i++)
-					PopEnemy(TEXT("EnemyFar"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
-				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
-			}
 
-			_isWaveCodition = false;
+				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(1.f);
+			}
 
 			break;
 		}
@@ -519,9 +528,9 @@ DUOLMath::Vector3 DUOLClient::EnemyGroupController::GetGroupCenterPos()
 	return _enemyGroupCenterPos;
 }
 
-void DUOLClient::EnemyGroupController::SetTrueWaveCondition()
+void DUOLClient::EnemyGroupController::SetTrueWaveCondition(bool value)
 {
-	_isWaveCodition = true;
+	_isWaveCodition = value;
 }
 
 void DUOLClient::EnemyGroupController::OnAwake()

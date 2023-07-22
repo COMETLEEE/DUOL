@@ -36,6 +36,12 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+		.property("_destroyIncreasePerFrame", &DUOLClient::DominationArea::_destroyIncreasePerFrame)
+	(
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
 		.property("maxClearPercent", &DUOLClient::DominationArea::_maxClearPercent)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -72,6 +78,12 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+				.property("_monsterSpawnBelowCurrentClear", &DUOLClient::DominationArea::_monsterSpawnBelowCurrentClear)
+	(
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
 	.property("isTotallyCleared", &DUOLClient::DominationArea::_isTotallyCleared)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -82,10 +94,12 @@ RTTR_REGISTRATION
 
 namespace DUOLClient
 {
+	class EnemySpawnTrigger;
 
 	DominationArea::DominationArea(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		MonoBehaviourBase(owner, name)
 		, _destroyIncreasePerMonster(1)
+		, _destroyIncreasePerFrame(1.f)
 		, _maxClearPercent(100)
 		, _currentClearPercent(0)
 		, _dominationTime(10)
@@ -97,6 +111,7 @@ namespace DUOLClient
 		, _destroyColor(255.0f, 0.f, 0.f)
 		, _clearColor(0.0f, 255.f, 0.f)
 		, _isTotallyCleared(false)
+		, _monsterSpawnBelowCurrentClear(80.f)
 	{
 	}
 
@@ -111,6 +126,18 @@ namespace DUOLClient
 
 	void DominationArea::SetTotallyClear(bool value)
 	{
+		if (value == true)
+		{
+			_enemyGroupControl->SetIsWaveClear(true);
+			_enemyGroupControl->SetTrueWaveCondition(true);
+		}
+		else
+		{
+			_enemyGroupControl->SetIsWaveClear(false);
+			_enemyGroupControl->CreateEnemy();
+		}
+
+
 		_currentClearPercent = _maxClearPercent;
 		_isTotallyCleared = value;
 	}
@@ -138,6 +165,11 @@ namespace DUOLClient
 			{
 				_dominationBorder = go->GetComponent<DUOLGameEngine::MeshRenderer>();
 				_dominationBorder->SetEmissivePower(DOMINATION_BORDER_EMISSIVE_POWER);
+			}
+
+			if (go->GetName() == TEXT("ConditionalWave"))
+			{
+				_enemyGroupControl = go->GetComponent<EnemyGroupController>();
 			}
 		}
 
@@ -200,7 +232,7 @@ namespace DUOLClient
 			}
 			else
 			{
-				float upDestroyPercent = _defaultDestroyIncrease + _destroyIncreasePerMonster * _currentEnemyCountInZone;
+				float upDestroyPercent = std::min(_defaultDestroyIncrease + _destroyIncreasePerMonster * _currentEnemyCountInZone, _destroyIncreasePerFrame);
 				_currentClearPercent -= upDestroyPercent * deltaTime;
 			}
 
@@ -211,6 +243,16 @@ namespace DUOLClient
 			else
 			{
 				_isCleared = false;
+			}
+
+
+			if (_currentClearPercent <= _monsterSpawnBelowCurrentClear)
+			{
+				_enemyGroupControl->SetTrueWaveCondition(false);
+			}
+			else
+			{
+				_enemyGroupControl->SetTrueWaveCondition(true);
 			}
 
 			_currentClearPercent = std::clamp(_currentClearPercent, 0.f, _maxClearPercent);

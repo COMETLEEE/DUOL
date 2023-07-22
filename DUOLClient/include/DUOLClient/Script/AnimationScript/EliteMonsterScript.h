@@ -45,11 +45,16 @@ namespace DUOLClient
 		 */
 		virtual void OnUpdate(float deltaTime);
 
-		DUOLGameEngine::CoroutineHandler AnimationStart();
+		void EliteBossAnimateRun();
+
+		void PlayerAnimateRun();
 
 		void PlayStart();
 
 	public:
+		/**
+		 * \brief EliteInfo
+		 */
 		float _startHeight;
 
 		float _jumpAttackTime;
@@ -62,10 +67,24 @@ namespace DUOLClient
 
 		float _generationTime;
 
+		/**
+		 * \brief PlayerInfo
+		 */
+		DUOLMath::Vector3 _playerLocalPosition;
+
+		float _playerAnimStart;
+
+		float _playerAnimEnd;
+
+		float _playerGenerateTime;
 
 		bool _isAnimPlayed;
 
 		bool _isJumping;
+	private:
+		DUOLGameEngine::CoroutineHandler EliteBossGenerate();
+
+		DUOLGameEngine::CoroutineHandler PlayerGenerate();
 
 	private:
 		DUOLGameEngine::GameObject* _cachedEliteMonsterDummy;
@@ -77,6 +96,11 @@ namespace DUOLClient
 		DUOLGameEngine::AudioClip* _groundAttack;
 
 		DUOLGameEngine::AudioSource* _audioSource;
+
+		DUOLGameEngine::GameObject* _cachedPlayerDummy;
+
+		DUOLGameEngine::Animator* _cachedPlayerAnimator;
+
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 		RTTR_REGISTRATION_FRIEND

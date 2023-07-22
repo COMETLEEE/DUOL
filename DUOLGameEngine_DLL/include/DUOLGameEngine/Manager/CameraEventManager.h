@@ -73,6 +73,9 @@ namespace DUOLGameEngine
 		void LoadAudioClip();
 
 		int GetSequenceIndex() { return _sequenceIndex; }
+
+		float GetCurrentTime1() const;
+
 	private:
 
 		//  이름을 key값으로 받아 모든 카메라의 이벤트를 등록한다. 
@@ -92,6 +95,7 @@ namespace DUOLGameEngine
 
 		float _currentTime;
 
+	private:
 		bool _isSequenceMode;
 
 		bool _isNextSequence;

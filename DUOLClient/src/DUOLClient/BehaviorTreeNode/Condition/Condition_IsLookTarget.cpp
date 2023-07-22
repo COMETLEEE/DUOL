@@ -46,7 +46,8 @@ namespace DUOLClient
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _ai->GetTarget() &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyRigidbody") &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyBottomCheck") &&
-						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("Enemy")
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("Enemy") &&
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("DominationZone")
 						)
 					{
 						isBlock = true;
@@ -79,7 +80,8 @@ namespace DUOLClient
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _ai->GetTarget() &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyRigidbody") &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyBottomCheck") &&
-						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("Enemy")
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("Enemy") &&
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("DominationZone")
 						)
 					{
 						isBlock = true;

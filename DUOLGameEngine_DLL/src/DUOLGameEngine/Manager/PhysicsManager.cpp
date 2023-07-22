@@ -97,7 +97,7 @@ namespace DUOLGameEngine
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Obstacle"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Ground"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("EnemyBottomCheck"), false);
-		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("EnemyRigidbody"), false);
+		//_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("EnemyRigidbody"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("EnemyProjectile"), false);
 
 		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("Enemy"), false);

@@ -28,7 +28,7 @@ namespace DUOLClient
 
 		static void JumpPoint_Initialize();
 
-		static void Elite_Monster_Generate_Animator();
+		static void CutScene_Character_Animator();
 
 		static void LoadSound();
 

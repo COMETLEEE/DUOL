@@ -14,6 +14,7 @@
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
@@ -63,6 +64,30 @@ rttr::registration::class_<DUOLClient::EliteMonsterScript>("EliteMonsterScript")
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+			.property("_playerLocalPosition", &DUOLClient::EliteMonsterScript::_playerLocalPosition)
+	(
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+		.property("_playerAnimStart", &DUOLClient::EliteMonsterScript::_playerAnimStart)
+	(
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+		.property("_playerAnimEnd", &DUOLClient::EliteMonsterScript::_playerAnimEnd)
+	(
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_playerGenerateTime", &DUOLClient::EliteMonsterScript::_playerGenerateTime)
+	(
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
 		.property("_startAnimation", &DUOLClient::EliteMonsterScript::_isAnimPlayed)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -79,6 +104,10 @@ DUOLClient::EliteMonsterScript::EliteMonsterScript(DUOLGameEngine::GameObject* o
 	, _roarStartTime(2.f)
 	, _roarEndTime(2.f)
 	, _generationTime(3.f)
+	, _playerLocalPosition()
+	, _playerAnimStart(2.f)
+	, _playerAnimEnd(2.f)
+	, _playerGenerateTime(2.f)
 	, _isAnimPlayed(false)
 {
 
@@ -103,6 +132,7 @@ void DUOLClient::EliteMonsterScript::OnAwake()
 	{	
 			_isJumping = true;
 	});
+
 	eventHandle->AddEventFunction(TEXT("JumpAttackEnd"), [this]()
 	{
 		_cachedEliteMonsterAnimator->SetBool(TEXT("IsJumpAttack"), false);
@@ -119,6 +149,15 @@ void DUOLClient::EliteMonsterScript::OnAwake()
 
 	_groundAttack = DUOLGameEngine::SoundManager::GetInstance()->GetAudioClip(TEXT("MidBossCrack"));
 	_roarClip = DUOLGameEngine::SoundManager::GetInstance()->GetAudioClip( TEXT("MiddleBossRoar"));
+
+	///////////// Player
+	_cachedPlayerDummy = scene->CreateFromFBXModel(TEXT("player"));
+	_cachedPlayerDummy->GetTransform()->SetParent(this->GetTransform(), false);
+	eventHandle = _cachedPlayerDummy->AddComponent<DummyMonoBehavior>();
+	_cachedPlayerAnimator = _cachedPlayerDummy->GetComponent<DUOLGameEngine::Animator>();
+	_cachedPlayerAnimator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_T("Player_CutScene_Animator")));
+
+	_cachedPlayerDummy->SetIsActiveSelf(false);
 }
 
 void DUOLClient::EliteMonsterScript::OnStart()
@@ -135,17 +174,22 @@ void DUOLClient::EliteMonsterScript::OnUpdate(float deltaTime)
 	{
 		StopAllCoroutines();
 
-		StartCoroutine(&DUOLClient::EliteMonsterScript::AnimationStart);
+		StartCoroutine(&DUOLClient::EliteMonsterScript::EliteBossGenerate);
+		StartCoroutine(&DUOLClient::EliteMonsterScript::PlayerGenerate);
 		_isAnimPlayed = false;
 	}
 
-	if (_cachedEliteMonsterDummy->GetTransform()->GetLocalPosition().y > 0.f && _isJumping)
-		_cachedEliteMonsterDummy->GetTransform()->Translate({ 0.f, -_startHeight * deltaTime, 0.f });
 }
 
-DUOLGameEngine::CoroutineHandler DUOLClient::EliteMonsterScript::AnimationStart()
+void DUOLClient::EliteMonsterScript::EliteBossAnimateRun()
+{
+	StartCoroutine(&DUOLClient::EliteMonsterScript::EliteBossGenerate);
+}
+
+DUOLGameEngine::CoroutineHandler DUOLClient::EliteMonsterScript::EliteBossGenerate()
 {
 	auto transform = _cachedEliteMonsterDummy->GetTransform();
+
 	_cachedEliteMonsterAnimator->SetBool(TEXT("IsRoar"), false);
 	_cachedEliteMonsterAnimator->SetBool(TEXT("IsJumpAttack"), false);
 	_isJumping = false;
@@ -164,7 +208,10 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EliteMonsterScript::AnimationStart(
 
 	while(_cachedEliteMonsterAnimator->GetBool(TEXT("IsJumpAttack")))
 	{
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(0.1f);
+		if (_cachedEliteMonsterDummy->GetTransform()->GetLocalPosition().y > 0.f && _isJumping)
+			_cachedEliteMonsterDummy->GetTransform()->Translate({ 0.f, -_startHeight * DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime(), 0.f });
+
+		co_yield nullptr;
 	}
 
 	transform->SetLocalPosition({ 0.f, 0.f, 0.f });
@@ -189,6 +236,33 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EliteMonsterScript::AnimationStart(
 	_cachedEliteMonsterDummy->SetIsActiveSelf(false);
 
 	co_return;
+}
+
+DUOLGameEngine::CoroutineHandler DUOLClient::EliteMonsterScript::PlayerGenerate()
+{
+	auto transform = _cachedPlayerDummy->GetTransform();
+	transform->SetLocalPosition({ 0, 0.f, -5.0f });
+	_cachedPlayerAnimator->SetBool(TEXT("IsBackWalk"), false);
+	_cachedPlayerAnimator->SetFloat(TEXT("AnimationSpeed"), 0.5f);
+	_cachedPlayerDummy->SetIsActiveSelf(true);
+
+	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_playerAnimStart);
+
+	_cachedPlayerAnimator->SetBool(TEXT("IsBackWalk"), true);
+
+	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_playerAnimEnd);
+
+	_cachedPlayerAnimator->SetFloat(TEXT("AnimationSpeed"), 1.f);
+	_cachedPlayerAnimator->SetBool(TEXT("IsBackWalk"), false);
+
+	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_playerGenerateTime);
+
+	_cachedPlayerDummy->SetIsActiveSelf(false);
+}
+
+void DUOLClient::EliteMonsterScript::PlayerAnimateRun()
+{
+	StartCoroutine(&DUOLClient::EliteMonsterScript::PlayerGenerate);
 }
 
 void DUOLClient::EliteMonsterScript::PlayStart()

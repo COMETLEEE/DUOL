@@ -743,31 +743,9 @@ namespace  DUOLClient
 			_isInfoChcek = true;
 		}
 
-		// Middle Boss UI Open
-		if(_isEliteMonsterActionCheck && !_isFadeOut)
-		{
-			_cFadeOutTime += deltaTime;
-			if(6.5f <= _cFadeOutTime)
-			{
-				_fadeInOut->StartFadeOut(2, [](){});
-				_isFadeOut = true;
-				_isFadeIn = false;
-			}
-		}
-		if(_isFadeOut && _fadeInOut->GetFadeMode()==DUOLGameEngine::FadeInOutMode::DONE && !_isFadeIn)
-		{
-			//UIChange
-			_uiObject->SetIsActiveSelf(true);
 
 
-			_fadeInOut->StartFadeIn(2, []() {});
-			_isFadeIn = true;
-			_isLastScript = true;
-		}
-		if(_isFadeOut && _isFadeIn && _fadeInOut->GetFadeMode() == DUOLGameEngine::FadeInOutMode::DONE && _isLastScript)
-		{
-			_interactiveScript->SetPlayInfoKey(L"DialogueText_17.png");
-		}
+
 
 		if (_interactiveScript)
 		{
@@ -1080,33 +1058,10 @@ namespace  DUOLClient
 		_isBStageMonsterWaveAction = true;
 	}
 
-	void SystemManager::CStageEliteMonsterCameraAction()
+	void SystemManager::SetUiObject(bool value)
 	{
-		if (_isEliteMonsterActionCheck)
-			return;
-
 		// UI Close
-		_uiObject->SetIsActiveSelf(false);
-
-		// CameraAction
-		std::vector<UINT64> _sequenceCamera;
-		UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Elite_Boss_Part1");
-		_sequenceCamera.emplace_back(key);
-		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Elite_Boss_Part2");
-		_sequenceCamera.emplace_back(key);
-		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Elite_Boss_Part3");
-		_sequenceCamera.emplace_back(key);
-
-		// Camera Action Start
-		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceList(_sequenceCamera);
-		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceMode(true);
-
-		_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
-		_isCameraSequenceMode = true;
-
-		_cFadeOutTime = 0.f;
-
-		_isEliteMonsterActionCheck = true;
+		_uiObject->SetIsActiveSelf(value);
 	}
 
 

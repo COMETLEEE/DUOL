@@ -74,7 +74,7 @@ namespace DUOLClient
 
 		JumpPoint_Initialize();
 
-		Elite_Monster_Generate_Animator();
+		CutScene_Character_Animator();
 
 		LoadSound();
 	}
@@ -2619,7 +2619,7 @@ namespace DUOLClient
 		auto playerHit3 = playerOverdriveSwordStateMachine->AddState(TEXT("Player_Hit3"));
 		auto playerHit3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_sword_hit_3"));
 		playerHit3Clip->SetIsUseEventInTransition(false);
-		playerHit3Clip->SetIsRootMotion(true);
+		//playerHit3Clip->SetIsRootMotion(true);
 		playerHit3->SetAnimationClip(playerHit3Clip);
 
 		auto playerHeavyHit = playerOverdriveSwordStateMachine->AddState(TEXT("Player_HeavyHit"));			// °­°ø°Ý
@@ -5908,40 +5908,70 @@ namespace DUOLClient
 		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(jumpController);
 	}
 
-	void DUOLClient_Initializer::Elite_Monster_Generate_Animator()
+	void DUOLClient_Initializer::CutScene_Character_Animator()
 	{
 		using namespace DUOLGameEngine;
 
 		auto resourceManager = ResourceManager::GetInstance();
-		auto eliteAnimCon = std::make_shared<AnimatorController>(TEXT("Elite_Monster_Generate_Animator"));
 
+		{
+		auto eliteAnimCon = std::make_shared<AnimatorController>(TEXT("Elite_Monster_Generate_Animator"));
 		const wchar_t* idle_str = TEXT("elite_idle");
 		const wchar_t* eliteRoar_str = TEXT("elite_roar");
 		const wchar_t* jumpAttack_str = TEXT("elite_attack_jump");
 
 		auto stateMachine = eliteAnimCon->AddStateMachine(TEXT("AnimationStateMachine"));
 
-		auto monsterIdle = stateMachine->AddState(TEXT("Idle"));
-		monsterIdle->SetAnimationClip(resourceManager->GetAnimationClip(idle_str));
-		auto monsterJump = stateMachine->AddState(TEXT("Jump"));
-		monsterJump->SetAnimationClip(resourceManager->GetAnimationClip(jumpAttack_str));
-		auto monsterRoar = stateMachine->AddState(TEXT("Roar"));
-		monsterRoar->SetAnimationClip(resourceManager->GetAnimationClip(eliteRoar_str));
+			auto monsterIdle = stateMachine->AddState(TEXT("Idle"));
+			monsterIdle->SetAnimationClip(resourceManager->GetAnimationClip(idle_str));
+			auto monsterJump = stateMachine->AddState(TEXT("Jump"));
+			monsterJump->SetAnimationClip(resourceManager->GetAnimationClip(jumpAttack_str));
+			auto monsterRoar = stateMachine->AddState(TEXT("Roar"));
+			monsterRoar->SetAnimationClip(resourceManager->GetAnimationClip(eliteRoar_str));
 
-		auto idleTojump = monsterIdle->AddTransition(monsterJump);
-		idleTojump->AddCondition(TEXT("IsJumpAttack"), AnimatorConditionMode::True);
-		auto jumpToidle = monsterJump->AddTransition(monsterIdle);
-		jumpToidle->AddCondition(TEXT("IsJumpAttack"), AnimatorConditionMode::False);
+			auto idleTojump = monsterIdle->AddTransition(monsterJump);
+			idleTojump->AddCondition(TEXT("IsJumpAttack"), AnimatorConditionMode::True);
+			auto jumpToidle = monsterJump->AddTransition(monsterIdle);
+			jumpToidle->AddCondition(TEXT("IsJumpAttack"), AnimatorConditionMode::False);
 
-		auto idleToroar = monsterIdle->AddTransition(monsterRoar);
-		idleToroar->AddCondition(TEXT("IsRoar"), AnimatorConditionMode::True);
-		auto roarToidle = monsterRoar->AddTransition(monsterIdle);
-		roarToidle->AddCondition(TEXT("IsRoar"), AnimatorConditionMode::False);
+			auto idleToroar = monsterIdle->AddTransition(monsterRoar);
+			idleToroar->AddCondition(TEXT("IsRoar"), AnimatorConditionMode::True);
+			auto roarToidle = monsterRoar->AddTransition(monsterIdle);
+			roarToidle->AddCondition(TEXT("IsRoar"), AnimatorConditionMode::False);
 
-		eliteAnimCon->AddParameter(TEXT("IsJumpAttack"), AnimatorControllerParameterType::Bool);
-		eliteAnimCon->AddParameter(TEXT("IsRoar"), AnimatorControllerParameterType::Bool);
+			eliteAnimCon->AddParameter(TEXT("IsJumpAttack"), AnimatorControllerParameterType::Bool);
+			eliteAnimCon->AddParameter(TEXT("IsRoar"), AnimatorControllerParameterType::Bool);
 
-		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(eliteAnimCon);
+			resourceManager->AddAnimatorController(eliteAnimCon);
+		}
+
+		{
+			
+			auto playerAnimCon = std::make_shared<AnimatorController>(TEXT("Player_CutScene_Animator"));
+
+			const wchar_t* idle_str = TEXT("player_normal_idle");
+			const wchar_t* backwalk_str = TEXT("player_overdrive_sword_hit_3");
+
+			auto stateMachine = playerAnimCon->AddStateMachine(TEXT("AnimationStateMachine"));
+
+			auto playerIdle = stateMachine->AddState(TEXT("Idle"));
+			playerIdle->SetAnimationClip(resourceManager->GetAnimationClip(idle_str));
+			auto playerBackwalk = stateMachine->AddState(TEXT("BackWalk"));
+			playerBackwalk->SetAnimationClip(resourceManager->GetAnimationClip(backwalk_str));
+			playerBackwalk->SetSpeedParameter(TEXT("AnimationSpeed"));
+			playerBackwalk->SetSpeedParameterActive(true);
+			auto IdleToBackWalk = playerIdle->AddTransition(playerBackwalk);
+			IdleToBackWalk->AddCondition(TEXT("IsBackWalk"), AnimatorConditionMode::True);
+			auto backwalkToIdle = playerBackwalk->AddTransition(playerIdle);
+			backwalkToIdle->AddCondition(TEXT("IsBackWalk"), AnimatorConditionMode::False);
+
+			playerAnimCon->AddParameter(TEXT("IsBackWalk"), AnimatorControllerParameterType::Bool);
+			playerAnimCon->AddParameter(TEXT("AnimationSpeed"), AnimatorControllerParameterType::Float);
+
+			resourceManager->AddAnimatorController(playerAnimCon);
+		}
+
+
 	}
 
 	void DUOLClient_Initializer::LoadSound()

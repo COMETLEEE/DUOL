@@ -221,5 +221,6 @@
     <ClInclude Include="include\DUOLClient\Script\AnimationScript\EliteMonsterScript.h" />
     <ClInclude Include="include\DUOLClient\Script\AnimationScript\BossMonsterScript.h" />
     <ClInclude Include="include\DUOLClient\Script\AnimationScript\DummyMonoBehavior.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CStageEliteCameraTrigger.h" />
   </ItemGroup>
 </Project>

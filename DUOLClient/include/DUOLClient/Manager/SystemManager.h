@@ -139,7 +139,7 @@ namespace DUOLClient
 		 /**
 		* \brief C Scene
 		*/
-		void CStageEliteMonsterCameraAction();
+		void SetUiObject(bool value);
 
 
 		/**

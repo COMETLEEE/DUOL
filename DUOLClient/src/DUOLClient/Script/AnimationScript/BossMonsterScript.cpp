@@ -75,6 +75,3 @@ void DUOLClient::BossMonsterScript::OnUpdate(float deltaTime)
 {
 }
 
-DUOLGameEngine::CoroutineHandler DUOLClient::BossMonsterScript::AnimationStart()
-{
-}

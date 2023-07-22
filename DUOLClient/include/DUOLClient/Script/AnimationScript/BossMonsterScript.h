@@ -45,7 +45,7 @@ public:
 	 */
 	virtual void OnUpdate(float deltaTime);
 
-	DUOLGameEngine::CoroutineHandler AnimationStart();
+	//DUOLGameEngine::CoroutineHandler AnimationStart();
 
 public:
 	DUOLGameEngine::GameObject* _cachedPlayerDummy;

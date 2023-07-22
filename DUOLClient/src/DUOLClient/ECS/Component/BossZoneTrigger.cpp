@@ -43,19 +43,9 @@ void DUOLClient::BossZoneTrigger::OnAwake()
 		{
 			_cautionCollider = gameObject;
 		}
-	/*	if (gameObject->GetName() == TEXT("FinalBossSpawnPoint"))
-		{
-			_bossZoneTrigger = gameObject;
-		}*/
-		if (gameObject->GetName() == TEXT("EliteBossMonsterSpawnPoint"))
-		{
-			_eliteBossMonsterController = gameObject;
-			_eliteBossMonsterControllerComp = _eliteBossMonsterController->GetComponent<EnemyGroupController>();
-		}
 	}
 
 	_cautionCollider->SetIsActiveSelf(false);
-	//_bossZoneTrigger->SetIsActiveSelf(false);
 }
 
 void DUOLClient::BossZoneTrigger::OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
@@ -70,9 +60,5 @@ void DUOLClient::BossZoneTrigger::OnTriggerEnter(const std::shared_ptr<DUOLPhysi
 
 void DUOLClient::BossZoneTrigger::OnUpdate(float deltaTime)
 {
-	/*if (_eliteBossMonsterControllerComp->GetIsClearGroup())
-	{
-		/_bossZoneTrigger->SetIsActiveSelf(true);
-		Destroy(GetGameObject());
-	}*/
+
 }

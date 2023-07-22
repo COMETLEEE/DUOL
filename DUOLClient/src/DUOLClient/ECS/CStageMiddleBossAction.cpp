@@ -38,6 +38,6 @@ void DUOLClient::CStageMiddleBossAction::OnTriggerEnter(const std::shared_ptr<DU
 	{
 		DUOL_INFO(DUOL_CONSOLE, "C Stage Camera Action");
 
-		DUOLClient::SystemManager::GetInstance()->CStageEliteMonsterCameraAction();
+		DUOLClient::SystemManager::GetInstance()->SetUiObject(false);
 	}
 }

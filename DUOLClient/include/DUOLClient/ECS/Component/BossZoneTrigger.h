@@ -23,13 +23,6 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _cautionCollider;
 
-		//DUOLGameEngine::GameObject* _bossZoneTrigger;
-
-		DUOLGameEngine::GameObject* _eliteBossMonsterController;
-
-		DUOLClient::EnemyGroupController* _eliteBossMonsterControllerComp;
-
-
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
 			RTTR_REGISTRATION_FRIEND

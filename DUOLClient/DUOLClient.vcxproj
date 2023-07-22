@@ -287,6 +287,7 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\TrainAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\ECS\Component\CStageEliteCameraTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CStageMiddleBossAction.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\AStageAreaCameraTirgger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\BossZoneTrigger.h" />

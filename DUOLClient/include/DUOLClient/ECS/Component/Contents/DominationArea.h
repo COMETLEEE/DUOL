@@ -1,5 +1,6 @@
 #pragma once
 #include "DUOLClient/Export_Client.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemySpawnTrigger.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
 namespace DUOLGameEngine
@@ -78,6 +79,9 @@ private:
 	 */
 	float _destroyIncreasePerMonster;
 
+	//  프레임당 맥스파괴율
+	float _destroyIncreasePerFrame;
+
 	/**
 	* \brief 구역의 맥스 정화도
 	*/
@@ -97,6 +101,13 @@ private:
 	 * \brief 디폴트 파괴율 증가량
 	 */
 	float _defaultDestroyIncrease;
+
+	/**
+	* \brief 디폴트 파괴율 증가량
+	*/
+	float _monsterSpawnBelowCurrentClear;
+
+
 
 	/**
 	* \brief 클리어조건
@@ -127,9 +138,10 @@ private:
 
 	DUOLMath::Vector3 _clearColor;
 
+	EnemyGroupController* _enemyGroupControl;
+
 
 	RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
-
 	RTTR_REGISTRATION_FRIEND
 };
 

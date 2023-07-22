@@ -9,8 +9,8 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
-#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLJson/JsonReader.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/ECS/Component/FadeInOut.h"
 
 namespace DUOLGameEngine
@@ -504,5 +504,10 @@ namespace DUOLGameEngine
 		UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(name));
 
 		return key;
+	}
+
+	float CameraEventManager::GetCurrentTime1() const
+	{
+		return _currentTime;
 	}
 }
