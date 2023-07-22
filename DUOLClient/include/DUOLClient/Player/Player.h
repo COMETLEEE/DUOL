@@ -223,7 +223,7 @@ namespace DUOLClient
 		/**
 		 * \brief 현재 오버드라이브 수치 (100이 되면 변신)
 		 */
-		float _currentOverdrivePoint;
+		static float _currentOverdrivePoint;
 
 		bool _isOverdriveSwordMode;
 
@@ -443,6 +443,8 @@ namespace DUOLClient
 		friend class PlayerState_Hit;
 
 		friend class PlayerState_Down;
+
+		friend class PlayerState_Die;
 
 		friend class PlayerState_Overdrive;
 

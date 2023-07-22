@@ -50,6 +50,7 @@ namespace DUOLClient
 			if (gameObject->GetName() == TEXT("PlayerMinimap"))
 			{
 				_playerPosRect = gameObject->GetComponent<DUOLGameEngine::RectTransform>();
+				gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"05_ingame_minimap_player.png");
 			}
 			if (gameObject->GetTag() == TEXT("Player"))
 			{
@@ -100,11 +101,11 @@ namespace DUOLClient
 		else if (currentSceneName == TEXT("StageC"))
 		{
 			_currentGameScene = GameScene::StageC;
-			_stageSize.x = MIDDLESCENEX;
-			_stageSize.y = MIDDLESCENEY;
+			_stageSize.x = StageCSCENEX;
+			_stageSize.y = StageCSCENEY;
 
-			_playerBottomLeft.x = MIDDLEXGAP;
-			_playerBottomLeft.y = MIDDLEYGAP;
+			_playerBottomLeft.x = StageCXGAP;
+			_playerBottomLeft.y = StageCYGAP;
 		}
 	}
 
@@ -127,6 +128,10 @@ namespace DUOLClient
 	void MiniMap::OnUpdate(float deltaTime)
 	{
 		if (_miniMapImageRect == nullptr || _playerPosRect == nullptr)
+			return;
+
+
+		if (_player == nullptr)
 			return;
 
 		SetPlayerPos();

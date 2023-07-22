@@ -50,7 +50,9 @@ namespace  DUOLClient
 		.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 		(
 			rttr::policy::ctor::as_raw_ptr
-		);
+		)
+		.method("Reset", &SystemManager::Reset);
+		;
 	}
 
 		SystemManager::SystemManager(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
@@ -163,6 +165,7 @@ namespace  DUOLClient
 			{
 				_uiAudioSource = gameObject->AddComponent<DUOLGameEngine::AudioSource>();;
 			}
+
 		}
 
 		// Dialogue
@@ -301,6 +304,7 @@ namespace  DUOLClient
 			{
 				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
 			}
+
 		}
 
 
@@ -486,14 +490,19 @@ namespace  DUOLClient
 			{
 				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
 			}
-			if (gameObject->GetName() == TEXT("Canvas"))
+			if (gameObject->GetName() == TEXT("EilteMonsterPoint"))
 			{
-				_uiObject = gameObject;;
+				_uiMiniMapObject = gameObject;;
+				gameObject->SetIsActiveSelf(false);
 			}
 			if (gameObject->GetTag() == TEXT("Fade"))
 			{
 				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 				_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
+			}
+			if (gameObject->GetName() == TEXT("Canvas"))
+			{
+				_uiObject = gameObject;
 			}
 		}
 
@@ -618,7 +627,7 @@ namespace  DUOLClient
 			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaA");
 			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
 			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
-			_interactiveScript->SetPlayScriptKey(L"DialogueText_13.png");			_isCameraSequenceMode = true;
+			_isCameraSequenceMode = true;
 		}
 
 		if (_isStartCameraAction && !_cameraInstance->IsPlayMode() && _isInfo)
@@ -689,7 +698,7 @@ namespace  DUOLClient
 
 			if (control1)
 			{
-				if (control1->GetIsClearGroup() && !_isCreatePortal)
+				if (control1->GetIsClearGroup()  && !_isCreatePortal)
 				{
 					_isCreatePortal = true;
 					_isBStageClear = true;
@@ -740,12 +749,9 @@ namespace  DUOLClient
 		if (240.0f <= _cCurrentTime && !_isInfoChcek)
 		{
 			_interactiveScript->SetPlayInfoKey(L"DialogueText_14.png");
+			_uiMiniMapObject->SetIsActiveSelf(true);
 			_isInfoChcek = true;
 		}
-
-
-
-
 
 		if (_interactiveScript)
 		{
@@ -876,6 +882,7 @@ namespace  DUOLClient
 
 	void DUOLClient::SystemManager::OnUpdate(float deltaTime)
 	{
+
 		switch (_currentGameScene)
 		{
 		case GameScene::Main:
@@ -943,6 +950,15 @@ namespace  DUOLClient
 		_miniMapImage->LoadTexture(path);
 	}
 
+	void SystemManager::Reset()
+	{
+		_isMiddleEvent = false;
+		_isFirstMonster = false;
+		_isAStageClear = false;
+		_isBStageClear = false;
+		_isCStageClear = false;
+	}
+
 	void SystemManager::FirstMonsterActionSet()
 	{
 		if (!_isFirstMonsterCheck)
@@ -995,7 +1011,10 @@ namespace  DUOLClient
 		{
 			_isOpenDoor = true;
 			PlayUISound(L"door_sound_effect", false);
-			PlayerCameraAction("MapGimick_AreaB_DoorOpen", _player->GetTransform(), false);
+			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MapGimick_AreaB_DoorOpen");
+			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
+			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			_isCameraSequenceMode = true;
 		}
 	}
 
@@ -1062,6 +1081,11 @@ namespace  DUOLClient
 	{
 		// UI Close
 		_uiObject->SetIsActiveSelf(value);
+	}
+
+	void SystemManager::HideMiniMapIcon()
+	{
+		_uiMiniMapObject->SetIsActiveSelf(false);
 	}
 
 
@@ -1190,6 +1214,11 @@ namespace  DUOLClient
 			portalCom->SetNextSceneName(L"StageBoss");
 		else
 			portalCom->SetNextSceneName(nextSceneName);
+	}
+
+	void SystemManager::Die()
+	{
+		_interactiveScript->SetPlayScriptKey(L"DialogueText_19.png");
 	}
 
 	void SystemManager::FinishTotalScene()

@@ -22,5 +22,7 @@ namespace DUOLClient
 		virtual void OnStateStay(float deltaTime) override;
 
 		virtual void OnStateExit(float deltaTime) override;
+
+		DUOLGameEngine::CoroutineHandler CallGameOver();
 	};
 }

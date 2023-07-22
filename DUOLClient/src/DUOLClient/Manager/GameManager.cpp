@@ -57,6 +57,7 @@ namespace DUOLClient
 		, _isCursorShowing(true)
 		, _audioClipName(TEXT(""))
 		, _currentGameScene(GameScene::Main)
+		, _playerDie(false)
 	{
 
 	}
@@ -272,6 +273,8 @@ namespace DUOLClient
 	{
 		_currentGameScene = GameScene::Middle;
 
+		SetBGM(L"MiddleScene");
+
 #pragma region PORTALS
 		if (!SystemManager::GetInstance()->IsAStage())
 			CreatePortal(middle, TEXT("Portal_A"), TEXT("StageA"), MIDDLE_PORTAL_TO_A_POSITION);
@@ -309,6 +312,8 @@ namespace DUOLClient
 	{
 		_currentGameScene = GameScene::Total;
 
+		StopBGM();
+
 		DUOLClient::MainCameraController* _mainCameraController;
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
@@ -328,7 +333,9 @@ namespace DUOLClient
 	{
 		_currentGameScene = GameScene::StageA;
 
-		CreatePortal(stageA, TEXT("Portal_Middle"), TEXT("Middle"), A_PORTAL_TO_MIDDLE_POSITION);
+		//CreatePortal(stageA, TEXT("Portal_Middle"), TEXT("Middle"), A_PORTAL_TO_MIDDLE_POSITION);
+
+		SetBGM(L"BattleScene");
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -350,7 +357,9 @@ namespace DUOLClient
 	{
 		_currentGameScene = GameScene::StageB;
 
-		CreatePortal(stageB, TEXT("Portal_Middle"), TEXT("Middle"), B_PORTAL_TO_MIDDLE_POSITION);
+		//CreatePortal(stageB, TEXT("Portal_Middle"), TEXT("Middle"), B_PORTAL_TO_MIDDLE_POSITION);
+
+		SetBGM(L"BattleScene");
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -371,7 +380,9 @@ namespace DUOLClient
 	{
 		_currentGameScene = GameScene::StageC;
 
-		CreatePortal(stageC, TEXT("Portal_Middle"), TEXT("Middle"), C_PORTAL_TO_MIDDLE_POSITION);
+		//CreatePortal(stageC, TEXT("Portal_Middle"), TEXT("Middle"), C_PORTAL_TO_MIDDLE_POSITION);
+
+		SetBGM(L"BattleScene");
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -391,6 +402,8 @@ namespace DUOLClient
 	void GameManager::InitializeStageBoss(DUOLGameEngine::Scene* stageC)
 	{
 		_currentGameScene = GameScene::StageBoss;
+
+		//SetBGM(L"BossBattleScene");
 
 		CreatePortal(stageC, TEXT("Portal_Middle"), TEXT("Middle"), BOSS_PORTAL_TO_MIDDLE_POSITION);
 
@@ -466,6 +479,9 @@ namespace DUOLClient
 
 		const DUOLCommon::tstring& currentSceneName = currentScene->GetName();
 
+		if (_bgmAudioSource == nullptr)
+			_bgmAudioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
+
 		if (currentSceneName == TEXT("Middle"))
 			InitializeMiddle(currentScene);
 		else if (currentSceneName == TEXT("TotalScene"))
@@ -478,9 +494,16 @@ namespace DUOLClient
 			InitializeStageB(currentScene);
 		else if (currentSceneName == TEXT("StageC"))
 			InitializeStageC(currentScene);
-		else if(currentSceneName == TEXT("StageBoss"))
+		else if (currentSceneName == TEXT("StageBoss"))
 			InitializeStageBoss(currentScene);
+		else if (currentSceneName == TEXT("CutScene"))
+		{
+			SetBGM(L"CutScene");
 
+			_currentGameScene = GameScene::Cut;
+		}
+		else if (currentSceneName == TEXT("main") || currentSceneName == TEXT("Main"))
+			SetBGM(L"MainTitleScene");
 		else
 		{
 			_canPausable = false;
@@ -490,9 +513,6 @@ namespace DUOLClient
 		// 어차피 시작은 무조건 디폴트다.
 		_currentGameMode = GameMode::DEFAULT;
 
-		_bgmAudioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
-
-		SetBGM(_audioClipName);
 
 		//GraphicsSetting
 		auto graphicsSetting = DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsSetting();
@@ -525,7 +545,7 @@ namespace DUOLClient
 
 		// UI_MODE
 		if (_currentGameMode != GameMode::UI_MODE && _canPausable && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape)
-			&& _currentGameScene != GameScene::Cut && _currentGameScene != GameScene::Total)
+			&& _currentGameScene != GameScene::Cut && _currentGameScene != GameScene::Total && !_playerDie)
 		{
 			// TODO : UI Mode ..?
 			StartUIMode();
@@ -652,6 +672,9 @@ namespace DUOLClient
 
 	void GameManager::SetBGM(DUOLGameEngine::AudioClip* audioClip)
 	{
+		if (_bgmAudioSource->GetAudioClip() != nullptr)
+			_bgmAudioSource->Stop();
+
 		_bgmAudioSource->SetAudioClip(audioClip);
 
 		_bgmAudioSource->SetIsLoop(true);
@@ -662,6 +685,52 @@ namespace DUOLClient
 	void GameManager::SetBGM(DUOLCommon::tstring name)
 	{
 		SetBGM(DUOLGameEngine::SoundManager::GetInstance()->GetAudioClip(name));
+	}
+
+	void GameManager::StopBGM()
+	{
+		if (_bgmAudioSource->GetAudioClip() != nullptr)
+			_bgmAudioSource->Stop();
+	}
+
+	void GameManager::GameOverUIMode()
+	{
+		MouseUnLock();
+
+		// GameOver Sound
+		SystemManager::GetInstance()->PlayUISound(L"GameOver", true);
+
+		_gameModePrevUIMode = _currentGameMode;
+
+		_currentGameMode = GameMode::UI_MODE;
+
+		_timeScalePrevUIMode = DUOLGameEngine::TimeManager::GetInstance()->GetTimeScale();
+
+		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(0.f);
+
+		auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : allGameObjects)
+		{
+			if (gameObject->GetName() == TEXT("GameOver"))
+			{
+				gameObject->SetIsActiveSelf(true);
+
+				DUOLGameEngine::InputManager::GetInstance()->SetUIMouseMode(true);
+			}
+			if (gameObject->GetName() == TEXT("RestartBTN"))
+			{
+				gameObject->SetIsActiveSelf(true);
+			}
+			if (gameObject->GetName() == TEXT("QuitBTN"))
+			{
+				gameObject->SetIsActiveSelf(true);
+			}
+		}
+
+		_isOutInGameUIMode = false;
+
+		_playerDie = true;
 	}
 
 	DUOLClient::GameManager* GameManager::GetInstance()

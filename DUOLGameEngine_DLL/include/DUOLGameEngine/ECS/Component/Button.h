@@ -9,6 +9,9 @@
 
 namespace DUOLGameEngine
 {
+	class AudioClip;
+	class AudioListener;
+	class AudioSource;
 	class Text;
 	class Sprite;
 	class Image;
@@ -24,7 +27,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Button  final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Button(DUOLGameEngine::GameObject* owner=nullptr, const DUOLCommon::tstring& name = TEXT("Button"));
+		Button(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Button"));
 
 		virtual ~Button();
 
@@ -69,74 +72,83 @@ namespace DUOLGameEngine
 
 		float _scrollGauge;
 
+		// Sound
+
+		DUOLGameEngine::AudioSource* _uiAudioSource;
+
+		DUOLGameEngine::AudioClip*  _buttonClips;
 
 	public:
+		void Play();
+
 		/**
 		* Getter
 		 */
 		 //DUOLGraphicsLibrary::Sprite* GetSprite() { return _downSprite; }
-		 DUOLMath::Vector3& GetRGB() { return _rgb; }
+		DUOLMath::Vector3& GetRGB() { return _rgb; }
 
-		 RectTransform* GetImageRectTransform() const { return _rectTransform; }
+		RectTransform* GetImageRectTransform() const { return _rectTransform; }
 
-		 DUOLCommon::tstring& GetLoadSceneName() { return _loadSceneName; }
+		DUOLCommon::tstring& GetLoadSceneName() { return _loadSceneName; }
 
-		 std::vector<DUOLGameEngine::OnClick*>& GetOnClick() { return _onClicks; }
+		std::vector<DUOLGameEngine::OnClick*>& GetOnClick() { return _onClicks; }
 
-		 DUOLCommon::tstring& GetDownSpriteName() { return _downSpriteName; }
+		DUOLCommon::tstring& GetDownSpriteName() { return _downSpriteName; }
 
-		 DUOLCommon::tstring& GetclickSpriteName() { return _clickSpriteName; }
+		DUOLCommon::tstring& GetclickSpriteName() { return _clickSpriteName; }
 
-		 /**
-		  *  Setter
-		 */
-		 void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) { _canvas = canvas; }
+		/**
+		 *  Setter
+		*/
+		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) { _canvas = canvas; }
 
-		 void SetRGB(DUOLMath::Vector3& rgb);
+		void SetRGB(DUOLMath::Vector3& rgb);
 
-		 void SetDownSprite(const DUOLCommon::tstring& textureID);
+		void SetDownSprite(const DUOLCommon::tstring& textureID);
 
-		 void SetLoadSceneName(DUOLCommon::tstring& scenename);
+		void SetLoadSceneName(DUOLCommon::tstring& scenename);
 
-		 void SetLoadSceneImage(DUOLGameEngine::Image* image);
+		void SetLoadSceneImage(DUOLGameEngine::Image* image);
 
-		 void SetLoadSceneText(DUOLGameEngine::Text* text);
+		void SetLoadSceneText(DUOLGameEngine::Text* text);
 
-		 void SetSpriteName(const DUOLCommon::tstring& textureID);
+		void SetSpriteName(const DUOLCommon::tstring& textureID);
 
-		 bool SetImage();
+		bool SetImage();
 
-		 void LoadTexture(const DUOLCommon::tstring& textureID);
+		void LoadTexture(const DUOLCommon::tstring& textureID);
 
-		 void CreateOnClick();
+		void CreateOnClick();
 
-		 void DeleteOnClick();
+		void DeleteOnClick();
 
-		 void OnClicks();
+		void OnClicks();
 
-		 bool SetText();
+		bool SetText();
 
-		 // Button Event
-		 // 어디로 함수를 뺄지 고민중
+		// Button Event
+		// 어디로 함수를 뺄지 고민중
 		void LoadScene(std::string filename);
 
-		 void EndGame();
+		void EndGame();
 
-		 void MainUPUI(std::string filename);
+		void MainUPUI(std::string filename);
 
-		 void MainDownUI(std::string filename);
+		void MainDownUI(std::string filename);
 
-		 void Resolution(int num);
+		void Resolution(int num);
 
-		 void Scrolling();
+		void Scrolling();
 
- #pragma region FRIEND_CLASS
-		 friend class GameObject;
+		void AudioSet();
 
-		 RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+#pragma region FRIEND_CLASS
+		friend class GameObject;
 
-		 RTTR_REGISTRATION_FRIEND
- #pragma endregion
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
+			RTTR_REGISTRATION_FRIEND
+#pragma endregion
 
 	};
 }

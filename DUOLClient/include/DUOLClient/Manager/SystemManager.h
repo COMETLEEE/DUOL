@@ -77,6 +77,7 @@ namespace DUOLClient
 
 		void MiniMapChange(DUOLCommon::tstring path);
 
+		void Reset();
 		/**
 		 * \brief ALL 
 		 */
@@ -94,6 +95,7 @@ namespace DUOLClient
 
 		void CreatePortal(const DUOLCommon::tstring& portalName, const DUOLCommon::tstring& nextSceneName, const DUOLMath::Vector3& position);;
 
+		void Die();
 		/**
 		 * \brief Total Scene
 		 */
@@ -141,6 +143,7 @@ namespace DUOLClient
 		*/
 		void SetUiObject(bool value);
 
+		void HideMiniMapIcon();
 
 		/**
 		* \brief Sound
@@ -206,6 +209,9 @@ namespace DUOLClient
 
 		GameScene _currentGameScene;
 
+		DUOLGameEngine::GameObject* _uiObject;
+
+
 		DUOLGameEngine::Image* _miniMapImage;
 
 		DUOLClient::Player* _player;
@@ -225,6 +231,7 @@ namespace DUOLClient
 		static bool _isBStageClear;
 
 		static bool _isCStageClear;
+
 
 		int _scriptIndex;
 
@@ -298,7 +305,7 @@ namespace DUOLClient
 		* \brief C Scene
 		*/
 
-		DUOLGameEngine::GameObject* _uiObject;
+		DUOLGameEngine::GameObject* _uiMiniMapObject;
 
 		DUOLGameEngine::GameObject* _bossName;
 

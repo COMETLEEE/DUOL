@@ -70,6 +70,9 @@ RTTR_REGISTRATION
 
 namespace DUOLClient
 {
+	
+	float DUOLClient::Player::_currentOverdrivePoint = 0.f;
+
 	Player::Player(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		CharacterBase(owner, name)
 		, _defaultSwordDamage(2.f)
@@ -87,7 +90,6 @@ namespace DUOLClient
 		, _inAttackPostDelay(0.2f)
 		, _endAttackPostDelay(0.5f)
 		, _currentDownPoint(0.f)
-		, _currentOverdrivePoint(0.f)
 		, _canStartAttack(true)
 		, _canStartDash(true)
 		, _isLockOnMode(false)
@@ -110,7 +112,6 @@ namespace DUOLClient
 		, _currentDownPointResetTime(0.f)
 		
 	{
-		SetHP(1000.f);
 	}
 
 	Player::~Player()
@@ -212,7 +213,11 @@ namespace DUOLClient
 		// UI Change
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
-		//DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(_currentDownPoint);
+
+		if (100 <= _currentOverdrivePoint)
+			DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(100.f);
+		else
+			DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(0.f);
 
 		return true;
 	}
@@ -410,6 +415,9 @@ namespace DUOLClient
 
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveMaxUI(100.f);
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
+
+		DUOLClient::UIDataManager::GetInstance()->SetUltimateMaxUI(100.f);
+		DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(0.f);
 #pragma endregion
 	}
 
@@ -835,6 +843,12 @@ namespace DUOLClient
 		_currentOverdrivePoint = std::clamp(_currentOverdrivePoint, 0.f, 100.f);
 
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
+
+		if (100 <= _currentOverdrivePoint)
+			DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(100.f);
+		else
+			DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(0.f);
+
 	}
 
 	bool Player::IsOverdriveMode()

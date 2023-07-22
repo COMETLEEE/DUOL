@@ -137,6 +137,11 @@ namespace DUOLClient
 		float _timeScalePrevUIMode;
 
 		/**
+		 * \brief 
+		 */
+		bool _playerDie;
+
+		/**
 		 * \brief UI 모드로 들어가기 전 Game Mode 입니다.
 		 */
 		GameMode _gameModePrevUIMode;
@@ -236,6 +241,10 @@ namespace DUOLClient
 		void SetBGM(DUOLGameEngine::AudioClip* audioClip);
 
 		void SetBGM(DUOLCommon::tstring name);
+
+		void StopBGM();
+
+		void GameOverUIMode();
 
 		template <typename TParam>
 		void PushGameMessage(GameMessage<TParam>&& message);

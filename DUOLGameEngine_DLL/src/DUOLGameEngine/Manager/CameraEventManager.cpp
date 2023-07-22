@@ -219,12 +219,21 @@ namespace DUOLGameEngine
 
 				totalMat.Decompose(scale, rot, pos);
 
+				DUOL_INFO(DUOL_FILE, "Player Linear Camera pos {}/{}/{}", pos.x, pos.y, pos.x);
+
+				DUOL_INFO(DUOL_FILE, "Player Linear Camera rot {}/{}/{}", rot.x, rot.y, rot.z);
+
 				_mainCameraTransform->SetLocalPosition(pos);
 
 				_mainCameraTransform->SetLocalRotation(rot);
 			}
 			else
 			{
+
+				DUOL_INFO(DUOL_FILE, "Linear Camera pos {}/{}/{}", desiredPos.x, desiredPos.y, desiredPos.x);
+
+				DUOL_INFO(DUOL_FILE, "Linear Camera rot {}/{}/{}", desiredRot.x, desiredRot.y, desiredRot.z);
+
 				_mainCameraTransform->SetLocalPosition(desiredPos);
 
 				_mainCameraTransform->SetLocalRotation(desiredRot);
@@ -334,9 +343,9 @@ namespace DUOLGameEngine
 
 				totalMat.Decompose(scale, rot, pos);
 
-				/*DUOL_INFO(DUOL_FILE, "Camera pos {}/{}/{}", pos.x,pos.y,pos.x);
+				DUOL_INFO(DUOL_FILE, "Player Cat Camera pos {}/{}/{}", pos.x,pos.y,pos.x);
 
-				DUOL_INFO(DUOL_FILE, "Camera rot {}/{}/{}", rot.x,rot.y,rot.z);*/
+				DUOL_INFO(DUOL_FILE, "Player Cat Camera rot {}/{}/{}", rot.x,rot.y,rot.z);
 
 				_mainCameraTransform->SetLocalPosition(pos);
 
@@ -344,6 +353,11 @@ namespace DUOLGameEngine
 			}
 			else
 			{
+
+				DUOL_INFO(DUOL_FILE, "Cat Camera pos {}/{}/{}", desiredPos.x, desiredPos.y, desiredPos.x);
+
+				DUOL_INFO(DUOL_FILE, "Cat Camera rot {}/{}/{}", desiredRot.x, desiredRot.y, desiredRot.z);
+
 				_mainCameraTransform->SetLocalPosition(desiredPos);
 
 				_mainCameraTransform->SetLocalRotation(desiredRot);

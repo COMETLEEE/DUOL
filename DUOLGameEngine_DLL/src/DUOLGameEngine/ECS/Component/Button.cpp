@@ -17,6 +17,8 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
 
 using namespace rttr;
 
@@ -65,7 +67,8 @@ DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLComm
 	, _loadSceneName(L"")
 	, _downSpriteName(L"None(Sprite)")
 	, _isScrollButton(false)
-
+	, _uiAudioSource(nullptr)
+	, _buttonClips(nullptr)
 {
 	Initialize();
 }
@@ -146,6 +149,7 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 			{
 				LoadTexture(_downSpriteName);
 				_isMouseClick = true;
+				Play();
 			}
 
 			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
@@ -206,6 +210,8 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 
 void DUOLGameEngine::Button::Initialize()
 {
+	_buttonClips = DUOLGameEngine::SoundManager::GetInstance()->GetAudioClip(TEXT("ButtonClickSound"));
+	
 	GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
 	GameObject* pickImage = DUOLGameEngine::UIManager::GetInstance()->GetPickingGameObject();
@@ -402,6 +408,20 @@ bool DUOLGameEngine::Button::SetText()
 	return false;
 }
 
+
+void DUOLGameEngine::Button::Play()
+{
+	if (_buttonClips == nullptr)
+		return;
+
+	if (_uiAudioSource==nullptr)
+		AudioSet();
+
+	_uiAudioSource->SetAudioClip(_buttonClips);
+	_uiAudioSource->SetIsLoop(false);
+	_uiAudioSource->Play();
+}
+
 void DUOLGameEngine::Button::SetRGB(DUOLMath::Vector3& rgb)
 {
 	_rgb = rgb;
@@ -498,4 +518,16 @@ void DUOLGameEngine::Button::Scrolling()
 	// 스크롤 버튼임을 체크한다. 
 	_isScrollButton = true;
 
+}
+
+void DUOLGameEngine::Button::AudioSet()
+{
+	if (this->GetGameObject() != nullptr)
+	{
+		if (this->GetGameObject()->GetComponent<AudioSource>() == nullptr)
+			_uiAudioSource = this->GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
+		else
+			_uiAudioSource = this->GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
+
+	}
 }

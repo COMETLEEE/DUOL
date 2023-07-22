@@ -1,6 +1,9 @@
 #include "DUOLClient/Player/FSM/PlayerState_Die.h"
 
+#include "DUOLClient/Manager/GameManager.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 namespace DUOLClient
 {
@@ -22,6 +25,7 @@ namespace DUOLClient
 			return;
 
 		_animator->SetBool(TEXT("IsDie"), false);
+
 	}
 
 	void PlayerState_Die::OnStateEnter(float deltaTime)
@@ -29,6 +33,8 @@ namespace DUOLClient
 		PlayerStateBase::OnStateEnter(deltaTime);
 
 		_animator->SetBool(TEXT("IsDie"), true);
+		std::function<DUOLGameEngine::CoroutineHandler(void)> routine = std::bind(&DUOLClient::PlayerState_Die::CallGameOver, this);
+		_player->StartCoroutine(routine);
 	}
 
 	void PlayerState_Die::OnStateStay(float deltaTime)
@@ -39,5 +45,13 @@ namespace DUOLClient
 	void PlayerState_Die::OnStateExit(float deltaTime)
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
+	}
+
+	DUOLGameEngine::CoroutineHandler PlayerState_Die::CallGameOver()
+	{
+		SystemManager::GetInstance()->Die();
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(13.f);
+
+		GameManager::GetInstance()->GameOverUIMode();
 	}
 }

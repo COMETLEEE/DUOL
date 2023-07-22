@@ -25,6 +25,13 @@
 #define StageBYGAP 58.450
 #pragma endregion
 
+#pragma region StageC
+#define StageCSCENEX 185
+#define StageCSCENEY 192
+
+#define StageCXGAP -180
+#define StageCYGAP -100
+#pragma endregion
 
 namespace DUOLGameEngine
 {

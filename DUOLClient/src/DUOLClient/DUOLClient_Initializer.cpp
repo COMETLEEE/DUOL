@@ -6276,6 +6276,9 @@ namespace DUOLClient
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/UI/Window_Inactive.wav"), TEXT("Window_Inactive"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/UI/GameOver.wav"), TEXT("GameOver"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
 	}
 
 	void DUOLClient_Initializer::Load_ETC_Sound()
@@ -6321,6 +6324,10 @@ namespace DUOLClient
 		soundClip->Set2DSound();
 		soundClip->SetLoopOn();
 
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/MiddleScene.wav"), TEXT("MiddleScene"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/BossBattleScene.wav"), TEXT("BossBattleScene"));
 		soundClip->Set2DSound();
 		soundClip->SetLoopOn();
@@ -6332,6 +6339,11 @@ namespace DUOLClient
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/EndingBGM.wav"), TEXT("EndingBGM"));
 		soundClip->Set2DSound();
 		soundClip->SetLoopOn();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/CutScene.wav"), TEXT("CutScene"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+		
 	}
 
 }

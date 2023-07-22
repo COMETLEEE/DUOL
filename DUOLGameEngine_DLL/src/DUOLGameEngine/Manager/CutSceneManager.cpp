@@ -191,9 +191,10 @@ namespace DUOLGameEngine
 			if (_cutList[_nowCutCount]->GetComponent<Image>() == nullptr)
 				return;
 
+			PlayCutSound();
+
 			CutSetting();
 
-			PlayCutSound();
 
 			_currentTime = 0.f;
 		}
