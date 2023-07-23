@@ -110,7 +110,7 @@ namespace DUOLClient
 		, _overdrivePointPerFist(4.f)
 		, _downPointResetTime(4.f)
 		, _currentDownPointResetTime(0.f)
-		
+		, _isOneTimeUltimate(false)
 	{
 	}
 

@@ -241,6 +241,8 @@ namespace DUOLClient
 
 		bool _isUltimate;
 
+		bool _isOneTimeUltimate;
+
 		float _playerHitAnimationSpeed;
 		/**
 		 * \brief 공격 상태에 진입할 수 있습니까 ? (선딜, 후딜 적용)

@@ -35,6 +35,8 @@ namespace DUOLClient
 			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Overdrive_Sword_Final", _player->GetTransform());
 			UIDataManager::GetInstance()->SetUltimateUI(100.f);
 
+			_player->_isOneTimeUltimate = false;
+
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), fixedTimeStep);
 
 			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
@@ -45,6 +47,8 @@ namespace DUOLClient
 		{
 			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Overdrive_Fist_Final", _player->GetTransform());
 			UIDataManager::GetInstance()->SetUltimateUI(100.f);
+
+			_player->_isOneTimeUltimate = false;
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), fixedTimeStep);
 
@@ -160,6 +164,8 @@ namespace DUOLClient
 
 			else if (_player->_isOverdriveFistMode)
 				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Ultimate_Fist_Final", _player->GetTransform());
+
+			_player->_isOneTimeUltimate = true;
 
 			UIDataManager::GetInstance()->SetUltimateUI(0.f);
 

@@ -203,7 +203,7 @@ namespace DUOLClient
 
 	bool PlayerStateBase::UltimateCheck()
 	{
-		bool ultcheck = InOverdriveCheck() && DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(ULTIMATE_KEY) && _player->_canStartAttack;
+		bool ultcheck = InOverdriveCheck() && DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(ULTIMATE_KEY) && _player->_canStartAttack && !_player->_isOneTimeUltimate;
 
 		return ultcheck;
 	}

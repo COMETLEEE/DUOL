@@ -30,11 +30,11 @@ namespace DUOLClient
 namespace DUOLClient
 {
 
-	constexpr DUOLMath::Vector3 A_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(86.5, 7.86, -32);
+	constexpr DUOLMath::Vector3 A_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(86.5, 6.86, -32);
 
-	constexpr DUOLMath::Vector3 B_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(54.7, 28.6, 71.71f);
+	constexpr DUOLMath::Vector3 B_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(54.7, 27.6, 71.71f);
 
-	constexpr DUOLMath::Vector3 C_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-130, 7.5, 32);
+	constexpr DUOLMath::Vector3 C_CLEAR_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-130, 6.5, 32);
 
 	/**
 	 * \brief system manager : 게임에 각 구역의 기믹을 관리하는 매니저
