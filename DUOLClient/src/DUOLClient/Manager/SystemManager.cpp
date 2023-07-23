@@ -815,7 +815,7 @@ namespace  DUOLClient
 			_isFirstMonsterCheck = true;
 		}
 
-		if (30.f <= _cCurrentTime && !_isInfoChcek)
+		if (240.f <= _cCurrentTime && !_isInfoChcek)
 		{
 			_interactiveScript->SetPlayInfoKey(L"Info14.png");
 			_uiMiniMapObject->SetIsActiveSelf(true);

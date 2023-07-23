@@ -204,7 +204,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageEliteCameraTrigger::ScripteRu
 	GetGameObject()->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsEnabled(false);
 	////UIChange
 	DUOLClient::SystemManager::GetInstance()->SetUiObject(true);
-	DUOLClient::SystemManager::GetInstance()->SetBossUI(L"05_ingame_thejuggernaut", 1000.f);
+	DUOLClient::SystemManager::GetInstance()->SetBossUI(L"05_ingame_thejuggernaut.png", 1000.f);
 	DUOLClient::SystemManager::GetInstance()->CStageInterActive(L"DialogueText_17.png");
 
 	//_fadeInOut->StartFadeIn(2, []() {});

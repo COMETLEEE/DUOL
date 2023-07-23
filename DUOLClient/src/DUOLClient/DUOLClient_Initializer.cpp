@@ -6402,11 +6402,11 @@ namespace DUOLClient
 		soundClip->Set2DSound();
 		soundClip->SetLoopOn();
 
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Boss/FinalBossCutscene01.wav"), TEXT("FinalBossCutscene02"));
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Boss/FinalBossCutscene02.wav"), TEXT("FinalBossCutscene02"));
 		soundClip->Set2DSound();
 		soundClip->SetLoopOn();
 
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Boss/FinalBossCutscene01.wav"), TEXT("FinalBossCutscene03"));
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Boss/FinalBossCutscene03.wav"), TEXT("FinalBossCutscene03"));
 		soundClip->Set2DSound();
 		soundClip->SetLoopOn();
 	}
