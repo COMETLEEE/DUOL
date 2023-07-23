@@ -148,6 +148,8 @@ namespace DUOLClient
 		void CStageInterActive(DUOLCommon::tstring path);
 
 		void CClear();
+
+		void ClearBoss();
 		/**
 		* \brief Sound
 		 */

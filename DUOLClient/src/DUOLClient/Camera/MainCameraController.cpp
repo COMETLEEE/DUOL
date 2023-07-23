@@ -259,6 +259,8 @@ namespace DUOLClient
 	{
 		_preMainCameraState = _mainCameraState;
 		_mainCameraState = state;
+		_realCameraTransform->SetLocalPosition({ 0.f, 0.f, 0.f });
+
 		if (_player)
 		{
 			if (_mainCameraState == MainCameraState::CAMERA_SEQUENCE)
@@ -279,7 +281,6 @@ namespace DUOLClient
 			{
 				childs->GetComponent<DUOLGameEngine::Transform>()->SetLocalPosition(DUOLMath::Vector3(0, 0, -10));
 				childs->GetComponent<DUOLGameEngine::Transform>()->SetLocalEulerAngle(DUOLMath::Vector3(0, 0, 0));
-
 			}
 		}
 	}

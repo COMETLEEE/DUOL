@@ -112,6 +112,9 @@ void DUOLClient::BossMonsterScript::BossPart01()
 
 	bossTransform->SetPosition(_bossTransform->GetWorldPosition());
 	playerTransform->SetPosition(_playerTransform->GetWorldPosition());
+	auto pos = bossTransform->GetWorldPosition();
+	pos.y = playerTransform->GetWorldPosition().y;
+	playerTransform->LookAt(pos);
 
 	//초기상태 이니셜라이즈
 	_cachedPlayerAnimator->SetBool(TEXT("IsDie"), true);

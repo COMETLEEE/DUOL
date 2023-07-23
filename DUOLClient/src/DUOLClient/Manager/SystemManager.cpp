@@ -1257,6 +1257,10 @@ namespace  DUOLClient
 		MiniMapChange(L"StageCMiniMapPortal");
 	}
 
+	void SystemManager::ClearBoss()
+	{
+	}
+
 
 	void DUOLClient::SystemManager::BSystem(float deltaTime)
 	{
