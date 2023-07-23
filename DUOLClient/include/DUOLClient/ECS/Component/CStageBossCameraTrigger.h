@@ -46,8 +46,6 @@ namespace DUOLClient
 
 		BossMonsterScript* _bossScript;
 
-		AudioSource
-
 		bool _isPlay;
 
 		bool _isFadeOut;
