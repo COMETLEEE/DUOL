@@ -76,6 +76,7 @@ namespace DUOLClient
 		//스크립트 시작
 		//마구마구마구하십쇼
 		//co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(1.f);
+		SystemManager::GetInstance()->SetScript(L"DialogueText_23.png");
 
 		//스크립트 다재생완료! 1초쉬자
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(1.f);
@@ -97,7 +98,7 @@ namespace DUOLClient
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(1.f);
 
 		//todo Boss Clear!!!!!! 크레딧씬으로 가즈아
-		SystemManager::GetInstance()->ClearBoss();;
+		SystemManager::GetInstance()->ClearBoss();
 
 		co_return;
 	}

@@ -135,9 +135,9 @@ void DUOLClient::EnemyGroupController::SetIsWaveClear(bool isWaveClear)
 }
 
 DUOLClient::Enemy* DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name,
-                                                              const DUOLMath::Vector3& targetPos,
-                                                              float radius,
-                                                              float rotateDegree)
+	const DUOLMath::Vector3& targetPos,
+	float radius,
+	float rotateDegree)
 {
 
 	const auto gameObject = EnemyManager::GetInstance()->Pop<DUOLGameEngine::GameObject>(name);
@@ -315,7 +315,9 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 					PopEnemy(TEXT("EnemyNear"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
 				for (int i = 0; i < createInfoPair.first._farEnemyCount; i++)
 					PopEnemy(TEXT("EnemyFar"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
-				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
+
+				if (j + 1 < createInfoPair.first._waveCount)
+					co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
 			}
 
 			for (int j = 0; j < createInfoPair.second._waveCount; j++)
@@ -338,7 +340,9 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 
 				for (int i = 0; i < createInfoPair.second._farEnemyCount; i++)
 					PopEnemy(TEXT("EnemyFar"), createInfoPair.second._createPos, _radius, createInfoPair.first._rotateDegree);
-				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.second._createWaitForSeconds);
+
+				if (j + 1 < createInfoPair.second._waveCount)
+					co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.second._createWaitForSeconds);
 			}
 
 		}
@@ -440,6 +444,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 						PopEnemy(TEXT("EnemyNear"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
 					for (int i = 0; i < createInfoPair.first._farEnemyCount; i++)
 						PopEnemy(TEXT("EnemyFar"), createInfoPair.first._createPos, _radius, createInfoPair.first._rotateDegree);
+
 					co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
 				}
 

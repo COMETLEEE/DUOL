@@ -38,6 +38,8 @@ namespace  DUOLClient
 
 	bool DUOLClient::SystemManager::_isCStageClear = false;
 
+	bool DUOLClient::SystemManager::_isBossClear = false;
+
 	using namespace rttr;
 
 	RTTR_REGISTRATION
@@ -539,6 +541,11 @@ namespace  DUOLClient
 		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene01.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene01"))));
 		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene02.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene02"))));
 		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene03.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene03"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_23.png", _soundManager->GetAudioClip(TEXT("DialogueText_23"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_24.png", _soundManager->GetAudioClip(TEXT("DialogueText_24"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_25.png", _soundManager->GetAudioClip(TEXT("DialogueText_25"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_26.png", _soundManager->GetAudioClip(TEXT("DialogueText_26"))));
+
 
 		for (auto gameObject : gameObjects)
 		{
@@ -747,7 +754,6 @@ namespace  DUOLClient
 			_interactiveScript->ShowBSceneScript();
 			_interactiveScript->ScriptPlay(deltaTime);
 			_interactiveScript->InfoPlay(deltaTime);
-
 		}
 
 		if (!_isCameraSequenceMode && _isBStageMonsterWaveAction && !_isBWaveScriptCheck)
@@ -768,7 +774,7 @@ namespace  DUOLClient
 					_interactiveScript->SetPlayScriptKey(L"DialogueText_16.png");
 					// Create Portal
 					this->CreatePortal(TEXT("Portal_B"), TEXT("Middle"), B_CLEAR_PORTAL_TO_MIDDLE_POSITION);
-					MiniMapChange(L"StageBMiniMapPortal");
+					MiniMapChange(L"StageBMiniMapPortal.png");
 				}
 			}
 		}
@@ -809,9 +815,9 @@ namespace  DUOLClient
 			_isFirstMonsterCheck = true;
 		}
 
-		if (240.0f <= _cCurrentTime && !_isInfoChcek)
+		if (30.f <= _cCurrentTime && !_isInfoChcek)
 		{
-			_interactiveScript->SetPlayInfoKey(L"DialogueText_14.png");
+			_interactiveScript->SetPlayInfoKey(L"Info14.png");
 			_uiMiniMapObject->SetIsActiveSelf(true);
 			_isInfoChcek = true;
 		}
@@ -846,7 +852,7 @@ namespace  DUOLClient
 		}
 	}
 
-	void SystemManager::SetBossUI()
+	void SystemManager::SetBossUI(DUOLCommon::tstring path, float hp)
 	{
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -859,12 +865,13 @@ namespace  DUOLClient
 			if (gameObject->GetName() == TEXT("BossName"))
 			{
 				gameObject->SetIsActiveSelf(true);
+				gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(path);
 			}
 			if (gameObject->GetName() == TEXT("BossHP"))
 			{
 				gameObject->SetIsActiveSelf(true);
-				UIDataManager::GetInstance()->SetBossHPUI(1000.f);
-				UIDataManager::GetInstance()->SetBossMaxHPUI(1000.f);
+				UIDataManager::GetInstance()->SetBossHPUI(hp);
+				UIDataManager::GetInstance()->SetBossMaxHPUI(hp);
 			}
 		}
 		
@@ -873,6 +880,11 @@ namespace  DUOLClient
 	void SystemManager::SetScript(DUOLCommon::tstring path)
 	{
 		_interactiveScript->SetPlayScriptKey(path);
+	}
+
+	void SystemManager::SetInfo(DUOLCommon::tstring path)
+	{
+		_interactiveScript->SetPlayInfoKey(path);
 	}
 
 	void SystemManager::PlayTotalScene(DUOLCommon::tstring sound)
@@ -1062,6 +1074,7 @@ namespace  DUOLClient
 	void SystemManager::MiniMapChange(DUOLCommon::tstring path)
 	{
 		_miniMapImage->LoadTexture(path);
+
 	}
 
 	void SystemManager::Reset()
@@ -1193,24 +1206,23 @@ namespace  DUOLClient
 
 	void SystemManager::SetUiObject(bool value)
 	{
-		// UI Close
-		//_uiObject->SetIsActiveSelf(value);
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-		for (auto child : _uiObject->GetTransform()->GetChildGameObjects())
+		for (auto gameObject : gameObjects)
 		{
-			if (child->GetName() == L"MainUI")
+			if (gameObject->GetName() == TEXT("MainUI"))
 			{
-				child->SetIsActiveSelf(value);
+				gameObject->SetIsActiveSelf(value);
 			}
-			if (child->GetName() == L"Pause")
+			if (gameObject->GetName() == TEXT("Pause"))
 			{
 				if (value != true)
-					child->SetIsActiveSelf(value);
+					gameObject->SetIsActiveSelf(value);
 			}
-			if (child->GetName() == L"Option")
+			if (gameObject->GetName() == TEXT("Option"))
 			{
 				if (value != true)
-					child->SetIsActiveSelf(value);
+					gameObject->SetIsActiveSelf(value);
 			}
 		}
 	}
@@ -1254,11 +1266,15 @@ namespace  DUOLClient
 		}
 
 		// MiniMap
-		MiniMapChange(L"StageCMiniMapPortal");
+		MiniMapChange(L"StageCMiniMapPortal.png");
 	}
 
 	void SystemManager::ClearBoss()
 	{
+		// 혹시 몰라서
+		_isBossClear = true;
+
+		DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/ClearScene.dscene"));
 	}
 
 

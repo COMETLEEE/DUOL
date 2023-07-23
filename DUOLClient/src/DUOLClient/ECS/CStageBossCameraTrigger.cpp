@@ -228,6 +228,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageBossCameraTrigger::ScripteRun
 	_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
 	player->SetIsActiveSelf(true);
 	DUOLClient::SystemManager::GetInstance()->SetUiObject(true);
+	DUOLClient::SystemManager::GetInstance()->SetBossUI(L"05_ingame_thejudicis", 1200.f);
 
 	while (_fadeInOut->GetFadeMode() != DUOLGameEngine::FadeInOutMode::DONE)
 	{

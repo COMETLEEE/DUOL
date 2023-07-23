@@ -172,9 +172,12 @@ namespace DUOLClient
 		/**
 		 * \brief Boss
 		 */
-		void SetBossUI();
+		void SetBossUI(DUOLCommon::tstring path, float hp);
 
 		void SetScript(DUOLCommon::tstring path);
+
+		void SetInfo(DUOLCommon::tstring path);
+
 	private:
 		/**
 		* \brief Init
@@ -244,6 +247,8 @@ namespace DUOLClient
 		static bool _isBStageClear;
 
 		static bool _isCStageClear;
+
+		static bool _isBossClear;
 
 
 		int _scriptIndex;

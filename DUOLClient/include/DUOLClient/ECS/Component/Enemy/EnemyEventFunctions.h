@@ -2,6 +2,7 @@
 
 #include "EnemyHits.h"
 #include "EnemyAttacks.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 
@@ -122,6 +123,8 @@ namespace DUOLClient
 
 	void DisablingPatternStart(DUOLClient::Enemy* enemy)
 	{
+		SystemManager::GetInstance()->SetInfo(L"Info13.png");
+
 		auto funcFogOn = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
 		{
 			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
