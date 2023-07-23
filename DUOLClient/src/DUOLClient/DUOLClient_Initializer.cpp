@@ -5946,11 +5946,12 @@ namespace DUOLClient
 		}
 
 		{
-			
 			auto playerAnimCon = std::make_shared<AnimatorController>(TEXT("Player_CutScene_Animator"));
 
 			const wchar_t* idle_str = TEXT("player_normal_idle");
 			const wchar_t* backwalk_str = TEXT("player_overdrive_sword_hit_3");
+			const wchar_t* die_str= TEXT("player_normal_dieloop");
+
 
 			auto stateMachine = playerAnimCon->AddStateMachine(TEXT("AnimationStateMachine"));
 
@@ -5958,19 +5959,64 @@ namespace DUOLClient
 			playerIdle->SetAnimationClip(resourceManager->GetAnimationClip(idle_str));
 			auto playerBackwalk = stateMachine->AddState(TEXT("BackWalk"));
 			playerBackwalk->SetAnimationClip(resourceManager->GetAnimationClip(backwalk_str));
+			auto playerDie = stateMachine->AddState(TEXT("Die"));
+			playerDie->SetAnimationClip(resourceManager->GetAnimationClip(die_str));
+
 			playerBackwalk->SetSpeedParameter(TEXT("AnimationSpeed"));
 			playerBackwalk->SetSpeedParameterActive(true);
+
 			auto IdleToBackWalk = playerIdle->AddTransition(playerBackwalk);
 			IdleToBackWalk->AddCondition(TEXT("IsBackWalk"), AnimatorConditionMode::True);
+
 			auto backwalkToIdle = playerBackwalk->AddTransition(playerIdle);
 			backwalkToIdle->AddCondition(TEXT("IsBackWalk"), AnimatorConditionMode::False);
 
+			auto idleToDie = playerIdle->AddTransition(playerDie);
+			idleToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+			auto dieToIdle = playerDie->AddTransition(playerIdle);
+			dieToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+
+			playerAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 			playerAnimCon->AddParameter(TEXT("IsBackWalk"), AnimatorControllerParameterType::Bool);
 			playerAnimCon->AddParameter(TEXT("AnimationSpeed"), AnimatorControllerParameterType::Float);
 
 			resourceManager->AddAnimatorController(playerAnimCon);
 		}
 
+
+		{
+			auto bossAnimcon = std::make_shared<AnimatorController>(TEXT("Boss_CutScene_Animator"));
+
+			const wchar_t* idle_str = TEXT("boss_normal_idle");
+			const wchar_t* boss_move = TEXT("boss_normal_move");
+			const wchar_t* boss_ovf = TEXT("boss_overdrive_fist_enter");
+
+			auto stateMachine = bossAnimcon->AddStateMachine(TEXT("AnimationStateMachine"));
+
+			auto bossIdle = stateMachine->AddState(TEXT("Idle"));
+			bossIdle->SetAnimationClip(resourceManager->GetAnimationClip(idle_str));
+			auto bossWalk = stateMachine->AddState(TEXT("Walk"));
+			bossWalk->SetAnimationClip(resourceManager->GetAnimationClip(boss_move));
+			auto bossOverdrive = stateMachine->AddState(TEXT("Overdrive"));
+			bossOverdrive->SetAnimationClip(resourceManager->GetAnimationClip(boss_ovf));
+
+			auto idleToWalk = bossIdle->AddTransition(bossWalk);
+			idleToWalk->AddCondition(TEXT("IsWalk"), AnimatorConditionMode::True);
+			auto walkToIdle = bossWalk->AddTransition(bossIdle);
+			walkToIdle->AddCondition(TEXT("IsWalk"), AnimatorConditionMode::False);
+
+			auto idleToOverdrive = bossIdle->AddTransition(bossOverdrive);
+			idleToOverdrive->AddCondition(TEXT("IsOverdrive"), AnimatorConditionMode::True);
+			auto OverdriveToIdle = bossOverdrive->AddTransition(bossIdle);
+			OverdriveToIdle->AddCondition(TEXT("IsOverdrive"), AnimatorConditionMode::False);
+
+			bossAnimcon->AddParameter(TEXT("IsWalk"), AnimatorControllerParameterType::Bool);
+			bossAnimcon->AddParameter(TEXT("IsOverdrive"), AnimatorControllerParameterType::Bool);
+			bossAnimcon->AddParameter(TEXT("AnimationSpeed"), AnimatorControllerParameterType::Float);
+
+			resourceManager->AddAnimatorController(bossAnimcon);
+		}
 
 	}
 

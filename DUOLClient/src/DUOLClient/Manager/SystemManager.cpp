@@ -500,7 +500,7 @@ namespace  DUOLClient
 				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 				_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
 			}
-			if (gameObject->GetName() == TEXT("Canvas"))
+			if (gameObject->GetName() == TEXT("MainPanel"))
 			{
 				_uiObject = gameObject;
 			}
@@ -533,6 +533,13 @@ namespace  DUOLClient
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_20.png", _soundManager->GetAudioClip(TEXT("NPC_02"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_21.png", _soundManager->GetAudioClip(TEXT("NPC_03"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_22.png", _soundManager->GetAudioClip(TEXT("NPC_04"))));
+		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene01.png", _soundManager->GetAudioClip(TEXT("BossCutscene01"))));
+		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene02.png", _soundManager->GetAudioClip(TEXT("BossCutscene02"))));
+		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene03.png", _soundManager->GetAudioClip(TEXT("BossCutscene03"))));
+
 		for (auto gameObject : gameObjects)
 		{
 			if (gameObject->GetTag() == TEXT("MainCamera"))
@@ -564,7 +571,7 @@ namespace  DUOLClient
 				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 				_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
 			}
-			if (gameObject->GetName() == TEXT("Canvas"))
+			if (gameObject->GetName() == TEXT("MainPanel"))
 			{
 				_uiObject = gameObject;
 			}
@@ -870,6 +877,11 @@ namespace  DUOLClient
 	void SystemManager::PlayStageCScene(DUOLCommon::tstring sound)
 	{
 		_player->PlayScriptSoundClip(_cSceneClips[sound], false);
+	}
+
+	void SystemManager::PlayStageBossScene(DUOLCommon::tstring sound)
+	{
+		_player->PlayScriptSoundClip(_bossSceneClips[sound], false);
 	}
 
 	void SystemManager::PlaySound(DUOLGameEngine::AudioClip* soundClip)

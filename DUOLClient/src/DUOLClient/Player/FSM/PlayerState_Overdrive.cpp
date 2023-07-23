@@ -1,6 +1,8 @@
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 
+#include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Player/Weapon_Sword.h"
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 
@@ -54,7 +56,6 @@ namespace DUOLClient
 	void PlayerState_Overdrive::EnterOverdriveSword()
 	{
 		_isEnter = true;
-
 		_isSword = true;
 
 		_animator->SetBool(TEXT("IsOverdriveSwordEnter"), true);
@@ -169,6 +170,7 @@ namespace DUOLClient
 
 	void PlayerState_Overdrive::EndOverdriveEnter()
 	{
+		_mainCamController->SetCameraState(MainCameraState::FOLLOW_PLAYER);
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdriveEnter (AnimEnd)");
 	}

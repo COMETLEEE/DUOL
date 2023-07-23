@@ -134,7 +134,8 @@ namespace DUOLClient
 
 		// 무적인 상황에 대해서는 넘어가 ..!
 		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down")
-			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction") || currentStateName == TEXT("PlayerState_Ultimate") || currentStateName == TEXT("PlayerState_OverDrive"))
+			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction") 
+			|| currentStateName == TEXT("PlayerState_Ultimate") || currentStateName == TEXT("PlayerState_Overdrive"))
 			return false;
 
 		DUOLGameEngine::StateBase* prevState = _playerStateMachine.GetPrevState();

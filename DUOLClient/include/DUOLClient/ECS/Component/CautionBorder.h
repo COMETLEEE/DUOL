@@ -12,7 +12,7 @@ namespace DUOLClient
 class DUOL_CLIENT_API CautionBorder : public DUOLGameEngine::BehaviourBase
 {
 public:
-	CautionBorder(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("MaterialOptionChanger"));
+	CautionBorder(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("CautionBorder"));
 
 	virtual ~CautionBorder() override;
 

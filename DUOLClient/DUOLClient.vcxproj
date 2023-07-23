@@ -183,7 +183,7 @@
     <ClCompile Include="src\DUOLClient\Script\AnimationScript\DummyMonoBehavior.cpp" />
     <ClCompile Include="src\DUOLClient\Script\AnimationScript\EliteMonsterScript.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CStageEliteCameraTrigger.cpp" />
-    <ClCompile Include="src\DUOLClient\ECS\CStageMiddleBossAction.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\CStageBossCameraTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\AStageAreaCameraTirgger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\JumpPlatform.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Jump.cpp" />
@@ -288,7 +288,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\CStageEliteCameraTrigger.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\CStageMiddleBossAction.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CStageBossCameraTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\AStageAreaCameraTirgger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\BossZoneTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\BStageCameraColiision.h" />

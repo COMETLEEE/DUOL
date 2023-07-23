@@ -6,6 +6,7 @@
 
 namespace DUOLGameEngine
 {
+	class FadeInOut;
 	class Animator;
 }
 
@@ -14,7 +15,9 @@ namespace DUOLGameEngine
  */
 namespace DUOLClient
 {
-class BossMonsterScript : public DUOLGameEngine::MonoBehaviourBase
+	class MainCameraController;
+
+	class BossMonsterScript : public DUOLGameEngine::MonoBehaviourBase
 {
 public:
 	BossMonsterScript(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("BossMonsterScript"));
@@ -47,7 +50,19 @@ public:
 
 	//DUOLGameEngine::CoroutineHandler AnimationStart();
 
+	void BossPart01();
+
+	void BossPart02();
+
+	void BossPart04C();
+
+	void EndScript();
+
 public:
+	DUOLGameEngine::Transform* _bossTransform;
+
+	DUOLGameEngine::Transform* _playerTransform;
+
 	DUOLGameEngine::GameObject* _cachedPlayerDummy;
 
 	DUOLGameEngine::Animator* _cachedPlayerAnimator;
@@ -58,16 +73,18 @@ public:
 
 	DUOLGameEngine::Animator* _cachedBossAnimator;
 
+	DUOLGameEngine::AudioSource* _cachedBossAudioSource;
+
 	DUOLGameEngine::AudioClip* _bossVoice1;
 
 	DUOLGameEngine::AudioClip* _bossVoice2;
 
 	DUOLGameEngine::AudioClip* _bossVoice3;
 
+
 private:
-
-
 	RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
-		RTTR_REGISTRATION_FRIEND
+
+	RTTR_REGISTRATION_FRIEND
 };
 }

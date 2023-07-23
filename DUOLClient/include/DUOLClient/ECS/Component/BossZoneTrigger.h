@@ -25,7 +25,7 @@ namespace DUOLClient
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 	};
 
 }

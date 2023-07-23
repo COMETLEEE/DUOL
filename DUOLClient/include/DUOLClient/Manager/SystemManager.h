@@ -164,6 +164,8 @@ namespace DUOLClient
 
 		void PlayStageCScene(DUOLCommon::tstring sound);
 
+		void PlayStageBossScene(DUOLCommon::tstring sound);
+
 		void SetBossUI();
 
 	private:
@@ -340,6 +342,8 @@ namespace DUOLClient
 		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _bSceneClips;
 
 		std::map<DUOLCommon::tstring,DUOLGameEngine::AudioClip*> _cSceneClips;
+
+		std::map<DUOLCommon::tstring, DUOLGameEngine::AudioClip*> _bossSceneClips;
 
 		std::map<DUOLCommon::tstring, DUOLGameEngine::AudioClip*> _uiClips;
 
