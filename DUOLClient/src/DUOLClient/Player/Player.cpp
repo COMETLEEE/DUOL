@@ -211,8 +211,13 @@ namespace DUOLClient
 			hitState->AccumulateHit();
 		}
 
+		if(_hp<=0)
+			DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
+		else
+			DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
+
 		// UI Change
-		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
+		//DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 
 

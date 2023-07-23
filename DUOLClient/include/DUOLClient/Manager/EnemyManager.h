@@ -199,7 +199,7 @@ namespace DUOLClient
 		*/
 		DUOLGameEngine::GameObject* GetEnemyGameObject(Enemy* key);
 
-
+		void AllDie();
 	private:
 		template<class T>
 		void* GetTypeID();

@@ -146,6 +146,8 @@ namespace DUOLClient
 		void HideMiniMapIcon();
 
 		void CStageInterActive(DUOLCommon::tstring path);
+
+		void CClear();
 		/**
 		* \brief Sound
 		 */

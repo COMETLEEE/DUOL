@@ -1186,6 +1186,30 @@ namespace  DUOLClient
 		_interactiveScript->SetPlayScriptKey(path);
 	}
 
+	void SystemManager::CClear()
+	{
+		if (_isCStageClear)
+			return;
+
+		_isCStageClear = true;
+		EnemyManager::GetInstance()->AllDie();
+		CreatePortal(TEXT("Portal_C"), TEXT("Middle"), C_CLEAR_PORTAL_TO_MIDDLE_POSITION);
+
+		auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : allGameObjects)
+		{
+			if (gameObject->GetName() == TEXT("CautionCollider"))
+			{
+				gameObject->SetIsActiveSelf(false);
+			}
+		}
+
+		// MiniMap
+		MiniMapChange(L"StageCMiniMapPortal");
+
+	}
+
 
 	void DUOLClient::SystemManager::BSystem(float deltaTime)
 	{
@@ -1303,7 +1327,7 @@ namespace  DUOLClient
 
 		portal->GetTransform()->SetPosition(position);
 
-		portal->AddComponent<DUOLGameEngine::BoxCollider>()->SetSize(DUOLMath::Vector3(3.f, 1.f, 3.f));
+		portal->AddComponent<DUOLGameEngine::BoxCollider>()->SetSize(DUOLMath::Vector3(3.f, 3.f, 3.f));
 
 		portal->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsTrigger(true);
 		DUOLClient::Portal* portalCom = portal->AddComponent<DUOLClient::Portal>();
@@ -1311,7 +1335,7 @@ namespace  DUOLClient
 		if (_isAStageClear && _isBStageClear && _isCStageClear)
 			portalCom->SetNextSceneName(L"StageBoss");
 		else
-			portalCom->SetNextSceneName(nextSceneName);
+			portalCom->SetNextSceneName(nextSceneName); 
 	}
 
 	void SystemManager::Die()

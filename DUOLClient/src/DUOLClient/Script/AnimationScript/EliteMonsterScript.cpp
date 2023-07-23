@@ -169,7 +169,7 @@ void DUOLClient::EliteMonsterScript::OnStart()
 
 void DUOLClient::EliteMonsterScript::OnDestroy()
 {
-}
+	}
 
 void DUOLClient::EliteMonsterScript::OnUpdate(float deltaTime)
 {

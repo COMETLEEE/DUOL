@@ -672,6 +672,14 @@ namespace DUOLClient
 		return nullptr;
 	}
 
+	void EnemyManager::AllDie()
+	{
+		for (auto& iter : _enemyGroupControllers)
+		{
+			iter.second->AllDie();
+		}
+	}
+
 	EnemyManager* EnemyManager::GetInstance()
 	{
 		if (!_instance)

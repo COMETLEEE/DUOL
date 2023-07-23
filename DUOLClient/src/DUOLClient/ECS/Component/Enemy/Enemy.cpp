@@ -29,6 +29,7 @@
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Manager/UIDataManager.h"
 
 using namespace rttr;
@@ -613,6 +614,12 @@ namespace DUOLClient
 		if (this->GetEnemyData()->_name ==L"EnemyElite")
 		{
 			UIDataManager::GetInstance()->SetBossHPUI(this->GetHP());
+
+			if (this->GetHP() <= 0)
+			{
+				SystemManager::GetInstance()->CClear();
+				UIDataManager::GetInstance()->SetBossHPUI(0.f);
+			}
 		}
 
 		return result;
