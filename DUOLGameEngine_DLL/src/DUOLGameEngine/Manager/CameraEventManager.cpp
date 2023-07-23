@@ -1,6 +1,6 @@
 #include "DUOLGameEngine/Manager/CameraEventManager.h"
 
-#include "DUOLCommon//Log/LogHelper.h"
+//#include "DUOLCommon//Log/LogHelper.h"
 
 #include "DUOLCommon/Util/Hash.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
@@ -150,7 +150,7 @@ namespace DUOLGameEngine
 		// not same => camera action play
 		_currentTime += (deltaTime / _timaManager->GetTimeScale());
 
-		// ÇöÀç ½Ã°£¿¡ ¸Â´Â ÇÁ·¹ÀÓ
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Â´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		float currentFrame = _currentTime * 60;
 
 		auto cameraevent = _cameraEvents[_nowPlayKey];
@@ -175,6 +175,8 @@ namespace DUOLGameEngine
 					{
 						_playMode = false;
 						_sequenceIndex = 0;
+						_mainCameraTransform->SetLocalPosition(_preCameraPos);
+						_mainCameraTransform->SetLocalRotation(_preCameraRot);
 					}
 					_isNextSequence = true;
 
@@ -207,7 +209,7 @@ namespace DUOLGameEngine
 
 			if (_isPlayerAction)
 			{
-				// Mat
+				// MatZ
 				DUOLMath::Matrix CamMat = Matrix::Identity * Matrix::CreateFromQuaternion(desiredRot) * Matrix::CreateTranslation(desiredPos);
 
 				DUOLMath::Matrix totalMat = CamMat * _playerMat;
@@ -219,20 +221,12 @@ namespace DUOLGameEngine
 
 				totalMat.Decompose(scale, rot, pos);
 
-				DUOL_INFO(DUOL_FILE, "Player Linear Camera pos {}/{}/{}", pos.x, pos.y, pos.x);
-
-				DUOL_INFO(DUOL_FILE, "Player Linear Camera rot {}/{}/{}", rot.x, rot.y, rot.z);
-
 				_mainCameraTransform->SetLocalPosition(pos);
 
 				_mainCameraTransform->SetLocalRotation(rot);
 			}
 			else
 			{
-
-				DUOL_INFO(DUOL_FILE, "Linear Camera pos {}/{}/{}", desiredPos.x, desiredPos.y, desiredPos.x);
-
-				DUOL_INFO(DUOL_FILE, "Linear Camera rot {}/{}/{}", desiredRot.x, desiredRot.y, desiredRot.z);
 
 				_mainCameraTransform->SetLocalPosition(desiredPos);
 
@@ -263,6 +257,8 @@ namespace DUOLGameEngine
 					{
 						_playMode = false;
 						_sequenceIndex = 0;
+						_mainCameraTransform->SetLocalPosition(_preCameraPos);
+						_mainCameraTransform->SetLocalRotation(_preCameraRot);
 					}
 
 					_isNextSequence = true;
@@ -376,12 +372,6 @@ namespace DUOLGameEngine
 
 		SetMainCamera();
 
-		_realCameraTransform->SetLocalPosition(Vector3(0, 0, 0));
-		_realCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
-
-		_mainCameraTransform->SetLocalPosition(Vector3(0, 0, 0));
-		_mainCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
-
 		_isSequenceSuccess = false;
 
 		_isPlayerAction = false;
@@ -486,31 +476,17 @@ namespace DUOLGameEngine
 		if (_mainCameraTransform == nullptr)
 			SetMainCamera();
 
+		_preCameraPos = _mainCameraTransform->GetLocalPosition();
+		_preCameraRot = _mainCameraTransform->GetWorldRotation();
+
 		_realCameraTransform->SetLocalPosition(Vector3(0, 0, 0));
 		_realCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
 
 		_mainCameraTransform->SetLocalPosition(Vector3(0, 0, 0));
 		_mainCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
 
-		//if (rot)
-			_playerMat = transform->GetWorldMatrix();
-		/*else
-		{
-			auto mat = transform->GetWorldMatrix();
-			DUOLMath::Vector3 pos; Quaternion quaternion; DUOLMath::Vector3 scale;
+		_playerMat = transform->GetWorldMatrix();
 
-			mat.Decompose(scale, quaternion, pos);
-
-			auto euler = Quaternion::ConvertQuaternionToEuler(quaternion);
-			auto changeeuler = Quaternion::CreateFromEulerAngle(euler.x, -euler.y, euler.x);
-
-				
-			auto scaleMat = DUOLMath::Matrix::CreateScale({ 1,1,1 });
-			auto rotate = DUOLMath::Matrix::CreateFromQuaternion(changeeuler);
-			auto trans = DUOLMath::Matrix::CreateTranslation(pos);
-
-			_playerMat = scaleMat * rotate * trans;
-		}*/
 	}
 
 	UINT64 CameraEventManager::GetKey(std::string name)

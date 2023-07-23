@@ -93,6 +93,10 @@ namespace DUOLGameEngine
 
 		Transform* _realCameraTransform;
 
+		DUOLMath::Vector3 _preCameraPos;
+
+		DUOLMath::Quaternion _preCameraRot;
+
 		float _currentTime;
 
 	private:

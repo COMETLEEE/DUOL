@@ -146,7 +146,7 @@ namespace  DUOLClient
 
 			if (gameObject->GetTag() == TEXT("Camera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
+				// Main Camera Controller ëŠ” ì—¬ê¸°ì— ë‹¬ë ¤ìžˆìŠµë‹ˆë‹¤.
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 			}
 			if (gameObject->GetTag() == TEXT("Fade"))
@@ -218,7 +218,7 @@ namespace  DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("Camera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
+				// Main Camera Controller ëŠ” ì—¬ê¸°ì— ë‹¬ë ¤ìžˆìŠµë‹ˆë‹¤.
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
 			}
@@ -277,13 +277,13 @@ namespace  DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("MainCamera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
+				// Main Camera Controller ï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½Þ·ï¿½ï¿½Ö½ï¿½ï¿½Ï´ï¿½.
 				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 
 			}
 			if (gameObject->GetTag() == TEXT("Camera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
+				// Main Camera Controller ï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½Þ·ï¿½ï¿½Ö½ï¿½ï¿½Ï´ï¿½.
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 
 			}
@@ -366,12 +366,12 @@ namespace  DUOLClient
 			}
 			if (gameObject->GetTag() == TEXT("MainCamera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
+				// Main Camera Controller ëŠ” ì—¬ê¸°ì— ë‹¬ë ¤ìžˆìŠµë‹ˆë‹¤.
 				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 			}
 			if (gameObject->GetTag() == TEXT("Camera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
+				// Main Camera Controller ëŠ” ì—¬ê¸°ì— ë‹¬ë ¤ìžˆìŠµë‹ˆë‹¤.
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 
 			}
@@ -463,13 +463,13 @@ namespace  DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("MainCamera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
+				// Main Camera Controller ëŠ” ì—¬ê¸°ì— ë‹¬ë ¤ìžˆìŠµë‹ˆë‹¤.
 				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 
 			}
 			if (gameObject->GetTag() == TEXT("Camera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
+				// Main Camera Controller ëŠ” ì—¬ê¸°ì— ë‹¬ë ¤ìžˆìŠµë‹ˆë‹¤.
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 
 			}
@@ -529,6 +529,61 @@ namespace  DUOLClient
 
 	void SystemManager::InitializeStageBoss()
 	{
+		_currentGameScene = GameScene::StageBoss;
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
+				// Main Camera Controller ï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½Þ·ï¿½ï¿½Ö½ï¿½ï¿½Ï´ï¿½.
+				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
+			}
+			if (gameObject->GetTag() == TEXT("Camera"))
+			{
+				// Main Camera Controller ï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½Þ·ï¿½ï¿½Ö½ï¿½ï¿½Ï´ï¿½.
+				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
+			}
+			if (gameObject->GetName() == TEXT("Player"))
+			{
+				_player = gameObject->GetComponent<DUOLClient::Player>();
+			}
+			if (gameObject->GetName() == TEXT("UIAudioSource"))
+			{
+				_uiAudioSource = gameObject->AddComponent<DUOLGameEngine::AudioSource>();;
+			}
+			if (gameObject->GetName() == TEXT("Minimap"))
+			{
+				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
+			}
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+				_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
+			}
+			if (gameObject->GetName() == TEXT("Canvas"))
+			{
+				_uiObject = gameObject;
+			}
+		}
+
+		if (_cameraInstance == nullptr)
+		{
+			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
+		}
+
+		if (_uiAudioSource == nullptr)
+		{
+			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+			object->GetTransform()->SetParent(this->GetTransform());
+			object->SetName(TEXT("UIAudioSource"));
+			auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+			_uiAudioSource = comp;
+		}
+
 	}
 
 	void SystemManager::InitializeStage()
@@ -543,7 +598,6 @@ namespace  DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("MainCamera"))
 			{
-				// Main Camera Controller ´Â ¿©±â¿¡ ´Þ·ÁÀÖ½À´Ï´Ù.
 				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 
 			}
@@ -604,7 +658,7 @@ namespace  DUOLClient
 	void SystemManager::StageAUpdate(float deltaTime)
 	{
 
-		// Ã³À½ ¸ó½ºÅÍ ¸¸³ª°í Ã³À½ ¿¬ÃâÀÌ µé¾î°¡ÇÒ¶§
+		// ì²˜ìŒ ëª¬ìŠ¤í„° ë§Œë‚˜ê³  ì²˜ìŒ ì—°ì¶œì´ ë“¤ì–´ê°€í• ë•Œ
 		// false true
 		if (!_isFirstMonster && _isFirstMonsterAction)
 		{
@@ -627,6 +681,7 @@ namespace  DUOLClient
 			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaA");
 			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
 			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			
 			_isCameraSequenceMode = true;
 		}
 
@@ -655,7 +710,7 @@ namespace  DUOLClient
 	{
 
 #pragma region FirstMonster Action
-		// ¸ó½ºÅÍ¶û Ã³À½À¸·Î ¸¸³²
+		// ëª¬ìŠ¤í„°ëž‘ ì²˜ìŒìœ¼ë¡œ ë§Œë‚¨
 		if (!_isFirstMonster && _isFirstMonsterAction)
 		{
 			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaB");
@@ -722,7 +777,7 @@ namespace  DUOLClient
 	{
 		_cCurrentTime += deltaTime;
 
-		// ¸ó½ºÅÍ¶û Ã³À½À¸·Î ¸¸³²
+		// ëª¬ìŠ¤í„°ëž‘ ì²˜ìŒìœ¼ë¡œ ë§Œë‚¨
 		if (!_isFirstMonster && _isFirstMonsterAction)
 		{
 			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaC");
@@ -889,7 +944,7 @@ namespace  DUOLClient
 		{
 			break;
 		}
-		// ¿©±ä Ç×»ó Ä«¸Þ¶ó°¡ °íÁ¤µÇÀÖ¾î¾ßÇÑ´Ù. 
+		// ì—¬ê¸´ í•­ìƒ ì¹´ë©”ë¼ê°€ ê³ ì •ë˜ìžˆì–´ì•¼í•œë‹¤. 
 		case GameScene::Total:
 		{
 			_scriptIndex = _cameraManager->GetSequenceIndex() - 1;
@@ -1003,7 +1058,7 @@ namespace  DUOLClient
 
 	void DUOLClient::SystemManager::DoorCollisionStay()
 	{
-		//// UI ¶°¾ßÇÔ
+		//// UI ë– ì•¼í•¨
 		_infoObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"Info10.png");
 		_infoObject->SetIsActiveSelf(true);
 

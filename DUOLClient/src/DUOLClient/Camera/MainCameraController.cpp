@@ -125,42 +125,43 @@ namespace DUOLClient
 
 		if (_preMainCameraState == MainCameraState::CAMERA_SEQUENCE && _mainCameraState == MainCameraState::FOLLOW_PLAYER)
 		{
-			const DUOLMath::Quaternion& prevCameraRotation = _playerTransform->GetLocalRotation();
+			//	const DUOLMath::Quaternion& prevCameraRotation = _playerTransform->GetLocalRotation();
 
+			//	//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
+			//	_cameraTransform->SetRotation(prevCameraRotation, DUOLGameEngine::Space::World);
 
-			//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
-			_cameraTransform->SetRotation(prevCameraRotation, DUOLGameEngine::Space::World);
-
-			_rotY = _cameraTransform->GetTransform()->GetLocalEulerAngle().y;
+			//	_rotY = _cameraTransform->GetTransform()->GetLocalEulerAngle().y;
 
 			_preMainCameraState = _mainCameraState;
 
+
 		}
-		else
-		{
-			const DUOLMath::Quaternion& prevCameraRotation = _cameraTransform->GetWorldRotation();
+		/*else
+		{*/
+		const DUOLMath::Quaternion& prevCameraRotation = _cameraTransform->GetWorldRotation();
 
-			const DUOLMath::Vector2& prevMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetPrevMousePosition();
+		const DUOLMath::Vector2& prevMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetPrevMousePosition();
 
-			const DUOLMath::Vector2& currMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
+		const DUOLMath::Vector2& currMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
 
-			const DUOLMath::Vector2 deltaMouseMove = 0.15f * (prevMousePosition - currMousePosition);
+		const DUOLMath::Vector2 deltaMouseMove = 0.15f * (prevMousePosition - currMousePosition);
 
-			_rotX += -deltaMouseMove.y * _sensitivity * deltaTime;
+		_rotX += -deltaMouseMove.y * _sensitivity * deltaTime;
 
-			_rotY += -deltaMouseMove.x * _sensitivity * deltaTime;
+		_rotY += -deltaMouseMove.x * _sensitivity * deltaTime;
 
-			// Y 방향의 회전은 최소, 최대 제한을 둡니다.
-			_rotX = std::clamp(_rotX, -_clampAngle, _clampAngle);
+		// Y 방향의 회전은 최소, 최대 제한을 둡니다.
+		_rotX = std::clamp(_rotX, -_clampAngle, _clampAngle);
 
-			// todo : x 축을 돌리는게 맞는 것 같은데 어째서 z 축을 돌릴 때 정상적으로 작동하는가...! 
-			//DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(0, DUOLMath::MathHelper::DegreeToRadian(_rotY), -DUOLMath::MathHelper::DegreeToRadian(_rotX));
-			DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::MathHelper::DegreeToRadian(_rotX), DUOLMath::MathHelper::DegreeToRadian(_rotY), 0);
+		// todo : x 축을 돌리는게 맞는 것 같은데 어째서 z 축을 돌릴 때 정상적으로 작동하는가...! 
+		//DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(0, DUOLMath::MathHelper::DegreeToRadian(_rotY), -DUOLMath::MathHelper::DegreeToRadian(_rotX));
+		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::MathHelper::DegreeToRadian(_rotX), DUOLMath::MathHelper::DegreeToRadian(_rotY), 0);
 
-			//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
-			_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(prevCameraRotation, rot, deltaTime * _smoothness), DUOLGameEngine::Space::World);
-		}
+		//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
+		_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(prevCameraRotation, rot, deltaTime * _smoothness), DUOLGameEngine::Space::World);
 
+
+		//}
 
 	}
 
@@ -214,6 +215,8 @@ namespace DUOLClient
 		}
 
 		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3::Lerp(_realCameraTransform->GetLocalPosition(), _dirNormalized * _finalDistance, std::clamp(_smoothness * deltaTime, 0.f, 1.f)));
+
+
 	}
 
 	void MainCameraController::SetLockRotationByMouse(bool value)
@@ -256,7 +259,7 @@ namespace DUOLClient
 	{
 		_preMainCameraState = _mainCameraState;
 		_mainCameraState = state;
-		if(_player)
+		if (_player)
 		{
 			if (_mainCameraState == MainCameraState::CAMERA_SEQUENCE)
 				_player->SetCanInteraction(false);
