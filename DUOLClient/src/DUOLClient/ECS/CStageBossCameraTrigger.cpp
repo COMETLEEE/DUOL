@@ -121,6 +121,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageBossCameraTrigger::ScripteRun
 	//bossPart01 스크립트 및 다이얼로그 작성할것. 여기다하던가 Boss script에 넣던가.. 
 	cameraEventManager->SetPlayKey(_sequenceCamera[0]);
 	_bossScript->BossPart01();
+	systemManager->SetScript(L"DialogueText_22.png");
 
 	//한프레임 대기
 	co_yield nullptr;
@@ -133,7 +134,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageBossCameraTrigger::ScripteRun
 
 	//todo
 	//bossPart02 스크립트 및 다이얼로그 작성할것. 여기다하던가 Boss script에 넣던가..
-
+	systemManager->SetScript(L"FinalBossCutscene01.png");
 	cameraEventManager->SetPlayKey(_sequenceCamera[1]);
 	_bossScript->BossPart02();
 
@@ -148,7 +149,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageBossCameraTrigger::ScripteRun
 
 	//todo
 	//bossPart03 스크립트 및 다이얼로그 작성할것. 여기다하던가 Boss script에 넣던가..
-
+	systemManager->SetScript(L"FinalBossCutscene02.png");
 	cameraEventManager->SetPlayKey(_sequenceCamera[2]);
 
 	//한프레임 대기
@@ -162,6 +163,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageBossCameraTrigger::ScripteRun
 
 	//todo
 	//bossPart04_a 스크립트 및 다이얼로그 작성할것. 여기다하던가 Boss script에 넣던가..
+	systemManager->SetScript(L"FinalBossCutscene03.png");
 	cameraEventManager->SetPlayKey(_sequenceCamera[3]);
 
 	//한프레임 대기

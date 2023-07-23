@@ -618,7 +618,6 @@ namespace DUOLClient
 			if (this->GetHP() <= 0)
 			{
 				SystemManager::GetInstance()->CClear();
-				UIDataManager::GetInstance()->SetBossHPUI(0.f);
 			}
 		}
 

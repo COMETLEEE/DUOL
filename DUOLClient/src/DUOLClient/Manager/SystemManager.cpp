@@ -536,9 +536,9 @@ namespace  DUOLClient
 		_bossSceneClips.insert(std::make_pair(L"DialogueText_20.png", _soundManager->GetAudioClip(TEXT("NPC_02"))));
 		_bossSceneClips.insert(std::make_pair(L"DialogueText_21.png", _soundManager->GetAudioClip(TEXT("NPC_03"))));
 		_bossSceneClips.insert(std::make_pair(L"DialogueText_22.png", _soundManager->GetAudioClip(TEXT("NPC_04"))));
-		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene01.png", _soundManager->GetAudioClip(TEXT("BossCutscene01"))));
-		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene02.png", _soundManager->GetAudioClip(TEXT("BossCutscene02"))));
-		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene03.png", _soundManager->GetAudioClip(TEXT("BossCutscene03"))));
+		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene01.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene01"))));
+		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene02.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene02"))));
+		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene03.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene03"))));
 
 		for (auto gameObject : gameObjects)
 		{
@@ -591,6 +591,7 @@ namespace  DUOLClient
 			_uiAudioSource = comp;
 		}
 
+		_interactiveScript->SetPlayScriptKey(L"DialogueText_20.png");
 	}
 
 	void SystemManager::InitializeStage()
@@ -829,6 +830,22 @@ namespace  DUOLClient
 		}
 	}
 
+	void SystemManager::StageBossUpdate(float deltaTime)
+	{
+		if (_interactiveScript)
+		{
+			_interactiveScript->ShowBossSceneScript();
+			_interactiveScript->ScriptPlay(deltaTime);
+			_interactiveScript->InfoPlay(deltaTime);
+		}
+
+		if (_isCameraSequenceMode && !_cameraInstance->IsPlayMode())
+		{
+			_isCameraSequenceMode = false;
+			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+		}
+	}
+
 	void SystemManager::SetBossUI()
 	{
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
@@ -850,9 +867,13 @@ namespace  DUOLClient
 				UIDataManager::GetInstance()->SetBossMaxHPUI(1000.f);
 			}
 		}
-
+		
 	}
 
+	void SystemManager::SetScript(DUOLCommon::tstring path)
+	{
+		_interactiveScript->SetPlayScriptKey(path);
+	}
 
 	void SystemManager::PlayTotalScene(DUOLCommon::tstring sound)
 	{
@@ -1020,6 +1041,12 @@ namespace  DUOLClient
 
 			break;
 		}
+		case GameScene::StageBoss:
+			{
+			StageBossUpdate(deltaTime);
+
+			break;
+			}
 		case GameScene::ETC:
 		{
 			if (_isCameraSequenceMode && !_cameraInstance->IsPlayMode())
@@ -1215,11 +1242,19 @@ namespace  DUOLClient
 			{
 				gameObject->SetIsActiveSelf(false);
 			}
+			if (gameObject->GetName() == TEXT("BossName"))
+			{
+				gameObject->SetIsActiveSelf(false);
+			}
+			if (gameObject->GetName() == TEXT("BossHP"))
+			{
+				UIDataManager::GetInstance()->SetBossHPUI(0.f);
+				gameObject->SetIsActiveSelf(false);
+			}
 		}
 
 		// MiniMap
 		MiniMapChange(L"StageCMiniMapPortal");
-
 	}
 
 

@@ -41,6 +41,8 @@ namespace DUOLClient
 			InitializeStageB();
 		else if (currentSceneName == TEXT("StageC"))
 			InitializeStageC();
+		else if (currentSceneName == TEXT("StageBoss"))
+			InitializeBoss();
 		else
 			InitializeStage();
 	}
@@ -253,6 +255,38 @@ namespace DUOLClient
 		}
 	}
 
+	void InteractiveScript::InitializeBoss()
+	{
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetName() == TEXT("NarrativeWin"))
+			{
+				_scriptObject = gameObject;
+				_scriptObject->SetIsActiveSelf(false);
+			}
+			if (gameObject->GetName() == TEXT("TutorialWin"))
+			{
+				_infoObject = gameObject;
+				_infoObject->SetIsActiveSelf(false);
+			}
+		}
+
+		_scriptList.insert(std::make_pair(L"DialogueText_20.png", new ScriptInfo(L"DialogueText_20.png", L"DialogueText_21.png", L"NULL", 11.5f, true, false)));
+		_scriptList.insert(std::make_pair(L"DialogueText_21.png", new ScriptInfo(L"DialogueText_21.png", L"NULL", L"NULL", 11.5f, true, false)));
+		_scriptList.insert(std::make_pair(L"DialogueText_22.png", new ScriptInfo(L"DialogueText_22.png", L"NULL", L"NULL", 10.0f, true, false)));
+		_scriptList.insert(std::make_pair(L"FinalBossCutscene01.png", new ScriptInfo(L"FinalBossCutscene01.png", L"NULL", L"NULL", 6.0f, true, false)));
+		_scriptList.insert(std::make_pair(L"FinalBossCutscene02.png", new ScriptInfo(L"FinalBossCutscene02.png", L"NULL", L"NULL", 12.0f, true, false)));
+		_scriptList.insert(std::make_pair(L"FinalBossCutscene03.png", new ScriptInfo(L"FinalBossCutscene03.png", L"NULL", L"NULL", 15.0f, true, false)));
+
+		_scriptList.insert(std::make_pair(L"DialogueText_19.png", new ScriptInfo(L"DialogueText_19.png", L"NULL", L"NULL", 13.0f, true, false)));
+
+		_playScriptKey = L"DialogueText_20.png";
+		_playInfoKey = L"NULL";
+
+		_playInfoNextKey = _playInfoKey;
+	}
 
 
 #pragma endregion Init
@@ -334,6 +368,14 @@ namespace DUOLClient
 		ShowInfo();
 	}
 
+	void InteractiveScript::ShowBossSceneScript()
+	{
+		if (Show())
+			_systemManager->PlayStageBossScene(_playScriptKey);
+
+		ShowInfo();
+	}
+
 	bool InteractiveScript::ShowInfo()
 	{
 		if (_playInfoKey == L"NULL")
@@ -377,7 +419,7 @@ namespace DUOLClient
 
 		_currentScriptTime += deltaTime;
 
-		if (_scriptList[_playScriptKey]->_lifeTime <= _currentScriptTime)
+  		if (_scriptList[_playScriptKey]->_lifeTime <= _currentScriptTime)
 		{
 			_scriptList[_playScriptKey]->_isActive = false;
 			_playScriptNextKey = _scriptList[_playScriptKey]->_nextPath[0];

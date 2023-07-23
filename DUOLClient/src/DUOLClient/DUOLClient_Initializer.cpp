@@ -77,6 +77,8 @@ namespace DUOLClient
 		CutScene_Character_Animator();
 
 		LoadSound();
+
+		Load_Boss_Sound();
 	}
 
 	void DUOLClient_Initializer::BehaviorTreeFactory_Initialize()
@@ -6392,4 +6394,20 @@ namespace DUOLClient
 		
 	}
 
+	void DUOLClient_Initializer::Load_Boss_Sound()
+	{
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Boss/FinalBossCutscene01.wav"), TEXT("FinalBossCutscene01"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Boss/FinalBossCutscene01.wav"), TEXT("FinalBossCutscene02"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Boss/FinalBossCutscene01.wav"), TEXT("FinalBossCutscene03"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+	}
 }

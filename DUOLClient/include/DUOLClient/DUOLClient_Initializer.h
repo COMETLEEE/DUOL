@@ -36,6 +36,8 @@ namespace DUOLClient
 
 		static void Load_BGM_Sound();
 
+		static void Load_Boss_Sound();
+
 		static void Load_Script_Sound();
 
 		static void Load_UI_Sound();

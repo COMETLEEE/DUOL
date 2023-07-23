@@ -166,8 +166,13 @@ namespace DUOLClient
 
 		void PlayStageBossScene(DUOLCommon::tstring sound);
 
+
+		/**
+		 * \brief Boss
+		 */
 		void SetBossUI();
 
+		void SetScript(DUOLCommon::tstring path);
 	private:
 		/**
 		* \brief Init
@@ -198,6 +203,7 @@ namespace DUOLClient
 
 		void StageCUpdate(float deltaTime);
 
+		void StageBossUpdate(float deltaTime);
 
 		void PlaySound(DUOLGameEngine::AudioClip* soundClip);
 

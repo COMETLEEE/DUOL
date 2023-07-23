@@ -44,6 +44,8 @@ namespace DUOLClient
 
 		void InitializeStage();
 
+		void InitializeBoss();
+
 		bool Show();
 
 		bool ShowTotalSceneScript();
@@ -56,6 +58,7 @@ namespace DUOLClient
 
 		void ShowCSceneScript();
 
+		void ShowBossSceneScript();
 
 		bool ShowInfo();
 
