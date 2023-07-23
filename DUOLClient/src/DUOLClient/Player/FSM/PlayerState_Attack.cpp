@@ -1034,6 +1034,8 @@ namespace DUOLClient
 			else if (_player->_isOverdriveFistMode)
 				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Ultimate_Fist_Final", _player->GetTransform());
 
+			UIDataManager::GetInstance()->SetUltimateUI(0.f);
+
 			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
 
 			DUOL_TRACE(DUOL_CONSOLE, "Attack | UltStart ()");

@@ -215,10 +215,7 @@ namespace DUOLClient
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 
-		if (100 <= _currentOverdrivePoint)
-			DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(100.f);
-		else
-			DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(0.f);
+
 
 		return true;
 	}
@@ -844,12 +841,6 @@ namespace DUOLClient
 		_currentOverdrivePoint = std::clamp(_currentOverdrivePoint, 0.f, 100.f);
 
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
-
-		if (100 <= _currentOverdrivePoint)
-			DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(100.f);
-		else
-			DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(0.f);
-
 	}
 
 	bool Player::IsOverdriveMode()

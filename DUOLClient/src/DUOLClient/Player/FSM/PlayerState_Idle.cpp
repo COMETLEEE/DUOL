@@ -5,6 +5,7 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLClient/Manager/SystemManager.h"
+#include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLClient
@@ -29,6 +30,7 @@ namespace DUOLClient
 		{
 			// TODO : Overdrive Start
 			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Overdrive_Sword_Final", _player->GetTransform());
+			UIDataManager::GetInstance()->SetUltimateUI(100.f);
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
 
@@ -40,6 +42,7 @@ namespace DUOLClient
 		{
 			// TODO : Overdrive Start
 			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Overdrive_Fist_Final", _player->GetTransform());
+			UIDataManager::GetInstance()->SetUltimateUI(100.f);
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
 
@@ -82,6 +85,8 @@ namespace DUOLClient
 
 			else if(_player->_isOverdriveFistMode)
 				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Ultimate_Fist_Final", _player->GetTransform());
+
+			UIDataManager::GetInstance()->SetUltimateUI(0.f);
 
 			// TODO : Ultimate Start
 			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);

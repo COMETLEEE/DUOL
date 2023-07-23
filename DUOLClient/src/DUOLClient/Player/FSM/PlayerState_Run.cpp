@@ -7,6 +7,7 @@
 
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/Manager/SystemManager.h"
+#include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
@@ -32,6 +33,7 @@ namespace DUOLClient
 		else if (EnterOverdriveSwordCheck())
 		{
 			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Overdrive_Sword_Final", _player->GetTransform());
+			UIDataManager::GetInstance()->SetUltimateUI(100.f);
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), fixedTimeStep);
 
@@ -42,6 +44,7 @@ namespace DUOLClient
 		else if (EnterOverdriveFistCheck())
 		{
 			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Overdrive_Fist_Final", _player->GetTransform());
+			UIDataManager::GetInstance()->SetUltimateUI(100.f);
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), fixedTimeStep);
 
@@ -157,6 +160,8 @@ namespace DUOLClient
 
 			else if (_player->_isOverdriveFistMode)
 				DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_Ultimate_Fist_Final", _player->GetTransform());
+
+			UIDataManager::GetInstance()->SetUltimateUI(0.f);
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), fixedTimeStep);
 
