@@ -145,6 +145,7 @@ namespace DUOLClient
 
 		void HideMiniMapIcon();
 
+		void CStageInterActive(DUOLCommon::tstring path);
 		/**
 		* \brief Sound
 		 */
@@ -161,6 +162,7 @@ namespace DUOLClient
 
 		void PlayStageCScene(DUOLCommon::tstring sound);
 
+		void SetBossUI();
 
 	private:
 		/**
@@ -192,7 +194,6 @@ namespace DUOLClient
 
 		void StageCUpdate(float deltaTime);
 
-		void BossUI();
 
 		void PlaySound(DUOLGameEngine::AudioClip* soundClip);
 

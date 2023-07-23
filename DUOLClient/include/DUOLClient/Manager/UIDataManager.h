@@ -35,6 +35,10 @@ namespace DUOLClient
 
 		void ChangeScene();
 
+		void SetBossHPUI(float hp);
+
+		void SetBossMaxHPUI(float hp);
+
 		void SetPlayerHPUI(float hp);
 
 		void SetPlayerHPMaxUI(float hp);

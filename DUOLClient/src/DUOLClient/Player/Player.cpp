@@ -122,6 +122,7 @@ namespace DUOLClient
 	{
 		// OnHit È£Ãâ
 		return other->OnHit(this, damage, attackType, downPoint);
+
 	}
 
 	bool Player::OnHit(CharacterBase* other, float damage, AttackType attackType, float downPoint)

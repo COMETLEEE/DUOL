@@ -681,7 +681,7 @@ namespace  DUOLClient
 			UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("MonsterFirstSpawn_AreaA");
 			DUOLGameEngine::CameraEventManager::GetInstance()->SetPlayKey(key);
 			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
-			
+
 			_isCameraSequenceMode = true;
 		}
 
@@ -753,7 +753,7 @@ namespace  DUOLClient
 
 			if (control1)
 			{
-				if (control1->GetIsClearGroup()  && !_isCreatePortal)
+				if (control1->GetIsClearGroup() && !_isCreatePortal)
 				{
 					_isCreatePortal = true;
 					_isBStageClear = true;
@@ -822,8 +822,28 @@ namespace  DUOLClient
 		}
 	}
 
-	void SystemManager::BossUI()
+	void SystemManager::SetBossUI()
 	{
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetName() == TEXT("BattleInrush"))
+			{
+				gameObject->SetIsActiveSelf(true);
+			}
+			if (gameObject->GetName() == TEXT("BossName"))
+			{
+				gameObject->SetIsActiveSelf(true);
+			}
+			if (gameObject->GetName() == TEXT("BossHP"))
+			{
+				gameObject->SetIsActiveSelf(true);
+				UIDataManager::GetInstance()->SetBossHPUI(1000.f);
+				UIDataManager::GetInstance()->SetBossMaxHPUI(1000.f);
+			}
+		}
+
 	}
 
 
@@ -928,7 +948,7 @@ namespace  DUOLClient
 			InitializeStageB();
 		else if (currentSceneName == TEXT("StageC"))
 			InitializeStageC();
-		else if(currentSceneName ==TEXT("StageBoss"))
+		else if (currentSceneName == TEXT("StageBoss"))
 			InitializeStageBoss();
 
 		else
@@ -1135,12 +1155,35 @@ namespace  DUOLClient
 	void SystemManager::SetUiObject(bool value)
 	{
 		// UI Close
-		_uiObject->SetIsActiveSelf(value);
+		//_uiObject->SetIsActiveSelf(value);
+
+		for (auto child : _uiObject->GetTransform()->GetChildGameObjects())
+		{
+			if (child->GetName() == L"MainUI")
+			{
+				child->SetIsActiveSelf(value);
+			}
+			if (child->GetName() == L"Pause")
+			{
+				if (value != true)
+					child->SetIsActiveSelf(value);
+			}
+			if (child->GetName() == L"Option")
+			{
+				if (value != true)
+					child->SetIsActiveSelf(value);
+			}
+		}
 	}
 
 	void SystemManager::HideMiniMapIcon()
 	{
 		_uiMiniMapObject->SetIsActiveSelf(false);
+	}
+
+	void SystemManager::CStageInterActive(DUOLCommon::tstring path)
+	{
+		_interactiveScript->SetPlayScriptKey(path);
 	}
 
 

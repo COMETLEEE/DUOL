@@ -27,7 +27,7 @@
 
 #pragma region StageC
 #define StageCSCENEX 185
-#define StageCSCENEY 192
+#define StageCSCENEY 200
 
 #define StageCXGAP -180
 #define StageCYGAP -100

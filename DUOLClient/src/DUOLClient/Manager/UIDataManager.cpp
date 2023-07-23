@@ -79,6 +79,16 @@ namespace  DUOLClient
 
 	}
 
+	void UIDataManager::SetBossHPUI(float hp)
+	{
+		DUOLGameEngine::UIManager::GetInstance()->SetScrollBarUI("BossHP", hp);
+	}
+
+	void UIDataManager::SetBossMaxHPUI(float hp)
+	{
+		DUOLGameEngine::UIManager::GetInstance()->SetScrollBarUIMaxGauge("BossHP", hp);
+	}
+
 	void DUOLClient::UIDataManager::SetPlayerHPUI(float hp)
 	{
 		DUOLGameEngine::UIManager::GetInstance()->SetScrollBarUI("HPBar", hp);

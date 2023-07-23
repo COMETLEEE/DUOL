@@ -126,6 +126,9 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageEliteCameraTrigger::ScripteRu
 	_isFadeOut = false;
 	//플레이어를 꺼둔다
 	player->SetIsActiveSelf(false);
+
+	DUOLClient::SystemManager::GetInstance()->SetUiObject(false);
+
 	//첫번째 연출
 	//보스 등장
 
@@ -195,12 +198,15 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageEliteCameraTrigger::ScripteRu
 
 	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(2);
 	                                                                         
-	DUOLClient::SystemManager::GetInstance()->SetUiObject(false);
 	_isFadeOut = false;
 
 	_eliteBossTrigger->SetIsActiveSelf(true);
 	GetGameObject()->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsEnabled(false);
 	////UIChange
+	DUOLClient::SystemManager::GetInstance()->SetUiObject(true);
+	DUOLClient::SystemManager::GetInstance()->SetBossUI();
+	DUOLClient::SystemManager::GetInstance()->CStageInterActive(L"DialogueText_17.png");
+
 	//_fadeInOut->StartFadeIn(2, []() {});
 
 	//co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_playerAnimEnd);
