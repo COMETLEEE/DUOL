@@ -6002,6 +6002,8 @@ namespace DUOLClient
 			auto bossWalk = stateMachine->AddState(TEXT("Walk"));
 			bossWalk->SetAnimationClip(resourceManager->GetAnimationClip(boss_move));
 			auto bossOverdrive = stateMachine->AddState(TEXT("Overdrive"));
+			bossOverdrive->SetSpeedParameter(TEXT("AnimationSpeed"));
+			bossOverdrive->SetSpeedParameterActive(true);
 			bossOverdrive->SetAnimationClip(resourceManager->GetAnimationClip(boss_ovf));
 
 			auto idleToWalk = bossIdle->AddTransition(bossWalk);

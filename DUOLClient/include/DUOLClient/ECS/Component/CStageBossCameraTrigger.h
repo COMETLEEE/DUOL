@@ -1,6 +1,7 @@
 #pragma once
 #include "DUOLClient/Export_Client.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"
 #include "Enemy/EnemyGroupController.h"
 
 namespace DUOLGameEngine
@@ -49,6 +50,7 @@ namespace DUOLClient
 		bool _isPlay;
 
 		bool _isFadeOut;
+		bool _isAnimStart;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 		RTTR_REGISTRATION_FRIEND

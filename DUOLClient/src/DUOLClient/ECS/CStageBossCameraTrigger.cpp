@@ -110,6 +110,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageBossCameraTrigger::ScripteRun
 	auto systemManager = SystemManager::GetInstance();
 	_isPlay = true;
 	_isFadeOut = false;
+	_isAnimStart = false;
 	//플레이어를 꺼둔다
 	player->SetIsActiveSelf(false);
 	//첫번째 연출
@@ -191,20 +192,23 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageBossCameraTrigger::ScripteRun
 	//todo
 //bossPart04_c 스크립트 및 다이얼로그 작성할것. 여기다하던가 Boss script에 넣던가..
 	cameraEventManager->SetPlayKey(_sequenceCamera[5]);
-	_bossScript->BossPart04C();
 
 	//한프레임 대기
 	co_yield nullptr;
 
 	while (cameraEventManager->IsPlayMode() || _fadeInOut->GetFadeMode() != DUOLGameEngine::FadeInOutMode::DONE)
 	{
-		if (cameraEventManager->GetCurrentTime1() * 60.f > 45.f && !_isFadeOut)
+		if (cameraEventManager->GetCurrentTime1() * 60.f > 35.f && !_isAnimStart)
+		{
+			_bossScript->BossPart04C();
+			_isAnimStart = true;
+		}
+		if (cameraEventManager->GetCurrentTime1() * 60.f > 155.f && !_isFadeOut)
 		{
 			//연출하면서 페이드인.
 			_fadeInOut->StartFadeOut(2, []() {});
 			_isFadeOut = true;
 		}
-
 		if (_fadeInOut->GetFadeMode() == DUOLGameEngine::FadeInOutMode::DONE)
 		{
 			_fadeInOut->SetUIOption(true);

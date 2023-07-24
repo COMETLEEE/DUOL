@@ -273,9 +273,9 @@ namespace DUOLClient
 			}
 		}
 
-		_scriptList.insert(std::make_pair(L"DialogueText_20.png", new ScriptInfo(L"DialogueText_20.png", L"DialogueText_21.png", L"NULL", 16.f, true, false)));
+		_scriptList.insert(std::make_pair(L"DialogueText_20.png", new ScriptInfo(L"DialogueText_20.png", L"DialogueText_21.png", L"NULL", 14.f, true, false)));
 		_scriptList.insert(std::make_pair(L"DialogueText_21.png", new ScriptInfo(L"DialogueText_21.png", L"NULL", L"NULL", 11.5f, true, false)));
-		_scriptList.insert(std::make_pair(L"DialogueText_22.png", new ScriptInfo(L"DialogueText_22.png", L"NULL", L"NULL", 10.0f, true, false)));
+		_scriptList.insert(std::make_pair(L"DialogueText_22.png", new ScriptInfo(L"DialogueText_22.png", L"NULL", L"NULL", 11.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"FinalBossCutscene01.png", new ScriptInfo(L"FinalBossCutscene01.png", L"NULL", L"NULL", 6.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"FinalBossCutscene02.png", new ScriptInfo(L"FinalBossCutscene02.png", L"NULL", L"NULL", 12.0f, true, false)));
 		_scriptList.insert(std::make_pair(L"FinalBossCutscene03.png", new ScriptInfo(L"FinalBossCutscene03.png", L"NULL", L"NULL", 15.0f, true, false)));

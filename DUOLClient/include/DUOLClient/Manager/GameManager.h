@@ -3,6 +3,7 @@
 
 namespace DUOLGameEngine
 {
+	enum class FadeInOutMode;
 	class FadeInOut;
 	class AudioListener;
 	class AudioClip;
@@ -178,6 +179,11 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _creditObject;
 
+		DUOLGameEngine::FadeInOut* _skipFade;
+
+		DUOLGameEngine::FadeInOutMode _skilFadeMode;
+
+
 		/**
 		 * \brief 플레이어의 이전 데이터를 현재 씬의 플레이어에 적용합니다. (OnStart 등에서 ..)
 		 */
@@ -210,6 +216,8 @@ namespace DUOLClient
 		void OpenCredit();
 
 		void Reset();
+
+		void Skip();
 
 		/**
 		 * \brief 페이드 인을 실행합니다. 초반 화면에 싱크를 맞추기 위해 시간이 조금 지나고

@@ -138,6 +138,7 @@ void DUOLClient::BossMonsterScript::BossPart02()
 void DUOLClient::BossMonsterScript::BossPart04C()
 {
 	//플레이어 idle로
+	_cachedBossAnimator->SetFloat(TEXT("AnimationSpeed"), 0.7f);
 	_cachedBossAnimator->SetBool(TEXT("IsOverdrive"), true);
 	//보스 on DUOLClient::BossMonsterScript::BossPart04C()
 }
@@ -149,6 +150,7 @@ void DUOLClient::BossMonsterScript::EndScript()
 	_cachedPlayerAnimator->SetBool(TEXT("IsBackWalk"), false);
 	_cachedBossAnimator->SetBool(TEXT("IsWalk"), false);
 	_cachedBossAnimator->SetBool(TEXT("IsOverdrive"), false);
+	_cachedBossAnimator->SetFloat(TEXT("AnimationSpeed"), 1.f);
 
 	_cachedBossDummy->SetIsActiveSelf(false);
 	_cachedPlayerDummy->SetIsActiveSelf(false);

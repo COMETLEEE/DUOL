@@ -273,6 +273,36 @@ namespace DUOLClient
 
 	}
 
+	void GameManager::Skip()
+	{
+		if (_skipFade == nullptr)
+			return;
+
+		if (_isCredit)
+		{
+			_skipFade->GetGameObject()->SetIsActiveSelf(false);
+			return;
+		}
+
+		if (_skipFade->GetFadeMode() == DUOLGameEngine::FadeInOutMode::DONE || _skipFade->GetFadeMode() == DUOLGameEngine::FadeInOutMode::NOT)
+		{
+			if (_skilFadeMode == DUOLGameEngine::FadeInOutMode::DONE || _skilFadeMode == DUOLGameEngine::FadeInOutMode::FADE_IN)
+			{
+				_skipFade->StartBlinkIn(1, [this]()
+					{
+						_skilFadeMode = DUOLGameEngine::FadeInOutMode::FADE_OUT;
+					});
+			}
+			else if (_skilFadeMode == DUOLGameEngine::FadeInOutMode::FADE_OUT)
+			{
+				_skipFade->StartBlinkOut(1, [this]()
+					{
+						_skilFadeMode = DUOLGameEngine::FadeInOutMode::FADE_IN;
+					});
+			}
+		}
+	}
+
 	DUOLGameEngine::CoroutineHandler GameManager::StartFadeIn()
 	{
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(0.5f);
@@ -317,6 +347,7 @@ namespace DUOLClient
 			CreatePortal(middle, TEXT("Portal_B"), TEXT("StageB"), MIDDLE_PORTAL_TO_B_POSITION);
 		if (!SystemManager::GetInstance()->IsCStage())
 			CreatePortal(middle, TEXT("Portal_C"), TEXT("StageC"), MIDDLE_PORTAL_TO_C_POSITION);
+		
 #pragma endregion
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
@@ -337,6 +368,24 @@ namespace DUOLClient
 				auto _mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
 				_mainCameraController->SetCameraInitPos();
+			}
+			if (gameObject->GetTag() == TEXT("MiniMap"))
+			{
+				if(SystemManager::GetInstance()->IsAStage() && !SystemManager::GetInstance()->IsBStage()&& !SystemManager::GetInstance()->IsCStage())
+				gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"MinImap_Middle_BC.png");
+				else if(!SystemManager::GetInstance()->IsAStage() && SystemManager::GetInstance()->IsBStage() && !SystemManager::GetInstance()->IsCStage())
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"MinImap_Middle_AC.png");
+				else if (!SystemManager::GetInstance()->IsAStage() && !SystemManager::GetInstance()->IsBStage() && SystemManager::GetInstance()->IsCStage())
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"MinImap_Middle_AB.png");
+				else if (SystemManager::GetInstance()->IsAStage() && SystemManager::GetInstance()->IsBStage() && !SystemManager::GetInstance()->IsCStage())
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"MinImap_Middle_C.png");
+				else if (SystemManager::GetInstance()->IsAStage() && !SystemManager::GetInstance()->IsBStage() && SystemManager::GetInstance()->IsCStage())
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"MinImap_Middle_B.png");
+				else if (!SystemManager::GetInstance()->IsAStage() && SystemManager::GetInstance()->IsBStage() && SystemManager::GetInstance()->IsCStage())
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"MinImap_Middle_A.png");
+				else if (!SystemManager::GetInstance()->IsAStage() && !SystemManager::GetInstance()->IsBStage() && !SystemManager::GetInstance()->IsCStage())
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"MiddleMiniMap.png");
+
 			}
 		}
 
@@ -478,6 +527,8 @@ namespace DUOLClient
 
 		_creditTime = 0.f;
 
+		SetBGM(L"ResultWindow");
+
 		float totaltime = DUOLGameEngine::TimeManager::GetInstance()->GetRealtimeSinceStartup();
 
 		int monstercount = DUOLClient::UIDataManager::_koCount;
@@ -528,7 +579,14 @@ namespace DUOLClient
 				_creditObject = gameObject;
 				gameObject->SetIsActiveSelf(false);
 			}
+			if (gameObject->GetName() == TEXT("Skip"))
+			{
+				gameObject->SetIsActiveSelf(true);
+				_skipFade = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+			}
 		}
+
+		_skilFadeMode == DUOLGameEngine::FadeInOutMode::DONE;
 
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 	}
@@ -633,10 +691,10 @@ namespace DUOLClient
 		//{
 		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Middle.dscene"));
 		//}
-		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F6))
-		//{
-		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageA.dscene"));
-		//}
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::End))
+		{
+			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageBoss.dscene"));
+		}
 
 		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F7))
 		//{
@@ -652,6 +710,8 @@ namespace DUOLClient
 		{
 			_creditTime += deltaTime;
 
+			Skip();
+
 			if (_isCredit == true && 30.f <= _creditTime && _isReset == false)
 			{
 				_isReset = true;
@@ -666,7 +726,7 @@ namespace DUOLClient
 
 		// UI_MODE
 		if (_currentGameMode != GameMode::UI_MODE && _canPausable && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape)
-			&& _currentGameScene != GameScene::Cut && _currentGameScene != GameScene::Total && !_playerDie)
+			&& _currentGameScene != GameScene::Cut && _currentGameScene != GameScene::Total && !_playerDie && _currentGameScene != GameScene::Main)
 		{
 			// TODO : UI Mode ..?
 			StartUIMode();
