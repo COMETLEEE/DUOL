@@ -141,7 +141,7 @@ namespace DUOLClient
 		/**
 		 * \brief 
 		 */
-		bool _playerDie;
+		bool _isPlayerDie;
 
 		/**
 		 * \brief UI 모드로 들어가기 전 Game Mode 입니다.
@@ -219,6 +219,7 @@ namespace DUOLClient
 
 		void Skip();
 
+
 		/**
 		 * \brief 페이드 인을 실행합니다. 초반 화면에 싱크를 맞추기 위해 시간이 조금 지나고
 		 * 실제 씬을 시작합니다.
@@ -275,6 +276,8 @@ namespace DUOLClient
 		void CalculatePoint(float time, int count);
 
 		void convertSecondsToTime(float second, int& hours, int& minutes, int& remainingSeconds);
+
+		void SetPlayerDie(bool value) { _isPlayerDie = value; }
 
 		template <typename TParam>
 		void PushGameMessage(GameMessage<TParam>&& message);

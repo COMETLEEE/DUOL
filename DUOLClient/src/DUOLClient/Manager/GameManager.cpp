@@ -60,7 +60,7 @@ namespace DUOLClient
 		, _isCursorShowing(true)
 		, _audioClipName(TEXT(""))
 		, _currentGameScene(GameScene::Main)
-		, _playerDie(false)
+		, _isPlayerDie(false)
 		, _totalPoint(0)
 		, _isCredit(false)
 	{
@@ -726,7 +726,7 @@ namespace DUOLClient
 
 		// UI_MODE
 		if (_currentGameMode != GameMode::UI_MODE && _canPausable && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape)
-			&& _currentGameScene != GameScene::Cut && _currentGameScene != GameScene::Total && !_playerDie && _currentGameScene != GameScene::Main)
+			&& _currentGameScene != GameScene::Cut && _currentGameScene != GameScene::Total && !_isPlayerDie && _currentGameScene != GameScene::Main)
 		{
 			// TODO : UI Mode ..?
 			StartUIMode();
@@ -911,7 +911,7 @@ namespace DUOLClient
 
 		_isOutInGameUIMode = false;
 
-		_playerDie = true;
+		_isPlayerDie = true;
 	}
 
 	void GameManager::CalculatePoint(float time, int count)

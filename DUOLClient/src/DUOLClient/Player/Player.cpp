@@ -213,7 +213,7 @@ namespace DUOLClient
 		}
 
 		if(_hp<=0)
-			DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
+			DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(0.f);
 		else
 			DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
 

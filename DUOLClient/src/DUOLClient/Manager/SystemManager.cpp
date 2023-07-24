@@ -53,7 +53,8 @@ namespace  DUOLClient
 		(
 			rttr::policy::ctor::as_raw_ptr
 		)
-		.method("Reset", &SystemManager::Reset);
+		.method("Reset", &SystemManager::Reset)
+		.method("Quit", &SystemManager::Quit);
 		;
 	}
 
@@ -546,6 +547,7 @@ namespace  DUOLClient
 		_bossSceneClips.insert(std::make_pair(L"DialogueText_25.png", _soundManager->GetAudioClip(TEXT("NPC_18"))));
 		_bossSceneClips.insert(std::make_pair(L"DialogueText_26.png", _soundManager->GetAudioClip(TEXT("NPC_19"))));
 
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_19.png", _soundManager->GetAudioClip(TEXT("NPC_01"))));
 
 		for (auto gameObject : gameObjects)
 		{
@@ -1110,6 +1112,11 @@ namespace  DUOLClient
 
 	}
 
+	void SystemManager::Quit()
+	{
+		GameManager::GetInstance()->SetPlayerDie(false);
+	}
+
 	void SystemManager::Reset()
 	{
 		_isMiddleEvent = false;
@@ -1117,6 +1124,7 @@ namespace  DUOLClient
 		_isAStageClear = false;
 		_isBStageClear = false;
 		_isCStageClear = false;
+		GameManager::GetInstance()->SetPlayerDie(false);
 	}
 
 	void SystemManager::FirstMonsterActionSet()

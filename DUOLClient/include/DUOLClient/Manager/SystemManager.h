@@ -89,6 +89,8 @@ namespace DUOLClient
 
 		void MiniMapChange(DUOLCommon::tstring path);
 
+		void Quit();
+
 		void Reset();
 		/**
 		 * \brief ALL 
