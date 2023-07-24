@@ -514,6 +514,15 @@ namespace  DUOLClient
 			_cameraInstance = DUOLGameEngine::CameraEventManager::GetInstance();
 		}
 
+		// first action
+		if (!_isFirstMonster)
+		{
+			_cSceneClips.insert(std::make_pair(L"DialogueText_08.png", _soundManager->GetAudioClip(TEXT("NPC_05"))));
+			_cSceneClips.insert(std::make_pair(L"DialogueText_09.png", _soundManager->GetAudioClip(TEXT("NPC_06"))));
+			_cSceneClips.insert(std::make_pair(L"DialogueText_10.png", _soundManager->GetAudioClip(TEXT("NPC_07"))));
+
+		}
+
 		_cSceneClips.insert(std::make_pair(L"DialogueText_17.png", _soundManager->GetAudioClip(TEXT("NPC_14"))));
 		_cSceneClips.insert(std::make_pair(L"DialogueText_18.png", _soundManager->GetAudioClip(TEXT("NPC_15"))));
 
