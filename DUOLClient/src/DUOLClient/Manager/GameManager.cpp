@@ -883,7 +883,7 @@ namespace DUOLClient
 
 		// 초 단위를 시간, 분, 초로 변환
 		hours = totalSeconds / 3600;
-		int remainingMinutes = (totalSeconds % 3600) / 60;
+		minutes = (totalSeconds % 3600) / 60;
 		remainingSeconds = totalSeconds % 60;
 
 		// 소수 부분을 이용하여 초 단위 보정
@@ -891,12 +891,12 @@ namespace DUOLClient
 			// 반올림
 			if (remainingSeconds == 59) {
 				remainingSeconds = 0;
-				if (remainingMinutes == 59) {
-					remainingMinutes = 0;
+				if (minutes == 59) {
+					minutes = 0;
 					++hours;
 				}
 				else {
-					++remainingMinutes;
+					++minutes;
 				}
 			}
 			else {

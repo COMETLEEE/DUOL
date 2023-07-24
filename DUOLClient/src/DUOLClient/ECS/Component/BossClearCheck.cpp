@@ -59,6 +59,10 @@ namespace DUOLClient
 			{
 				_bossHP = gameObject;
 			}
+			if (gameObject->GetName() == TEXT("BossName"))
+			{
+				_bossName = gameObject;
+			}
 		}
 
 	}
@@ -68,6 +72,7 @@ namespace DUOLClient
 		if (_bossMonsterControllerComp->GetIsClearGroup() && !_isPlay)
 		{
 			_bossHP->SetIsActiveSelf(false);
+			_bossName->SetIsActiveSelf(false);
 			StartCoroutine(&DUOLClient::BossClearCheck::ScripteRun);
 			_isPlay = true;
 		}
@@ -84,7 +89,7 @@ namespace DUOLClient
 		SystemManager::GetInstance()->SetScript(L"DialogueText_23.png");
 
 		//스크립트 다재생완료! 1초쉬자
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(1.f);
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(30.f);
 
 		_fadeInOut->StartFadeOut(2, []() {});
 		co_yield nullptr;

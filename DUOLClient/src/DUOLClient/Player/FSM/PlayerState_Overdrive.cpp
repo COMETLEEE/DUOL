@@ -3,6 +3,7 @@
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/Manager/SystemManager.h"
+#include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/Player/Weapon_Sword.h"
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 
@@ -170,7 +171,11 @@ namespace DUOLClient
 
 	void PlayerState_Overdrive::EndOverdriveEnter()
 	{
+
+		_player->_isOneTimeUltimate = true;
+		UIDataManager::GetInstance()->SetUltimateUI(0.f);
 		_mainCamController->SetCameraState(MainCameraState::FOLLOW_PLAYER);
+
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdriveEnter (AnimEnd)");
 	}

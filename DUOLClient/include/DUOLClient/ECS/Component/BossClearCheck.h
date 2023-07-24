@@ -33,6 +33,8 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _bossHP;
 
+		DUOLGameEngine::GameObject* _bossName;
+
 		EnemyGroupController* _bossMonsterControllerComp;
 
 		DUOLGameEngine::FadeInOut* _fadeInOut;
