@@ -171,17 +171,16 @@ namespace DUOLClient
 
 	void PlayerState_Overdrive::EndOverdriveEnter()
 	{
-
-		_player->_isOneTimeUltimate = true;
-		UIDataManager::GetInstance()->SetUltimateUI(0.f);
 		_mainCamController->SetCameraState(MainCameraState::FOLLOW_PLAYER);
-
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdriveEnter (AnimEnd)");
 	}
 
 	void PlayerState_Overdrive::EndOverdriveExit()
 	{
+		_player->_isOneTimeUltimate = true;
+		UIDataManager::GetInstance()->SetUltimateUI(0.f);
+
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdriveExit (AnimEnd)");
 	}

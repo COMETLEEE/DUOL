@@ -55,7 +55,7 @@ namespace DUOLCommon
 #define DUOL_CONSOLE			false
 
 //해제시 주석시 DEBUG가 나오지 않습니다.
-#define LOGDEBUG_DUOL
+//#define LOGDEBUG_DUOL
 
 #ifdef LOGDEBUG_DUOL
 // Core Log Macros

@@ -25,7 +25,9 @@ namespace DUOLGraphicsEngine
 {
 	GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& engineDesc)
 	{
+#ifdef LOGDEBUG_DUOL
 		DUOLCommon::LogHelper::Initialize();
+#endif
 
 		DUOLGraphicsLibrary::RendererDesc renderDesc;
 
@@ -67,7 +69,9 @@ namespace DUOLGraphicsEngine
 
 	GraphicsEngine::~GraphicsEngine()
 	{
+#ifdef LOGDEBUG_DUOL
 		DUOLCommon::LogHelper::UnInitialize();
+#endif
 
 		DUOLGraphicsLibrary::Renderer::DeleteRenderer(_renderer);
 	}

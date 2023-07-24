@@ -53,8 +53,9 @@ namespace DUOLClient
 		if (_isInit) return;
 
 		_isInit = true;
-
+#ifdef LOGDEBUG_DUOL
 		DUOLCommon::LogHelper::Initialize();
+#endif
 
 		BehaviorTreeFactory_Initialize();
 
@@ -6020,6 +6021,12 @@ namespace DUOLClient
 			resourceManager->AddAnimatorController(bossAnimcon);
 		}
 
+
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/ETC/Jump.wav"), TEXT("Jump"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
 	}
 
 	void DUOLClient_Initializer::LoadSound()

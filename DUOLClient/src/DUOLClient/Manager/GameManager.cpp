@@ -11,6 +11,7 @@
 #include "DUOLClient/ECS/Component/Map/Portal.h"
 #include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Manager/UIDataManager.h"
+#include "DUOLClient/Player/Player.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
@@ -268,6 +269,7 @@ namespace DUOLClient
 		SystemManager::_isFirstMonster = false;
 		SystemManager::_isBossClear = false;
 
+		Player::SetCurrentOverdrivePoint(0);
 
 	}
 

@@ -89,7 +89,7 @@ namespace DUOLClient
 		SystemManager::GetInstance()->SetScript(L"DialogueText_23.png");
 
 		//스크립트 다재생완료! 1초쉬자
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(30.f);
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(42.f);
 
 		_fadeInOut->StartFadeOut(2, []() {});
 		co_yield nullptr;

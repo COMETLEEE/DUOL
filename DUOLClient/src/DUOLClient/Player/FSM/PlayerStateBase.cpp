@@ -193,29 +193,29 @@ namespace DUOLClient
 
 	bool PlayerStateBase::SwordAttackCheck()
 	{
-		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY) && _player->_canStartAttack ? true : false;
+		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY) && _player->_canStartAttack && _player->_canInteraction ? true : false;
 	}
 
 	bool PlayerStateBase::FistAttackCheck()
 	{
-		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY) && _player->_canStartAttack ? true : false;
+		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY) && _player->_canStartAttack && _player->_canInteraction  ? true : false;
 	}
 
 	bool PlayerStateBase::UltimateCheck()
 	{
-		bool ultcheck = InOverdriveCheck() && DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(ULTIMATE_KEY) && _player->_canStartAttack && !_player->_isOneTimeUltimate;
+		bool ultcheck = InOverdriveCheck() && DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(ULTIMATE_KEY) && _player->_canStartAttack && _player->_canInteraction && !_player->_isOneTimeUltimate;
 
 		return ultcheck;
 	}
 
 	bool PlayerStateBase::EnterOverdriveSwordCheck()
 	{
-		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY);
+		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY) && _player->_canInteraction;
 	}
 
 	bool PlayerStateBase::EnterOverdriveFistCheck()
 	{
-		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY);
+		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY) && _player->_canInteraction;
 	}
 
 	bool PlayerStateBase::MoveCheck()
@@ -226,14 +226,14 @@ namespace DUOLClient
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DOWN_KEY))
 			return false;
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(LEFT_KEY) ||
+		if ((DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(LEFT_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(RIGHT_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(UP_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DOWN_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(LEFT_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(RIGHT_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(UP_KEY) ||
-			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DOWN_KEY))
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DOWN_KEY)) && _player->_canInteraction)
 		{
 			return true;
 		}
@@ -245,7 +245,7 @@ namespace DUOLClient
 
 	bool PlayerStateBase::RunCheck()
 	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(RUN_KEY))
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(RUN_KEY) && _player->_canInteraction)
 			return true;
 		else
 			return false;
@@ -260,7 +260,7 @@ namespace DUOLClient
 			DUOL_TRACE(DUOL_CONSOLE, "DASH | dashCC {0}", _player->_isDashCrowdControl);
 		}
 
-		return (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY) && _player->_canStartDash && !_player->_isDashCrowdControl) ? true : false;
+		return (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY) && _player->_canStartDash && !_player->_isDashCrowdControl && _player->_canInteraction) ? true : false;
 	}
 
 	bool PlayerStateBase::SlopeCheck()

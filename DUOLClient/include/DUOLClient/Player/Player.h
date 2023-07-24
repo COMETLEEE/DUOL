@@ -366,6 +366,8 @@ namespace DUOLClient
 	public:
 		virtual void SetDashUsable(bool dash);
 
+		static void SetCurrentOverdrivePoint(float value);
+
 	private:
 		virtual bool GetIsInvincible() override;
 

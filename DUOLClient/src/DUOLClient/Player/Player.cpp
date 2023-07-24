@@ -231,6 +231,11 @@ namespace DUOLClient
 		_isDashCrowdControl = dash;
 	}
 
+	void Player::SetCurrentOverdrivePoint(float value)
+	{
+		_currentOverdrivePoint = value;
+	}
+
 	bool Player::GetIsInvincible()
 	{
 		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();

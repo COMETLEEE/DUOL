@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BossConditionalWaveHandler.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BossClearCheck.cpp" />
     <ClCompile Include="src\DUOLClient\Script\AnimationScript\BossMonsterScript.cpp" />
     <ClCompile Include="src\DUOLClient\Script\AnimationScript\DummyMonoBehavior.cpp" />
@@ -288,6 +289,7 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\TrainAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BossConditionalWaveHandler.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\BossClearCheck.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CStageEliteCameraTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CStageBossCameraTrigger.h" />

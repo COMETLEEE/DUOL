@@ -8,6 +8,9 @@
 #include "DUOLClient/Player/Player.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
+#include "DUOLGameEngine/ECS/Object/AudioClip.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
@@ -139,6 +142,7 @@ void DUOLClient::JumpPlatform::OnTriggerStay(const std::shared_ptr<DUOLPhysics::
 					SetTarget(gameObject);
 					_usingPlayer->Jump(JUMP_ANIM_TIME, _moveTime);
 					_isUsingJumpingBoard = true;
+					_isJumpboardSoundPlay = false;
 				}
 			}
 		}
@@ -159,6 +163,12 @@ void DUOLClient::JumpPlatform::OnUpdate(float deltaTime)
 		_jumpAnimCount += deltaTime;
 		if (_jumpAnimCount > JUMP_ANIM_TIME)
 		{
+			if(!_isJumpboardSoundPlay)
+			{
+				_jumpBoardSound->Play();
+				_isJumpboardSoundPlay = true;
+			}
+
 			CalculateDistance(deltaTime);
 		}
 	}
@@ -177,4 +187,9 @@ void DUOLClient::JumpPlatform::OnAwake()
 	{
 		_jumpBoardAnimator = child->GetComponent<DUOLGameEngine::Animator>();
 	}
+
+	_jumpBoardSound = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
+	_jumpBoardSoundClip = DUOLGameEngine::SoundManager::GetInstance()->GetAudioClip(TEXT("Jump"));
+	_jumpBoardSound->SetAudioClip(_jumpBoardSoundClip);
+	_jumpBoardSound->SetIsLoop(false);
 }

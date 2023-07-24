@@ -160,9 +160,6 @@ namespace DUOLClient
 		//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
 		_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(prevCameraRotation, rot, deltaTime * _smoothness), DUOLGameEngine::Space::World);
 
-
-		//}
-
 	}
 
 	void MainCameraController::OnFollowPlayerState(float deltaTime)
@@ -174,6 +171,8 @@ namespace DUOLClient
 
 		// _followTransform 을 따라가자.
 		DUOLMath::Vector3 dirToFollow = (_followTransform->GetWorldPosition() - camPosition);
+		if (dirToFollow == DUOLMath::Vector3::Zero)
+			dirToFollow = DUOLMath::Vector3::Backward;
 
 		float lengthToFollow = (dirToFollow).Length();
 
@@ -262,7 +261,21 @@ namespace DUOLClient
 	{
 		_preMainCameraState = _mainCameraState;
 		_mainCameraState = state;
-		_realCameraTransform->SetLocalPosition({ 0.f, 0.f, 0.f });
+
+		if(_mainCameraState == MainCameraState::CAMERA_SEQUENCE)
+			_realCameraTransform->SetLocalPosition({ 0.f, 0.f, 0.f });
+		else
+		{
+			//플레이어가 있다고 가정한다.
+			if (_player)
+			{
+				auto look =_player->GetTransform()->GetLook();
+				look.Normalize();
+				//todo 카메라의 로테이션과 변경해줘야하는데..
+
+				_realCameraTransform->SetLocalPosition(_dirNormalized * _maxDistance);
+			}
+		}
 
 		if (_player)
 		{

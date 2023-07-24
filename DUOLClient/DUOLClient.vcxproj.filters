@@ -108,6 +108,7 @@
     <ClCompile Include="src\DUOLClient\Script\AnimationScript\BossMonsterScript.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CStageEliteCameraTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\BossClearCheck.cpp" />
+    <ClCompile Include="BossConditionalWaveHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.h" />
@@ -224,5 +225,6 @@
     <ClInclude Include="include\DUOLClient\Script\AnimationScript\DummyMonoBehavior.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CStageEliteCameraTrigger.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\BossClearCheck.h" />
+    <ClInclude Include="BossConditionalWaveHandler.h" />
   </ItemGroup>
 </Project>

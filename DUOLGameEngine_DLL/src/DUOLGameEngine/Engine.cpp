@@ -32,7 +32,9 @@ namespace DUOLGameEngine
 
 	void Engine::Initialize(const EngineSpecification& gameSpecification)
 	{
+#ifdef LOGDEBUG_DUOL
 		DUOLCommon::LogHelper::Initialize();
+#endif
 
 		_engineSpec = gameSpecification;
 

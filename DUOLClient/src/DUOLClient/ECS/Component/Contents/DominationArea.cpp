@@ -130,6 +130,7 @@ namespace DUOLClient
 		{
 			_enemyGroupControl->SetIsWaveClear(true);
 			_enemyGroupControl->SetTrueWaveCondition(true);
+			_enemyGroupControl->AllDie();
 		}
 		else
 		{

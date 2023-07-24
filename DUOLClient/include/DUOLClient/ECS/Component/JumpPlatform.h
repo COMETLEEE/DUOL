@@ -7,6 +7,8 @@
 
 namespace DUOLGameEngine
 {
+	class AudioSource;
+	class AudioClip;
 	class Animator;
 }
 
@@ -71,10 +73,15 @@ namespace DUOLClient
 
 		DUOLGameEngine::Animator* _jumpBoardAnimator;
 
+		DUOLGameEngine::AudioClip* _jumpBoardSoundClip;
+
+		DUOLGameEngine::AudioSource* _jumpBoardSound;
+
+
 		bool _isUsingJumpingBoard;
+		bool _isJumpboardSoundPlay;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
-
 		RTTR_REGISTRATION_FRIEND
 	};
 }

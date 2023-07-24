@@ -371,11 +371,12 @@ namespace DUOLGameEngine
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F1))
 		{
 			_isConsole = !_isConsole;
-
+#ifdef LOGDEBUG_DUOL
 			if (_isConsole)
 				DUOLCommon::LogHelper::ShowConsole();
 			else
 				DUOLCommon::LogHelper::HideConsole();
+#endif
 		}
 
 		// 물리 디버깅 여부

@@ -541,10 +541,10 @@ namespace  DUOLClient
 		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene01.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene01"))));
 		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene02.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene02"))));
 		_bossSceneClips.insert(std::make_pair(L"FinalBossCutscene03.png", _soundManager->GetAudioClip(TEXT("FinalBossCutscene03"))));
-		_bossSceneClips.insert(std::make_pair(L"DialogueText_23.png", _soundManager->GetAudioClip(TEXT("DialogueText_23"))));
-		_bossSceneClips.insert(std::make_pair(L"DialogueText_24.png", _soundManager->GetAudioClip(TEXT("DialogueText_24"))));
-		_bossSceneClips.insert(std::make_pair(L"DialogueText_25.png", _soundManager->GetAudioClip(TEXT("DialogueText_25"))));
-		_bossSceneClips.insert(std::make_pair(L"DialogueText_26.png", _soundManager->GetAudioClip(TEXT("DialogueText_26"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_23.png", _soundManager->GetAudioClip(TEXT("NPC_16"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_24.png", _soundManager->GetAudioClip(TEXT("NPC_17"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_25.png", _soundManager->GetAudioClip(TEXT("NPC_18"))));
+		_bossSceneClips.insert(std::make_pair(L"DialogueText_26.png", _soundManager->GetAudioClip(TEXT("NPC_19"))));
 
 
 		for (auto gameObject : gameObjects)
@@ -664,8 +664,9 @@ namespace  DUOLClient
 			}
 		}
 
-		if (!_cameraInstance->IsPlayMode())
+		if (_isCameraSequenceMode && !_cameraInstance->IsPlayMode())
 		{
+			_isCameraSequenceMode = false;
 			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
 		}
 	}
@@ -1006,6 +1007,8 @@ namespace  DUOLClient
 			_interactiveScript = new InteractiveScript();
 
 		_interactiveScript->OnStart(currentSceneName);
+
+		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 
 		// UI
 		_uiClips.insert(std::make_pair(L"ButtonClickSound", _soundManager->GetAudioClip(TEXT("ButtonClickSound"))));
