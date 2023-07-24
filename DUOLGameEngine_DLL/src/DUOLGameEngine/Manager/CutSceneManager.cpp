@@ -74,12 +74,12 @@ namespace DUOLGameEngine
 			}
 		}
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F9))
-		{
-			_isStart = !_isStart;
-			if (_isStart)
-				StartCutScene();
-		}
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F9))
+		//{
+		//	_isStart = !_isStart;
+		//	if (_isStart)
+		//		StartCutScene();
+		//}
 	}
 
 	void CutSceneManager::LoadScene()
