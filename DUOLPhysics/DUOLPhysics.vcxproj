@@ -136,7 +136,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\PhysX\include\;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>

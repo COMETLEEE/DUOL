@@ -47,9 +47,20 @@ namespace DUOLClient
 
 	void CautionBorder::OnUpdate(float deltaT)
 	{
-		_lowerline->SetOffset(_lowerline->GetOffset() + DUOLMath::Vector2{ -1 * deltaT, 0.f });
-		_upperline->SetOffset(_upperline->GetOffset() + DUOLMath::Vector2{ 1 * deltaT, 0.f });
-		_cautionline->SetOffset(_cautionline->GetOffset() + DUOLMath::Vector2{ -1 * deltaT, 0.f });
+		auto offset = _lowerline->GetOffset() + DUOLMath::Vector2{ -1 * deltaT, 0.f };
+		if (offset.x < -1.f)
+			offset.x += 1.f;
+		_lowerline->SetOffset(offset);
+
+		offset = _upperline->GetOffset() + DUOLMath::Vector2{ 1 * deltaT, 0.f };
+		if (offset.x > 2.f)
+			offset.x -= 1.f;
+		_upperline->SetOffset(offset);
+
+		offset = _cautionline->GetOffset() + DUOLMath::Vector2{ -1 * deltaT, 0.f };
+		if (offset.x < -1.f)
+			offset.x += 1.f;
+		_cautionline->SetOffset(offset);
 	}
 
 	void CautionBorder::OnAwake()
@@ -63,14 +74,18 @@ namespace DUOLClient
 			if (go->GetName() == TEXT("LowerStripe"))
 			{
 				_lowerline = go->GetComponent<DUOLGameEngine::MeshRenderer>()->GetMaterials()[0];
+				_meshObjs.push_back(go);
 			}
 			else if (go->GetName() == TEXT("Caution"))
 			{
 				_cautionline = go->GetComponent<DUOLGameEngine::MeshRenderer>()->GetMaterials()[0];
+				go->GetTransform()->SetLocalScale(DUOLMath::Vector3{ 0.999f, 0.999f, 0.999f });
+				_meshObjs.push_back(go);
 			}
 			else if (go->GetName() == TEXT("UpperStripe"))
 			{
 				_upperline = go->GetComponent<DUOLGameEngine::MeshRenderer>()->GetMaterials()[0];
+				_meshObjs.push_back(go);
 			}
 		}
 	}
@@ -96,5 +111,15 @@ namespace DUOLClient
 				_upperline = go->GetComponent<DUOLGameEngine::MeshRenderer>()->GetMaterials()[0];
 			}
 		}
+	}
+
+	void CautionBorder::SetBorderOnlyMesh(bool value)
+	{
+			auto children = GetTransform()->GetChildGameObjects();
+
+			for(auto& obj : children)
+			{
+				obj->SetIsActiveSelf(value);
+			}
 	}
 }

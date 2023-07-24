@@ -28,6 +28,10 @@ public:
 
 	virtual void OnStart() override;
 
+	void SetBorderOnlyMesh(bool value);
+
+	std::vector<DUOLGameEngine::GameObject*> _meshObjs;
+
 	DUOLGameEngine::Material* _upperline;
 
 	DUOLGameEngine::Material* _lowerline;

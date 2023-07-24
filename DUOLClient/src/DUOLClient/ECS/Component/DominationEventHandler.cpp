@@ -6,6 +6,7 @@
 
 #include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/Text.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 using namespace rttr;
@@ -46,6 +47,7 @@ namespace DUOLClient
 	void DUOLClient::DominationEventHandler::OnAwake()
 	{
 		auto children = GetTransform()->GetChildGameObjects();
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 		_dominationAreas.reserve(children.size());
 
 		for (auto& child : children)
@@ -54,8 +56,22 @@ namespace DUOLClient
 			_dominationAreas.push_back(dominationArea);
 		}
 
+		for (int idx = 0; idx < _dominationAreas.size(); idx++)
+		{
+			auto uiobj = scene->CreateEmtpyUI();
+			auto text = uiobj->AddComponent<DUOLGameEngine::Text>();
 
+			auto rect = uiobj->GetComponent<DUOLGameEngine::RectTransform>();
+			auto min = DUOLMath::Vector2{ 0.9f, 0.6f - 0.03f * idx};
+			rect->SetAnchorMin(min);
+			auto max = DUOLMath::Vector2{ 0.9f, 0.6f - 0.03f * idx };
+			rect->SetAnchorMax(max);
 
+			rect->SetRectZ(300.f);
+			rect->SetRectW(70.f);
+
+			_dominationAreaPercent.push_back(text);
+		}
 	}
 
 	void DominationEventHandler::OnUpdate(float deltaf)
@@ -87,6 +103,17 @@ namespace DUOLClient
 				SystemManager::SetAstageClear(true);
 				SystemManager::GetInstance()->MiniMapChange(L"StageAMiniMapPortal.png");
 				SystemManager::GetInstance()->CreatePortal(TEXT("AClearPortal"), TEXT("Middle"), A_CLEAR_PORTAL_TO_MIDDLE_POSITION);
+			}
+
+			for(int idx = 0; idx < _dominationAreaPercent.size(); idx++)
+			{
+				auto txt = _dominationAreas[idx]->GetGameObject()->GetName();
+
+				txt += TEXT(" : ");
+				txt += DUOLCommon::StringHelper::ToTString(_dominationAreas[idx]->GetCurrentClearPercent());
+				txt += TEXT("%");
+
+				_dominationAreaPercent[idx]->SetText(txt);
 			}
 		}
 		else

@@ -84,7 +84,9 @@ namespace DUOLClient
 		if ((_bossEnemyTrigger != nullptr &&_waveEnemyTrigger != nullptr) && _bossEnemyTrigger->GetIsClearGroup())
 		{
 			_waveEnemyTrigger->SetIsWaveClear(true);
+			_waveEnemyTrigger->SetTrueWaveCondition(true);
 			_waveEnemyTrigger->AllDie();
+			//Destroy(_waveEnemyTrigger);
 			Destroy(this);
 		}
 	}

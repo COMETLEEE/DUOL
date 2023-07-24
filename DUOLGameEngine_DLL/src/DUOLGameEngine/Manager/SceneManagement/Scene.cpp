@@ -850,6 +850,12 @@ namespace DUOLGameEngine
 		return gameObjects.back();
 	}
 
+	void Scene::SetRimLight(float x, float x1)
+	{
+		_graphicsSetting._rimLight->_rimDecrease = x;
+		_graphicsSetting._rimLight->_clipPoint = x1;
+	}
+
 	void Scene::SetFogDensity(float value)
 	{
 		_graphicsSetting._exponentialHeightFog->SetFogDensity(value);

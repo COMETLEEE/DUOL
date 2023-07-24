@@ -279,8 +279,8 @@ DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchWave()
 	float hitMaxDistance = 6.f;
 	DUOLMath::Vector3 waveVelocity = DUOLMath::Vector3::Forward * 50.f;
 	float waveTime = 0.3f;
-	DUOLMath::Vector3 startWaveBoxHalfExtents = DUOLMath::Vector3(5.f, 2.5f, 0.75f);
-	DUOLMath::Vector3 endWaveBoxHalfExtents = DUOLMath::Vector3(5.75f, 3.f, 1.f);
+	DUOLMath::Vector3 startWaveBoxHalfExtents = DUOLMath::Vector3(5.f, 2.5f, 0.75f) * 2;
+	DUOLMath::Vector3 endWaveBoxHalfExtents = DUOLMath::Vector3(5.75f, 3.f, 1.f) * 2;
 
 
 	auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveLastSword, 5.f);

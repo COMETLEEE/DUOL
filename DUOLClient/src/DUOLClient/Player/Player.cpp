@@ -442,7 +442,7 @@ namespace DUOLClient
 
 		float downTime = 0.25f;
 
-		float powerPerSecond = 100.f;
+		float powerPerSecond = 30.f;
 
 		while (true)
 		{

@@ -57,41 +57,37 @@ namespace DUOLGameEngine
 		UpdateAxisValue();
 
 		// ¸¶¿ì½º Set Visible
-		/*static bool isMouseOn = true;
+		static bool isMouseOn = true;
 
-		//if (isMouseOn && GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
-		//{
-		//	if (!_isUIMode)
-		//	{
-		//		GetInstance()->SetGameLockMode(true);
+		if (isMouseOn && GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
+		{
+			if (!_isUIMode)
+			{
+				GetInstance()->SetGameLockMode(true);
 
-		//		isMouseOn = false;
+				isMouseOn = false;
 
-		//		ShowCursor(isMouseOn);
-		//	}
-		//	else
-		//	{
-		//		GetInstance()->SetGameLockMode(false);
+				ShowCursor(isMouseOn);
+			}
+			else
+			{
+				GetInstance()->SetGameLockMode(false);
+				GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
+				isMouseOn = true;
 
-		//		GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
+				ShowCursor(isMouseOn);
+			}
+		}
+		else if (!isMouseOn && GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+		{
+			GetInstance()->SetGameLockMode(false);
 
-		//		isMouseOn = true;
+			GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
 
-		//		ShowCursor(isMouseOn);
-		//	}
-		//}
-		//else if (!isMouseOn && GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
-		//{
-		GetInstance()->SetGameLockMode(false);
-
-		GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
-
-		isMouseOn = true;
+			isMouseOn = true;
 
 			ShowCursor(isMouseOn);
-		}*/
-
-
+		}
 	}
 
 	void InputManager::UpdateAllKeyState()

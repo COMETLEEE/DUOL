@@ -73,6 +73,8 @@ public:
 
 	void OnTriggerExit(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
 
+	float GetCurrentClearPercent() const;
+
 private:
 	/**
 	 * \brief 몬스터 수에따른 파괴율 증가수치

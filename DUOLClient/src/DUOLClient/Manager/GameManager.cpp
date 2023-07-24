@@ -105,10 +105,10 @@ namespace DUOLClient
 
 	void GameManager::MouseLock()
 	{
-		//DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
-		//DUOLGameEngine::InputManager::GetInstance()->ShowCursorI(false);
+		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+		DUOLGameEngine::InputManager::GetInstance()->ShowCursorI(false);
 
-		//_isCursorShowing = false;
+		_isCursorShowing = false;
 	}
 
 	void GameManager::MouseUnLock()
@@ -678,10 +678,8 @@ namespace DUOLClient
 
 
 		//GraphicsSetting
-		auto graphicsSetting = DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsSetting();
-		graphicsSetting._rimLight._clipPoint = 0.15f;
-		graphicsSetting._rimLight._rimDecrease = 1.5f;
-		DUOLGameEngine::GraphicsManager::GetInstance()->SetGraphicsSetting(graphicsSetting);
+		DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->SetRimLight(1.5f, 0.15f);
+		DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->UpdateGraphicsSettings();
 	}
 
 	void GameManager::OnUpdate(float deltaTime)

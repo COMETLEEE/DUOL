@@ -109,7 +109,12 @@ namespace DUOLClient
 		int _superArmorStack;
 
 		bool _dashUsable;
+
+		//러쉬에서 쓰는 value이다.. 흑흑 임시부울값
+		bool _currentPaternHitPlayer;
+
 	public:
+
 		template<class T>
 		void AddParameter(DUOLCommon::tstring key, T value);
 
@@ -190,6 +195,10 @@ namespace DUOLClient
 
 		// 외부에서 코루틴을 접근할 수 있도록 만든 함수.
 		void StartCoroutine_Manual(std::function<DUOLGameEngine::CoroutineHandler()> func);
+
+		bool IsCurrentPaternHitPlayer() const;
+
+		void SetCurrentPaternHitPlayer(bool currentPaternHitPlayer);
 
 	public:
 		virtual void OnEnable() override;

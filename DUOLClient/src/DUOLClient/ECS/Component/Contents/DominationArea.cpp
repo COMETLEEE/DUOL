@@ -158,6 +158,10 @@ namespace DUOLClient
 
 		auto children = GetTransform()->GetChildren();
 
+		DUOLCommon::tstring name = GetGameObject()->GetName();
+		name += TEXT("CW");
+		
+
 		for (auto& child : children)
 		{
 			auto go = child->GetGameObject();
@@ -168,7 +172,7 @@ namespace DUOLClient
 				_dominationBorder->SetEmissivePower(DOMINATION_BORDER_EMISSIVE_POWER);
 			}
 
-			if (go->GetName() == TEXT("ConditionalWave"))
+			if (go->GetName() == name)
 			{
 				_enemyGroupControl = go->GetComponent<EnemyGroupController>();
 			}
@@ -303,5 +307,10 @@ namespace DUOLClient
 		{
 			_uiGameObject->SetIsActiveSelf(false);
 		}
+	}
+
+	float DominationArea::GetCurrentClearPercent() const
+	{
+		return _currentClearPercent;
 	}
 }

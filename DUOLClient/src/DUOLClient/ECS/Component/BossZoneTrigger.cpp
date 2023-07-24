@@ -55,6 +55,7 @@ void DUOLClient::BossZoneTrigger::OnTriggerEnter(const std::shared_ptr<DUOLPhysi
 	if (gameObject->GetTag() == TEXT("Player"))
 	{
 		_cautionCollider->SetIsActiveSelf(true);
+		Destroy(this);
 	}
 }
 

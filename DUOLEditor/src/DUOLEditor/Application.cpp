@@ -133,7 +133,10 @@ namespace DUOLEditor
 		_gameEngine->Initialize(engineSpec);
 
 		// Log system initialize.
+#ifdef LOGDEBUG_DUOL
 		DUOLCommon::LogHelper::Initialize();
+#endif
+
 #pragma endregion
 
 #pragma region CLIENT_LOAD_LIBRARY
@@ -145,7 +148,7 @@ namespace DUOLEditor
 		// TODO : Start scene load. (batch file)
 		//auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Stage3Test0615.dscene"));
 		//auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/EnemyTestScene.dscene"));
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageA.dscene"));
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageBoss.dscene"));
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE
@@ -199,7 +202,9 @@ namespace DUOLEditor
 	{
 		_gameEngine->UnInitialize();
 
+#ifdef LOGDEBUG_DUOL
 		DUOLCommon::LogHelper::UnInitialize();
+#endif
 
 		_editor.reset();
 

@@ -763,7 +763,7 @@ namespace DUOLClient
 			animatorParameterTable.push_back({ TEXT("Damage"), DUOLGameEngine::AnimatorControllerParameterType::Damage, playerDataTable.find(actionName)->second });
 
 		auto overdriveSwordThird = overdriveSwordSecond->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
-			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 40.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
+			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 40.f, 0.5f, DUOLMath::Vector3(3.f, 1.5f, 0.45f) });
 
 		overdriveSwordThird->_nodeName = TEXT("ODLastSword");
 #pragma endregion

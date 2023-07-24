@@ -3,6 +3,11 @@
 #include "DUOLClient/ECS/Component/Contents/DominationArea.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
+namespace DUOLGameEngine
+{
+	class Text;
+}
+
 namespace DUOLClient
 {
 	class EnemyGroupController;
@@ -20,6 +25,8 @@ namespace DUOLClient
 		void OnUpdate(float deltaf) override;
 
 		std::vector<DUOLClient::DominationArea*> _dominationAreas;
+
+		std::vector<DUOLGameEngine::Text*> _dominationAreaPercent;
 
 		bool _isDominateAllArea;
 

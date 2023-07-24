@@ -102,7 +102,9 @@ namespace DUOLGame
 		_duolClient = LoadLibrary(TEXT("DUOLClient.dll"));
 
 		// Log system initialize.
+#ifdef LOGDEBUG_DUOL
 		DUOLCommon::LogHelper::Initialize();
+#endif
 
 		// TODO : Start scene load.
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/main.dscene"));
@@ -120,7 +122,9 @@ namespace DUOLGame
 
 		FreeLibrary(_duolClient);
 
+#ifdef LOGDEBUG_DUOL
 		DUOLCommon::LogHelper::UnInitialize();
+#endif
 #pragma endregion
 	}
 

@@ -62,7 +62,8 @@ namespace DUOLClient
 		_parentObserver(nullptr),
 		_skinnedMeshRenderer(nullptr),
 		_superArmorStack(0),
-		_dashUsable(false)
+		_dashUsable(false),
+		_currentPaternHitPlayer(false)
 	{
 		_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 	}
@@ -70,6 +71,16 @@ namespace DUOLClient
 	Enemy::~Enemy()
 	{
 
+	}
+
+	bool Enemy::IsCurrentPaternHitPlayer() const
+	{
+		return _currentPaternHitPlayer;
+	}
+
+	void Enemy::SetCurrentPaternHitPlayer(bool currentPaternHitPlayer)
+	{
+		_currentPaternHitPlayer = currentPaternHitPlayer;
 	}
 
 	void Enemy::InitializeData()

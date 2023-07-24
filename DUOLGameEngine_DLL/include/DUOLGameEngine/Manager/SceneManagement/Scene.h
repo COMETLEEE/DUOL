@@ -246,6 +246,9 @@ namespace DUOLGameEngine
 		**/
 		DUOLGameEngine::GameObject* CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName);
 
+		void SetRimLight(float x, float x1);
+
+
 #pragma endregion
 
 	protected:

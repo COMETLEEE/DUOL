@@ -382,24 +382,28 @@ namespace DUOLClient
 					if (player->GetIsInvincible())
 						continue;
 
+
 					// 다단히트 어떻게 할까..!!!
 					// auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
 					// DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
 
 					// particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
-
-					if (enemy->Attack(player, 30.0f, AttackType::HeavyAttack, 120.0f))
+					if (!enemy->IsCurrentPaternHitPlayer())
 					{
-						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
-						// 약한 앨리트 몬스터 다단히트 어떻게 할까...! 일단 막아두자...!
-						if (particleRenderer)
+						if (enemy->Attack(player, 30.0f, AttackType::HeavyAttack, 120.0f))
 						{
-							DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
+							auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
+							// 약한 앨리트 몬스터 다단히트 어떻게 할까...! 일단 막아두자...!
+							if (particleRenderer)
+							{
+								DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
 
-							particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
+								particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
+							}
+							enemy->SetParameter(TEXT("IsRushHit_Target"), true);
+							enemy->SetCurrentPaternHitPlayer(true);
 						}
-						enemy->SetParameter(TEXT("IsRushHit_Target"), true);
 					}
 				}
 				else if (gameObject->GetTag() == TEXT("Enemy"))

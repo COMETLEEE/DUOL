@@ -340,12 +340,14 @@ namespace DUOLClient
 
 				_particleOverdrive = nullptr;
 			}
+			_player->AddOverdrivePoint(-100.f);
+			//_player->_currentOverdrivePoint = 0;
+			//DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_player->_currentOverdrivePoint);
 		}
 
 		_isEnter = false;
 
 		_isSword = false;
 
-		_player->AddOverdrivePoint(-100.f);
 	}
 }

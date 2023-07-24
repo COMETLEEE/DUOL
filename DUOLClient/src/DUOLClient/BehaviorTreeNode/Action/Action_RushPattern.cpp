@@ -40,7 +40,7 @@ BT::NodeStatus DUOLClient::Action_RushPattern::onStart()
 	_isIdle = false;
 
 	_ai->SetParameter(TEXT("IsRushHit_Target"), false);
-
+	_ai->GetEnemy()->SetCurrentPaternHitPlayer(false);
 	if (_ai->GetParameter<bool>(TEXT("IsCanSuperArmor")) && !_ai->GetParameter<bool>(TEXT("IsSuperArmor")))
 	{
 		_animator->SetFloat(TEXT("MoveSpeed"), 0.0f);

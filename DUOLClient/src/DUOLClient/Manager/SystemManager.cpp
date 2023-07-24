@@ -12,6 +12,7 @@
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/Camera/MainCameraController.h"
+#include "DUOLClient/ECS/Component/CautionBorder.h"
 #include "DUOLClient/ECS/Component/Map/Portal.h"
 #include "DUOLClient/Manager/GameManager.h"
 #include "DUOLGameEngine/Manager/SoundManager.h"
@@ -827,7 +828,7 @@ namespace  DUOLClient
 			_isFirstMonsterCheck = true;
 		}
 
-		if (180.f <= _cCurrentTime && !_isInfoChcek)
+		if (150.f <= _cCurrentTime && !_isInfoChcek)
 		{
 			_interactiveScript->SetPlayInfoKey(L"Info14.png");
 			_uiMiniMapObject->SetIsActiveSelf(true);
@@ -1300,9 +1301,12 @@ namespace  DUOLClient
 
 		for (auto gameObject : allGameObjects)
 		{
-			if (gameObject->GetName() == TEXT("CautionCollider"))
+			if (gameObject->GetName() == TEXT("caution_stageC_Border"))
 			{
-				gameObject->SetIsActiveSelf(false);
+				//gameObject->SetIsActiveSelf(false);
+				auto comp = gameObject->GetComponent<CautionBorder>();
+				if (comp != nullptr)
+					comp->SetBorderOnlyMesh(false);
 			}
 			if (gameObject->GetName() == TEXT("BossName"))
 			{
