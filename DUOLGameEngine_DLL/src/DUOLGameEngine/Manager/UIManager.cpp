@@ -82,6 +82,7 @@ namespace  DUOLGameEngine
 				}
 			}
 		}
+
 		LoadResolution();
 
 		if (DUOLGameEngine::SceneManager::GetInstance()->GetSceneName() == L"CutScene")

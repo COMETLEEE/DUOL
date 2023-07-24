@@ -67,10 +67,11 @@ namespace DUOLClient
 
 		void ScriptChange(std::string filename, bool value);
 
-	private:
 		static int _koCount;
 
+	private:
 		float _comboTime;
+
 
 	private:
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)

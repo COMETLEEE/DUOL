@@ -10,6 +10,8 @@ namespace DUOLCommon
 
 namespace DUOLGameEngine
 {
+	class AudioListener;
+	class AudioSource;
 	class Text;
 	class Button;
 
@@ -171,6 +173,9 @@ namespace DUOLGameEngine
 		DUOLMath::Vector2 _preScreenSize;
 
 		float _scrollGauge;
+
+
+
 	};
 
 }

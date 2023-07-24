@@ -31,6 +31,8 @@ namespace DUOLClient
 	private:
 		DUOLGameEngine::GameObject* _bossMonsterController;
 
+		DUOLGameEngine::GameObject* _bossHP;
+
 		EnemyGroupController* _bossMonsterControllerComp;
 
 		DUOLGameEngine::FadeInOut* _fadeInOut;

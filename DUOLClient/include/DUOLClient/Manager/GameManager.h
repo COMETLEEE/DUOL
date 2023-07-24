@@ -64,6 +64,7 @@ namespace DUOLClient
 		, StageB
 		, StageC
 		, StageBoss
+		, StageClear
 
 		, ETC
 	};
@@ -167,6 +168,16 @@ namespace DUOLClient
 
 		GameScene _currentGameScene;
 
+		int _totalPoint;
+
+		bool _isCredit;
+
+		bool _isReset;
+
+		float _creditTime;
+
+		DUOLGameEngine::GameObject* _creditObject;
+
 		/**
 		 * \brief 플레이어의 이전 데이터를 현재 씬의 플레이어에 적용합니다. (OnStart 등에서 ..)
 		 */
@@ -196,6 +207,10 @@ namespace DUOLClient
 
 		void FadeOut();
 
+		void OpenCredit();
+
+		void Reset();
+
 		/**
 		 * \brief 페이드 인을 실행합니다. 초반 화면에 싱크를 맞추기 위해 시간이 조금 지나고
 		 * 실제 씬을 시작합니다.
@@ -218,6 +233,9 @@ namespace DUOLClient
 		void InitializeStageC(DUOLGameEngine::Scene* stageC);
 
 		void InitializeStageBoss(DUOLGameEngine::Scene* stageC);
+
+		void InitializeStageClear(DUOLGameEngine::Scene* stageC);
+
 
 #pragma endregion
 
@@ -245,6 +263,10 @@ namespace DUOLClient
 		void StopBGM();
 
 		void GameOverUIMode();
+
+		void CalculatePoint(float time, int count);
+
+		void convertSecondsToTime(float second, int& hours, int& minutes, int& remainingSeconds);
 
 		template <typename TParam>
 		void PushGameMessage(GameMessage<TParam>&& message);

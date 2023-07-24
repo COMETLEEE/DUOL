@@ -55,6 +55,10 @@ namespace DUOLClient
 			{
 				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 			}
+			if (gameObject->GetName() == TEXT("BossHP"))
+			{
+				_bossHP = gameObject;
+			}
 		}
 
 	}
@@ -63,6 +67,7 @@ namespace DUOLClient
 	{
 		if (_bossMonsterControllerComp->GetIsClearGroup() && !_isPlay)
 		{
+			_bossHP->SetIsActiveSelf(false);
 			StartCoroutine(&DUOLClient::BossClearCheck::ScripteRun);
 			_isPlay = true;
 		}

@@ -13,6 +13,7 @@
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/Component/AudioSource.h"
+#include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/Manager/CameraEventManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/SoundManager.h"
@@ -22,6 +23,7 @@
 #include "DUOLGameEngine/Util/Coroutine/WaitForSecondsRealtime.h"
 #include "DUOLGameEngine/ECS/Object/AudioClip.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/ECS/Component/Text.h"
 
 using namespace rttr;
 
@@ -58,6 +60,8 @@ namespace DUOLClient
 		, _audioClipName(TEXT(""))
 		, _currentGameScene(GameScene::Main)
 		, _playerDie(false)
+		, _totalPoint(0)
+		, _isCredit(false)
 	{
 
 	}
@@ -201,7 +205,7 @@ namespace DUOLClient
 			}
 			if (gameObject->GetName() == TEXT("PauseMain"))
 			{
-				gameObject->SetIsActiveSelf(true);
+				gameObject->SetIsActiveSelf(false);
 			}
 		}
 
@@ -236,6 +240,35 @@ namespace DUOLClient
 					MouseUnLock();
 				});
 		}
+	}
+
+	void GameManager::OpenCredit()
+	{
+		if (_isCredit)
+			return;
+
+		_creditTime = 0.f;
+		if (_isCredit == false)
+			_creditObject->SetIsActiveSelf(true);
+		_isCredit = true;
+
+	}
+
+	void GameManager::Reset()
+	{
+		if (!_isReset)
+			return;
+
+		UIDataManager::_koCount = 0;
+
+		SystemManager::_isAStageClear = false;
+		SystemManager::_isBStageClear = false;
+		SystemManager::_isCStageClear = false;
+		SystemManager::_isBossClear = false;
+		SystemManager::_isFirstMonster = false;
+		SystemManager::_isBossClear = false;
+
+
 	}
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartFadeIn()
@@ -403,7 +436,7 @@ namespace DUOLClient
 	{
 		_currentGameScene = GameScene::StageBoss;
 
-		//SetBGM(L"BossBattleScene");
+		SetBGM(L"BossBattleScene");
 
 		CreatePortal(stageC, TEXT("Portal_Middle"), TEXT("Middle"), BOSS_PORTAL_TO_MIDDLE_POSITION);
 
@@ -431,6 +464,71 @@ namespace DUOLClient
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 
 		// UIDataManager::GetInstance()->InitializeStageC();
+	}
+
+	void GameManager::InitializeStageClear(DUOLGameEngine::Scene* stageC)
+	{
+		_currentGameScene = GameScene::StageClear;
+
+		_isCredit = false;
+
+		_isReset = false;
+
+		_creditTime = 0.f;
+
+		float totaltime = DUOLGameEngine::TimeManager::GetInstance()->GetRealtimeSinceStartup();
+
+		int monstercount = DUOLClient::UIDataManager::_koCount;
+
+		CalculatePoint(totaltime, monstercount);
+
+		DUOLCommon::tstring monstercountstr = DUOLCommon::StringHelper::ToTString(std::to_string(monstercount));
+
+		int total = (monstercount * 10) + (10000 - totaltime);
+
+		DUOLCommon::tstring totalstr = DUOLCommon::StringHelper::ToTString(std::to_string(total));
+
+		int hour; int minutes; int remainingsecond;
+
+		convertSecondsToTime(totaltime, hour, minutes, remainingsecond);
+
+		std::string time = std::to_string(hour) + " : " + std::to_string(minutes) + " : " + std::to_string(remainingsecond);
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetName() == TEXT("KOsText"))
+			{
+				gameObject->GetComponent<DUOLGameEngine::Text>()->SetText(monstercountstr);
+			}
+			if (gameObject->GetName() == TEXT("Time"))
+			{
+				gameObject->GetComponent<DUOLGameEngine::Text>()->SetText(DUOLCommon::StringHelper::ToTString(time));
+			}
+			if (gameObject->GetName() == TEXT("Rank"))
+			{
+				if (35 <= _totalPoint)
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"09_gameclear_rank_s.png");
+				else if (25 <= _totalPoint)
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"09_gameclear_rank_a.png");
+				else if (15 <= _totalPoint)
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"09_gameclear_rank_b.png");
+				else
+					gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"09_gameclear_rank_c.png");
+			}
+			if (gameObject->GetName() == TEXT("ScoreText"))
+			{
+				gameObject->GetComponent<DUOLGameEngine::Text>()->SetText(totalstr);
+			}
+			if (gameObject->GetName() == TEXT("Credit"))
+			{
+				_creditObject = gameObject;
+				gameObject->SetIsActiveSelf(false);
+			}
+		}
+
+		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 	}
 
 	void GameManager::OnAwake()
@@ -503,7 +601,12 @@ namespace DUOLClient
 			_currentGameScene = GameScene::Cut;
 		}
 		else if (currentSceneName == TEXT("main") || currentSceneName == TEXT("Main"))
+		{
+			Reset();
 			SetBGM(L"MainTitleScene");
+		}
+		else if (currentSceneName == TEXT("ClearScene"))
+			InitializeStageClear(currentScene);
 		else
 		{
 			_canPausable = false;
@@ -542,6 +645,22 @@ namespace DUOLClient
 		//{
 		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageC.dscene"));
 		//}
+
+		if (_currentGameScene == GameScene::StageClear)
+		{
+			_creditTime += deltaTime;
+
+			if (_isCredit == true && 30.f <= _creditTime && _isReset == false)
+			{
+				_isReset = true;
+				DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Main.dscene"));
+			}
+
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Space))
+			{
+				OpenCredit();
+			}
+		}
 
 		// UI_MODE
 		if (_currentGameMode != GameMode::UI_MODE && _canPausable && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape)
@@ -731,6 +850,59 @@ namespace DUOLClient
 		_isOutInGameUIMode = false;
 
 		_playerDie = true;
+	}
+
+	void GameManager::CalculatePoint(float time, int count)
+	{
+		if (time <= 1620)
+			_totalPoint += 40;
+		else if (time <= 2040)
+			_totalPoint += 30;
+		else if (time <= 2220)
+			_totalPoint += 20;
+		else
+			_totalPoint += 10;
+
+		int calculatCount = count * 10;
+
+		if (3600 <= calculatCount)
+			_totalPoint += 40;
+		else if (2700 <= calculatCount)
+			_totalPoint += 30;
+		else if (1800 <= calculatCount)
+			_totalPoint += 20;
+		else if (1200 <= calculatCount)
+			_totalPoint += 10;
+	}
+
+	void GameManager::convertSecondsToTime(float second, int& hours, int& minutes, int& remainingSeconds)
+	{
+		// 소수 부분과 정수 부분을 분리
+		int totalSeconds = static_cast<int>(second);
+		float fractionalPart = second - static_cast<float>(totalSeconds);
+
+		// 초 단위를 시간, 분, 초로 변환
+		hours = totalSeconds / 3600;
+		int remainingMinutes = (totalSeconds % 3600) / 60;
+		remainingSeconds = totalSeconds % 60;
+
+		// 소수 부분을 이용하여 초 단위 보정
+		if (fractionalPart >= 0.5) {
+			// 반올림
+			if (remainingSeconds == 59) {
+				remainingSeconds = 0;
+				if (remainingMinutes == 59) {
+					remainingMinutes = 0;
+					++hours;
+				}
+				else {
+					++remainingMinutes;
+				}
+			}
+			else {
+				++remainingSeconds;
+			}
+		}
 	}
 
 	DUOLClient::GameManager* GameManager::GetInstance()

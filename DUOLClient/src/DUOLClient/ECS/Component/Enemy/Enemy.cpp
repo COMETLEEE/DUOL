@@ -621,6 +621,11 @@ namespace DUOLClient
 			}
 		}
 
+		if (this->GetEnemyData()->_name == L"EnemyBoss")
+		{
+			UIDataManager::GetInstance()->SetBossHPUI(this->GetHP());
+		}
+
 		return result;
 	}
 

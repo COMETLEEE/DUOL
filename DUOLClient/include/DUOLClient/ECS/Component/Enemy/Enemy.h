@@ -241,8 +241,8 @@ namespace DUOLClient
 	{
 		if (_floatParmeter.contains(key))
 			_floatParmeter[key] = value;
-		else
-			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+		//else
+			//DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
 	}
 
 	template <>
@@ -250,8 +250,8 @@ namespace DUOLClient
 	{
 		if (_boolParmeter.contains(key))
 			_boolParmeter[key] = value;
-		else
-			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+	//	else
+			//DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
 	}
 
 	template <>
@@ -259,8 +259,8 @@ namespace DUOLClient
 	{
 		if (_voidParmeter.contains(key))
 			_voidParmeter[key] = value;
-		else
-			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+		//else
+			//DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
 	}
 
 	template <>
@@ -268,8 +268,8 @@ namespace DUOLClient
 	{
 		if (_floatParmeter.contains(key))
 			return _floatParmeter[key];
-		else
-			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+		//else
+		//	DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
 
 		return 0;
 	}
@@ -279,8 +279,8 @@ namespace DUOLClient
 	{
 		if (_boolParmeter.contains(key))
 			return _boolParmeter[key];
-		else
-			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+		//else
+		//	DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
 
 		return false;
 	}
@@ -290,8 +290,8 @@ namespace DUOLClient
 	{
 		if (_voidParmeter.contains(key))
 			return _voidParmeter[key];
-		else
-			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+		//else
+		//	DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
 
 		return nullptr;
 	}

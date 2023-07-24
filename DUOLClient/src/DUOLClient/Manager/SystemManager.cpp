@@ -304,7 +304,7 @@ namespace  DUOLClient
 			}
 			if (gameObject->GetName() == TEXT("Minimap"))
 			{
-				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
+				_miniMapImage = gameObject->GetComponent<DUOLGameEngine::Image>();;
 			}
 
 		}
@@ -406,7 +406,7 @@ namespace  DUOLClient
 			}
 			if (gameObject->GetName() == TEXT("Minimap"))
 			{
-				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
+				_miniMapImage = gameObject->GetComponent<DUOLGameEngine::Image>();;
 			}
 		}
 		// first action
@@ -490,7 +490,7 @@ namespace  DUOLClient
 			}
 			if (gameObject->GetName() == TEXT("Minimap"))
 			{
-				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
+				_miniMapImage = gameObject->GetComponent<DUOLGameEngine::Image>();;
 			}
 			if (gameObject->GetName() == TEXT("EilteMonsterPoint"))
 			{
@@ -571,7 +571,7 @@ namespace  DUOLClient
 			}
 			if (gameObject->GetName() == TEXT("Minimap"))
 			{
-				_miniMapImage = gameObject->AddComponent<DUOLGameEngine::Image>();;
+				_miniMapImage = gameObject->GetComponent<DUOLGameEngine::Image>();;
 			}
 			if (gameObject->GetTag() == TEXT("Fade"))
 			{
@@ -815,7 +815,7 @@ namespace  DUOLClient
 			_isFirstMonsterCheck = true;
 		}
 
-		if (240.f <= _cCurrentTime && !_isInfoChcek)
+		if (180.f <= _cCurrentTime && !_isInfoChcek)
 		{
 			_interactiveScript->SetPlayInfoKey(L"Info14.png");
 			_uiMiniMapObject->SetIsActiveSelf(true);
@@ -874,7 +874,6 @@ namespace  DUOLClient
 				UIDataManager::GetInstance()->SetBossMaxHPUI(hp);
 			}
 		}
-		
 	}
 
 	void SystemManager::SetScript(DUOLCommon::tstring path)
@@ -915,6 +914,37 @@ namespace  DUOLClient
 	void SystemManager::PlayStageBossScene(DUOLCommon::tstring sound)
 	{
 		_player->PlayScriptSoundClip(_bossSceneClips[sound], false);
+	}
+
+	void SystemManager::SetBossTotalUI(bool value)
+	{
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetName() == TEXT("MainPanel"))
+			{
+				gameObject->SetIsActiveSelf(value);
+			}
+			if (gameObject->GetName() == TEXT("BattleInrush"))
+			{
+				gameObject->SetIsActiveSelf(value);
+			}
+			if (gameObject->GetName() == TEXT("Tutorial"))
+			{
+				gameObject->SetIsActiveSelf(value);
+			}
+			if (gameObject->GetName() == TEXT("Pause"))
+			{
+				if (value != true)
+					gameObject->SetIsActiveSelf(value);
+			}
+			if (gameObject->GetName() == TEXT("Option"))
+			{
+				if (value != true)
+					gameObject->SetIsActiveSelf(value);
+			}
+		}
 	}
 
 	void SystemManager::PlaySound(DUOLGameEngine::AudioClip* soundClip)

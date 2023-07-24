@@ -169,6 +169,9 @@ namespace DUOLClient
 	{
 		const DUOLMath::Vector3& camPosition = _cameraTransform->GetWorldPosition();
 
+		if (_followTransform == nullptr)
+			return;
+
 		// _followTransform 을 따라가자.
 		DUOLMath::Vector3 dirToFollow = (_followTransform->GetWorldPosition() - camPosition);
 

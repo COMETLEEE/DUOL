@@ -60,7 +60,6 @@ namespace  DUOLClient
 
 	void DUOLClient::UIDataManager::OnStart()
 	{
-		//Main Scene
 	}
 
 	void DUOLClient::UIDataManager::OnUpdate(float deltaTime)

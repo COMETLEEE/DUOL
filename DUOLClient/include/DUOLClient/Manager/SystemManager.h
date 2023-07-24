@@ -57,6 +57,18 @@ namespace DUOLClient
 
 		DUOLClient::InteractiveScript* _interactiveScript;
 
+	public:
+		static bool _isMiddleEvent;
+
+		static bool _isFirstMonster;
+
+		static bool _isAStageClear;
+
+		static bool _isBStageClear;
+
+		static bool _isCStageClear;
+
+		static bool _isBossClear;
 #pragma region function
 	public:
 		virtual void OnAwake() override;
@@ -172,11 +184,14 @@ namespace DUOLClient
 		/**
 		 * \brief Boss
 		 */
+		void SetBossTotalUI(bool value);
+
 		void SetBossUI(DUOLCommon::tstring path, float hp);
 
 		void SetScript(DUOLCommon::tstring path);
 
 		void SetInfo(DUOLCommon::tstring path);
+
 
 	private:
 		/**
@@ -238,17 +253,7 @@ namespace DUOLClient
 
 		std::shared_ptr<DUOLGameEngine::SoundManager> _soundManager;
 
-		static bool _isMiddleEvent;
 
-		static bool _isFirstMonster;
-
-		static bool _isAStageClear;
-
-		static bool _isBStageClear;
-
-		static bool _isCStageClear;
-
-		static bool _isBossClear;
 
 
 		int _scriptIndex;

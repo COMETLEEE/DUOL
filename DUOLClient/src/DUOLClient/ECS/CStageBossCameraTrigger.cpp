@@ -99,7 +99,7 @@ void DUOLClient::CStageBossCameraTrigger::OnTriggerEnter(const std::shared_ptr<D
 	{
 		DUOL_INFO(DUOL_CONSOLE, "C Stage Boss Camera Action");
 
-		DUOLClient::SystemManager::GetInstance()->SetUiObject(false);
+		DUOLClient::SystemManager::GetInstance()->SetBossTotalUI(false);
 		StartCoroutine(&DUOLClient::CStageBossCameraTrigger::ScripteRun, gameObject);
 	}
 }
@@ -227,7 +227,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::CStageBossCameraTrigger::ScripteRun
 	//페이드인완
 	_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
 	player->SetIsActiveSelf(true);
-	DUOLClient::SystemManager::GetInstance()->SetUiObject(true);
+	DUOLClient::SystemManager::GetInstance()->SetBossTotalUI(true);
 	DUOLClient::SystemManager::GetInstance()->SetBossUI(L"05_ingame_thejudicis.png", 1200.f);
 
 	while (_fadeInOut->GetFadeMode() != DUOLGameEngine::FadeInOutMode::DONE)
