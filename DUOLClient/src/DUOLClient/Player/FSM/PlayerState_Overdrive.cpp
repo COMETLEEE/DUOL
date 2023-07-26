@@ -132,6 +132,9 @@ namespace DUOLClient
 	{
 		_isEnter = false;
 
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(0.f);
+
+
 		_animator->SetBool(TEXT("ODExit"), true);
 
 		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdrive (AnimStart)");

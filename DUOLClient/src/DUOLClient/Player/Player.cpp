@@ -219,7 +219,7 @@ namespace DUOLClient
 
 		// UI Change
 		//DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
-		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
+		//DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 
 
 
