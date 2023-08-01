@@ -56,13 +56,11 @@ float4 PSMain(VS_OUT input) : SV_TARGET
 
 	color = TextureFinal.Sample(SamClamp, input.uv);
 
-	//  color *= _exposure;
+	  color *= _exposure;
+	  color = ReinhardTonemap(color);
+	  color.a = 1.f;
 
-	//  color = ReinhardTonemap(color);
-
-	//  color.a = 1.f;
-
-   color = Uncharted2(color.xyz);
+   //color = Uncharted2(color.xyz);
 	
 	return color;
 }

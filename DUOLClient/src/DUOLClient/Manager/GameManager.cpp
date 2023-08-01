@@ -63,6 +63,7 @@ namespace DUOLClient
 		, _isPlayerDie(false)
 		, _totalPoint(0)
 		, _isCredit(false)
+		, _skipFade(nullptr)
 	{
 
 	}
@@ -257,6 +258,11 @@ namespace DUOLClient
 
 	void GameManager::Reset()
 	{
+
+		_currentGameScene = GameScene::Main;
+		_currentGameMode = GameMode::UI_MODE;
+
+
 		if (!_isReset)
 			return;
 
@@ -369,7 +375,7 @@ namespace DUOLClient
 				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
 				_mainCameraController->SetCameraInitPos();
 			}
-			if (gameObject->GetTag() == TEXT("MiniMap"))
+			if (gameObject->GetTag() == TEXT("Minimap"))
 			{
 				if(SystemManager::GetInstance()->IsAStage() && !SystemManager::GetInstance()->IsBStage()&& !SystemManager::GetInstance()->IsCStage())
 				gameObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"MinImap_Middle_BC.png");
@@ -579,15 +585,9 @@ namespace DUOLClient
 				_creditObject = gameObject;
 				gameObject->SetIsActiveSelf(false);
 			}
-			if (gameObject->GetName() == TEXT("Skip"))
-			{
-				gameObject->SetIsActiveSelf(true);
-				_skipFade = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
-			}
 		}
 
 		_skilFadeMode == DUOLGameEngine::FadeInOutMode::DONE;
-
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 	}
 
@@ -617,7 +617,8 @@ namespace DUOLClient
 
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "GameManager 'OnStart' function called.")
 
-			_fadeInOut = nullptr;
+		_fadeInOut = nullptr;
+		_skipFade = nullptr;
 
 		//if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("Main") || DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("CutScene"))
 		//{
@@ -656,12 +657,16 @@ namespace DUOLClient
 			InitializeStageBoss(currentScene);
 		else if (currentSceneName == TEXT("CutScene"))
 		{
+			DUOLGameEngine::InputManager::GetInstance()->SetUIMouseMode(false);
+			MouseLock();
 			SetBGM(L"CutScene");
-
+			_currentGameMode = GameMode::DEFAULT;
 			_currentGameScene = GameScene::Cut;
 		}
 		else if (currentSceneName == TEXT("main") || currentSceneName == TEXT("Main"))
 		{
+			DUOLGameEngine::InputManager::GetInstance()->SetUIMouseMode(true);
+			MouseUnLock();
 			Reset();
 			SetBGM(L"MainTitleScene");
 		}
@@ -694,6 +699,9 @@ namespace DUOLClient
 			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageBoss.dscene"));
 		}
 
+
+		if (_currentGameScene == GameScene::Main)
+			return;
 		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F7))
 		//{
 		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StageB.dscene"));
@@ -710,7 +718,7 @@ namespace DUOLClient
 
 			Skip();
 
-			if (_isCredit == true && 30.f <= _creditTime && _isReset == false)
+			if (_isCredit == true && 10.f <= _creditTime && _isReset == false)
 			{
 				_isReset = true;
 				DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Main.dscene"));

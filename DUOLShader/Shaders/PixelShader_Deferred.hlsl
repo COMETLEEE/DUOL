@@ -49,12 +49,14 @@ struct PS_INPUT
 
 float4 CalcShadowColor(float4 litColor, float shadowFactor)
 {
+    shadowFactor = pow(shadowFactor, g_ShadowPower);
+
     litColor *= shadowFactor;
     float4 shadowColor = UnpackingColor(g_ShadowColor);
 
     float shadowColorFactor = 1.f - shadowFactor;
 
-    litColor = lerp(litColor, shadowColor, shadowColorFactor);
+    litColor *= lerp(shadowColor, float4(1.f, 1.f, 1.f, 1.f), shadowColorFactor);
 
     return litColor;
 }
@@ -405,7 +407,6 @@ float4 PSMain(PS_INPUT Input)
             // shadow
             // 2048 -> hard code shader map size
             shadows *= CalcShadowFactor(g_samShadow, g_ShadowMap, posW.xyz, 2048.f, cascadeSlice);
-            shadows *= 1 / g_ShadowPower;
             // shadows = 1.0f;
             Output += CalcShadowColor(ComputePBRDirectionalLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic) * shadows, shadows);
         }
@@ -416,7 +417,6 @@ float4 PSMain(PS_INPUT Input)
             int idx = asint(lightIdx);
 
             shadows *= CalcShadowFactorFromPointShadowMap(g_samShadow, g_PointShadowMap, posW.xyz, 1024.f, idx);
-            shadows *= 1 / g_ShadowPower;
 
             Output +=  CalcShadowColor(ComputePBRPointLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows, shadows);
             // shadows = 1.0f;
@@ -428,8 +428,6 @@ float4 PSMain(PS_INPUT Input)
             // shadow
             // 2048 -> hard code shader map size
             shadows *= CalcShadowFactorFromSpotShadowMap(g_samShadow, g_SpotShadowMap, posW.xyz, 1024.f, idx);
-            // shadows = 1.0f;
-            shadows *= 1 / g_ShadowPower;
             Output +=  CalcShadowColor(ComputePBRSpotLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows, shadows) ;
         }
         else if (g_Light[lightIdx].Type == AreaRect)
@@ -437,7 +435,6 @@ float4 PSMain(PS_INPUT Input)
             float shadows = 1.0f;
 
             shadows *= CalcShadowFactorFromAreaShadowMap(g_samShadow, g_SpotShadowMap, posW.xyz, 1024.f, lightIdx);
-            shadows *= 1 / g_ShadowPower;
 
             Output +=  CalcShadowColor(ComputePBRAreaRectLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows, shadows);
         }
@@ -447,7 +444,7 @@ float4 PSMain(PS_INPUT Input)
     }
 
     //Diffuse IBL
-    Output.xyz += c_diff * diffuseIrradiance;
+    Output.xyz += c_diff * diffuseIrradiance * 0.2f;
 
     //Specular IBL
     const float MAX_REFLECTION_LOD = 4.0; // 0~3, 4개의 밉맵 존재합니다.
@@ -459,7 +456,7 @@ float4 PSMain(PS_INPUT Input)
     float2 BRDF = g_BRDFLookUpTable.Sample(g_samLinearClamp, float2(max(NdotV, 0.f), roughness)).rg;
 
     float3 specularIBL = prefilteredColor * (c_spec * BRDF.x + BRDF.y);
-    Output.xyz += specularIBL;
+    Output.xyz += specularIBL * 0.2f;
 
     // AO
     Output.xyz *= pow(metallicRoughnessAOSpecular.z * g_SSAO.Load(int3(Input.Position.xy, 0)).r, g_AOPower);

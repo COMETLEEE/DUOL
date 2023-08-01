@@ -190,7 +190,18 @@ namespace DUOLClient
 
 	DUOLGameEngine::CoroutineHandler PlayerState_Overdrive::ReserveEndOverdriveState()
 	{
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_player->_overdriveDuration);
+		float deltaTime = _player->_overdriveDuration;
+		auto delta = DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+		while(deltaTime > 0)
+		{
+			deltaTime -= delta;
+
+			auto uipoint= deltaTime / _player->_overdriveDuration * 100.f;
+			DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(uipoint);
+
+			co_yield nullptr;
+		}
 
 		// 오버드라이브가 끝날 수 있음을 알린다.
 		auto idleState = reinterpret_cast<DUOLClient::PlayerState_Idle*>(_stateMachine->GetState(TEXT("PlayerState_Idle")));

@@ -41,11 +41,13 @@ namespace DUOLGameEngine
 
 		_soundManager = DUOLGameEngine::SoundManager::GetInstance();
 
+		_cutList.clear();
+		_totalSceneClips.clear();
+
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene1")));
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene2")));
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene3")));
 		_totalSceneClips.emplace_back(_soundManager->GetAudioClip(TEXT("Intro_CutScene4")));
-
 	}
 
 	void CutSceneManager::UnInitialize()

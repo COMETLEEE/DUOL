@@ -88,6 +88,13 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
     psOut.Albedo.xyz = pow(psOut.Albedo.xyz, 2.0f);
 #else
     psOut.Albedo = float4(Input.matColor.xyz, 1.f);
+    if (psOut.Albedo.x >= 0.9f && psOut.Albedo.y >= 0.9f && psOut.Albedo.z >= 0.9f)
+    {
+        psOut.Albedo.x = 118.f / 255.f;
+        psOut.Albedo.y = 115.f / 255.f;
+        psOut.Albedo.z = 120.f / 255.f;
+    }
+
 #endif
     //alpha Clipping 하드코딩..
     if (psOut.Albedo.w < 0.5f)

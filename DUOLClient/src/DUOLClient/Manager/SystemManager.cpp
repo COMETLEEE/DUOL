@@ -969,10 +969,13 @@ namespace  DUOLClient
 
 	void SystemManager::PlayUISound(DUOLCommon::tstring name, bool istrue)
 	{
-		if (istrue)
-			_player->PlayScriptPause();
-		else
-			_player->PlayScriptPlay();
+		if (_player != nullptr)
+		{
+			if (istrue)
+				_player->PlayScriptPause();
+			else
+				_player->PlayScriptPlay();
+		}
 
 
 		if (_uiClips[name] == nullptr)
@@ -1040,7 +1043,10 @@ namespace  DUOLClient
 			InitializeStageC();
 		else if (currentSceneName == TEXT("StageBoss"))
 			InitializeStageBoss();
-
+		else if (currentSceneName == TEXT("Main"))
+		{
+			
+		}
 		else
 			InitializeStage();
 	}
@@ -1099,11 +1105,11 @@ namespace  DUOLClient
 			break;
 		}
 		case GameScene::StageBoss:
-			{
+		{
 			StageBossUpdate(deltaTime);
 
 			break;
-			}
+		}
 		case GameScene::ETC:
 		{
 			if (_isCameraSequenceMode && !_cameraInstance->IsPlayMode())
@@ -1456,7 +1462,7 @@ namespace  DUOLClient
 		if (_isAStageClear && _isBStageClear && _isCStageClear)
 			portalCom->SetNextSceneName(L"StageBoss");
 		else
-			portalCom->SetNextSceneName(nextSceneName); 
+			portalCom->SetNextSceneName(nextSceneName);
 	}
 
 	void SystemManager::Die()
@@ -1483,7 +1489,7 @@ namespace  DUOLClient
 			{
 				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 
-				DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Middle.dscene"));
+		DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Middle.dscene"));
 
 			});
 
